@@ -1,6 +1,7 @@
 #include<stdio.h>
+#include<time.h>
 
 int main(void)
 {
-    printf("Olá Mundo!");
+    printf("Ola Mundo!");
 }
