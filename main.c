@@ -1,37 +1,56 @@
 #include <stdio.h>
-#include <time.h>
+#include <stdlib.h>
+#include <windows.h>
 
-#define N 100
+#define N 1000
 
-int main() 
-{
-    int i, j, k;
-    double A[N][N], B[N][N], C[N][N];
+int main() {
+    // Alocação e inicialização
+    double **A = (double**)malloc(N * sizeof(double*));
+    double **B = (double**)malloc(N * sizeof(double*));
+    double **C = (double**)malloc(N * sizeof(double*));
     
-    // Inicialização (opcional)
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
-            A[i][j] = 1.0;  // Exemplo: preenche com 1.0
-            B[i][j] = 1.0;  // Exemplo: preenche com 1.0
+    for(int i = 0; i < N; i++) {
+        A[i] = (double*)malloc(N * sizeof(double));
+        B[i] = (double*)malloc(N * sizeof(double));
+        C[i] = (double*)malloc(N * sizeof(double));
+        for(int j = 0; j < N; j++) {
+            A[i][j] = (double)rand()/RAND_MAX;
+            B[i][j] = (double)rand()/RAND_MAX;
         }
     }
-    
-    clock_t start = clock();
-    
-    // Multiplicação
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
-            double sum = 0.0;
-            for (k = 0; k < N; k++) {
+
+    // Medição de tempo de alta precisão
+    LARGE_INTEGER freq, start, end;
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+
+    // Multiplicação real
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j < N; j++) {
+            double sum = 0;
+            for(int k = 0; k < N; k++) {
                 sum += A[i][k] * B[k][j];
             }
             C[i][j] = sum;
         }
     }
+
+    QueryPerformanceCounter(&end);
+    double time = (end.QuadPart - start.QuadPart) / (double)freq.QuadPart;
     
-    clock_t end = clock();
-    double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Tempo: %f segundos\n", time_spent);
+    // Verificação
+    double checksum = 0;
+    for(int i = 0; i < N; i++) checksum += C[i][i];
+    
+    printf("Tempo: %.6f segundos\n", time);
+    printf("Checksum: %f\n", checksum);
+
+    // Liberação de memória
+    for(int i = 0; i < N; i++) {
+        free(A[i]); free(B[i]); free(C[i]);
+    }
+    free(A); free(B); free(C);
     
     return 0;
 }
