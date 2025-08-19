@@ -1,0 +1,27 @@
+# Arquivos compilados
+*.exe
+*.o
+*.out
+
+# Pastas de output
+output/
+build/
+
+# Arquivos do LaTeX
+*.aux
+*.log
+*.toc
+*.nav
+*.snm
+*.bbl
+*.blg
+
+# Arquivos de IDE
+.vscode/
+.idea/
+
+# Sistemas operacionais
+.DS_Store
+Thumbs.db
+# Pasta para testes e experimentos
+clone_/
