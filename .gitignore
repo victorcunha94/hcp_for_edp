@@ -16,6 +16,7 @@ build/
 *.bbl
 *.blg
 
+
 # Arquivos de IDE
 .vscode/
 .idea/
