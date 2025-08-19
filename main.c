@@ -6,7 +6,7 @@
 
 int main() {
     // Alocação e inicialização
-    double **A = (double**)malloc(N * sizeof(double*));
+    double **A = (double**)malloc(N * sizeof(double*)); // malloc 
     double **B = (double**)malloc(N * sizeof(double*));
     double **C = (double**)malloc(N * sizeof(double*));
     
