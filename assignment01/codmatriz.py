@@ -45,7 +45,7 @@ def measure_cpu_time(func, *args, **kwargs):
     return t1 - t0
 
 def main():
-    sizes = [100,300,500,1000] #tamanho das matrizes [conforme n aumenta, ikj > ijk]
+    sizes = [1000,1500,2000,3000] #tamanho das matrizes [conforme n aumenta, ikj > ijk]
     random.seed(int(time.time()))
 
     for n in sizes:
