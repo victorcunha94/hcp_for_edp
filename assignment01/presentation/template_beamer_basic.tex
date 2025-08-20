@@ -9,6 +9,9 @@
 \usepackage{hyperref}
 %\usepackage{times} 
 \usepackage{lmodern}
+\usepackage{verbatim}
+\usepackage{listings}
+\lstset{language=python, basicstyle=\ttfamily\footnotesize}
 \usepackage[portuguese]{babel}
 %\usetheme{Antibes}
 \usepackage{subfigure, graphics, graphicx}
@@ -56,6 +59,11 @@
 	\end{frame}
 
 \begin{frame}
+	\begin{itemize}
+		\item Compilador interno \textit{Just-In-Time (JIT)}
+	\end{itemize}
+\end{frame}
+\begin{frame}
 		\frametitle{Performance em MATLAB}
 	\begin{figure}[H]
 		\centering
@@ -65,7 +73,6 @@
 	\end{figure}
 	
 \end{frame}
-
 
 
 \begin{frame}
@@ -79,16 +86,23 @@
 	
 \end{frame}
 
+\begin{frame}[fragile]
+	\frametitle{Parâmetros}
+	Usamos um intervalo de -10000 a 1000 para os valores nas matrizes
+	\begin{lstlisting}
+		%row[j] = random.randint(-10000, 10000)
+	\end{lstlisting}
+\end{frame}
+
 
 \begin{frame}
 	\frametitle{Performance em Python}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.80\linewidth]{Figuras/cachemiss_python}
-		\caption{C}
+		\caption{Python}
 		\label{fig:performace_python}
 	\end{figure}
-	
 \end{frame}
 
 
