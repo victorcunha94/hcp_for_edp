@@ -45,7 +45,7 @@ void free_matrix(int n, double **mat) {
 }
 
 int main() {
-    int sizes[] = {100, 300, 500, 1000}; //tamanhos das matrizes
+    int sizes[] = {1000, 1500, 2000, 3000}; //tamanhos das matrizes
     int num_sizes = sizeof(sizes) / sizeof(sizes[0]);
     srand((unsigned)time(NULL));
 
