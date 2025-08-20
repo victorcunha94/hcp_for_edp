@@ -79,7 +79,9 @@ int main() {
         free_matrix(n, B);
         free_matrix(n, C);
 
+        printf("\n");
     }
 
     return 0;
 }
+
