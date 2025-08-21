@@ -60,14 +60,4 @@ function benchmark_matriz()
     title('Comparação de tempos de multiplicação de matrizes em MATLAB');
     legend('i-j-k', 'i-k-j', 'Função nativa (BLAS)', 'Location','northwest');
     
-    %% Adicionar tabela comparativa
-    fprintf('\n=== RESUMO DOS TEMPOS (segundos) ===\n');
-    fprintf('Tamanho\t\tijk\t\tikj\t\tBLAS\t\tRazão BLAS/ikj\n');
-    fprintf('=============================================================\n');
-    for idx = 1:length(sizes)
-        razao = time_ikj(idx) / time_built_in(idx);
-        fprintf('%dx%d\t\t%.4f\t%.4f\t%.4f\t%.1fx mais rápido\n',...
-                sizes(idx), sizes(idx), time_ijk(idx), time_ikj(idx),...
-                time_built_in(idx), razao);
-    end
 end
