@@ -1,8 +1,14 @@
-\frametitle{Parâmetros}
-	\begin{itemize}
-		\item Usamos um intervalo de -10000 a 1000 para os valores nas matrizes
-	\end{itemize}
-	\begin{lstlisting}
-		row[j] = random.randint(-10000, 10000)
-	\end{lstlisting}
-
+\frametitle{Ordem de Loop}
+	\begin{semiverbatim}
+		# Ordem ijk (mais lenta)
+		for i in range(n):
+		   for j in range(n):
+		      for k in range(n):  # Acesso não-sequencial à memória
+		        C[i][j] += A[i][k] * B[k][j]
+		
+		# Ordem ikj (mais rápida)
+		for i in range(n):
+		   for k in range(n):
+		      for j in range(n):  # Acesso sequencial à memória
+		         C[i][j] += A[i][k] * B[k][j]
+	\end{semiverbatim}
