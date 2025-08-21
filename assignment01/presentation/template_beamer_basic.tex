@@ -1,4 +1,24 @@
-\documentclass[11pt]{beamer}
+\documentclass[utf8]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	commentstyle=\color{gray},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	breaklines=true,
+	frame=single
+}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{beamerthemesplit}
 \usepackage[orientation=landscape,size=custom,width=16,height=9,scale=0.5,debug]{beamerposter} 
 \usepackage{amsmath, amsthm, amssymb}
@@ -12,7 +32,6 @@
 \usepackage{verbatim}
 \usepackage{listings}
 \lstset{language=python, basicstyle=\ttfamily\footnotesize}
-\usepackage[portuguese]{babel}
 %\usetheme{Antibes}
 \usepackage{subfigure, graphics, graphicx}
 \usetheme{Copenhagen}
@@ -58,11 +77,9 @@
 		\maketitle
 	\end{frame}
 
-\begin{frame}
-	\begin{itemize}
-		\item Compilador interno \textit{Just-In-Time (JIT)}
-	\end{itemize}
-\end{frame}
+
+
+
 \begin{frame}
 		\frametitle{Performance em MATLAB}
 	\begin{figure}[H]
@@ -72,6 +89,11 @@
 		\label{fig:matmultr2022}
 	\end{figure}
 	
+\end{frame}
+\begin{frame}
+	\begin{itemize}
+		\item Compilador interno \textit{Just-In-Time (JIT)}
+	\end{itemize}
 \end{frame}
 
 
@@ -97,6 +119,22 @@
 
 \end{frame}
 
+\begin{frame}[fragile]
+	\frametitle{Ordem de Loop}
+	\begin{semiverbatim}
+		# Ordem ijk (mais lenta)
+		for i in range(n):
+		   for j in range(n):
+		      for k in range(n):  # Acesso não-sequencial à memória
+		        C[i][j] += A[i][k] * B[k][j]
+		
+		# Ordem ikj (mais rápida)
+		for i in range(n):
+		   for k in range(n):
+		      for j in range(n):  # Acesso sequencial à memória
+		         C[i][j] += A[i][k] * B[k][j]
+	\end{semiverbatim}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Performance em Python}
@@ -108,5 +146,14 @@
 	\end{figure}
 \end{frame}
 
+\begin{frame}
+		\frametitle{Pyhton vs Matlab}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.80\linewidth]{Figuras/comparacao_python_matlab}
+		\caption{Python vs Matlab}
+		\label{fig:performace_python_vs_matlab}
+	\end{figure}
+\end{frame}
 
 \end{document}
