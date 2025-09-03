@@ -1,5 +1,5 @@
 import numpy as np
-
+tolsup = 10000
 # Problema teste: u'(t) = lambda * u(t), u(0) = 1
 # Solução exata: u(t) = exp(lambda * t)
 
