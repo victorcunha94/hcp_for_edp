@@ -5,6 +5,20 @@ from stability_analysis import func_test, exact_solution_test, estimate_stabilit
 from plotting_utils import plot_solutions, plot_convergence_order
 import os
 
+try:
+    # Set NumPy to ignore overflow warnings
+    np.seterr(over='ignore')
+
+    # Perform the computation
+    result = np.array([1.0e308]) * 2
+
+    # Print the result
+    print("Result:", result)
+
+except RuntimeWarning as e:
+    # If a RuntimeWarning occurs, print the warning message
+    print(f"RuntimeWarning: {e}")
+
 if __name__ == "__main__":
     # Crie um diretório para salvar os gráficos, se não existir
     output_dir = "output_plots"
