@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 tol = 1e-08
 T = 1000
 
+tipo= 'BDF2'
+
 def prod(a, b):
   c = np.array([a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]])
   return c
@@ -110,7 +112,7 @@ def TR_BDF2 (Un,z):
   Un1 = prod(div(num,den),4*Ustar - Un)
   return Un1
 
-incle = 100
+incle = 200
 xl = -10
 xr = 30
 yb = -20
@@ -127,45 +129,51 @@ plt.ylabel('Eixo Y')
 plt.title('Plano Cartesiano')
 
 
+if tipo =='BDF2':
+    for h in range(incle):
+      print(f"h = {h}")
+      for k in range(incle):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = euler_implict(Un, z)
+        for n in range(T):
+          Un2 = BDF2(Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+        # print(Un)
+          if linalg.norm(Un2, 2) < tol :
+            plt.plot(real_z, img_z, 'bo', markersize=2)
+            break
+          elif linalg.norm(Un2, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
+elif tipo == 'BDF3':
+    for h in range(incle):
+      print(f"h = {h}")
+      for k in range(incle):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = euler_implict(Un, z)
+        Un2    = BDF2(Un1, Un, z)
+        for n in range(T):
+          Un3 = BDF3(Un2, Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+          Un3 = Un2
+        # print(Un)
+          if linalg.norm(Un2, 2) < tol :
+            plt.plot(real_z, img_z, 'bo', markersize=2)
+            break
+          elif linalg.norm(Un2, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
 
-for h in range(incle):
-  print(f"h = {h}")
-  for k in range(incle):
-    real_z = xl + (h*(np.abs(xr - xl)/incle))
-    img_z  = yb + (k*(np.abs(yb - yt)/incle))
-    z      = np.array([real_z, img_z])
-    Un     = np.array([1, 0])
-    # Un1    = euler_implict(Un, z)
-    # Un2 = BDF2(Un1, Un, z)
-    # Un3 = BDF3(Un2, Un1, Un, z)
-    # Un4 = BDF4(Un3, Un2, Un1, Un, z)
-    # Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
-    #Un1    = trapezio(Un, z)
 
-    for n in range(T):
-      # Un1 = euler_explicit(Un, z)
-      Un1 = runge_kutta(Un, z)
-      # Un1 = euler_implict(Un, z)
-      # Un1 = trapezio(Un, z)
-      # Un2 = BDF2(Un1, Un, z)
-      # Un3 = BDF3(Un2, Un1, Un, z)
-      #Un4 = BDF4(Un3, Un2, Un1, Un, z)
-      #Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
-      #Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
-      # Un1 = TR_BDF2 (Un,z)
-      Un  = Un1
-      # Un1 = Un2
-      # Un2 = Un3
-      # Un3 = Un4
-      # Un4 = Un5
-      # Un5 = Un6
-    # print(Un)
-      if linalg.norm(Un, 2) < tol :
-        plt.plot(real_z, img_z, 'bo', markersize=2)
-        break
-      elif linalg.norm(Un, 2) > 1/tol:
-        #plt.plot(real_z, img_z, 'ko', markersize=2)
-        break
+
 
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.show()
