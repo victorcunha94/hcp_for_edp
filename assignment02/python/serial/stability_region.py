@@ -72,6 +72,33 @@ def BDF4(Un3, Un2, Un1, Un, z):
         + prod(div([16,0],den),Un1) - prod(div([3,0],den),Un)
   return Un4
 
+def BDF5(Un4, Un3, Un2, Un1, Un, z):
+  num1 = [300,0] 
+  num2 = [300,0]
+  num3 = [200,0]
+  num4 = [75,0]
+  num5 = [12,0]
+  den  = [137,0] - 60*z
+  Un5 = prod(div(num1,den),Un4) - prod(div(num2,den),Un3) \
+        + prod(div(num3,den),Un2) - prod(div(num4,den),Un1) \
+        + prod(div(num5,den),Un)
+  return Un5
+
+def BDF6(Un5, Un4, Un3, Un2, Un1, Un, z):
+  num1 = [360, 0]
+  num2 = [450, 0]
+  num3 = [400, 0]
+  num4 = [225, 0]
+  num5 = [72 , 0]
+  num6 = [10 , 0]
+  den  = [147, 0] - 60*z
+  Un6  =  prod(div(num1, den), Un5) - prod(div(num2, den), Un4)\
+	+ prod(div(num3, den), Un3) - prod(div(num4, den), Un2)\
+	+ prod(div(num5, den), Un1) - prod(div(num6, den), Un)
+  return Un6
+
+
+
 def TR_BDF2 (Un,z):
   num   = [1,0] + z/4
   den   = [1,0] - z/4
@@ -98,32 +125,37 @@ incle = 200
 for h in range(incle):
   print(f"h = {h}")
   for k in range(incle):
-    real_z = -10 + (h*(40/incle))
-    img_z  = -20 + (k*(40/incle))
+    real_z = -11 + (h*(40/incle))
+    img_z  = -21 + (k*(40/incle))
     z      = np.array([real_z, img_z])
     Un     = np.array([1, 0])
     Un1    = euler_implict(Un, z)
     Un2 = BDF2(Un1, Un, z)
     Un3 = BDF3(Un2, Un1, Un, z)
+    Un4 = BDF4(Un3, Un2, Un1, Un, z)
+    Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
     #Un1    = trapezio(Un, z)
 
     for n in range(T):
       # Un1 = euler_explicit(Un, z)
       # Un1 = euler_implict(Un, z)
       # Un1 = trapezio(Un, z)
-     
       # Un2 = BDF2(Un1, Un, z)
       # Un3 = BDF3(Un2, Un1, Un, z)
-      Un4 = BDF4(Un3, Un2, Un1, Un, z)
+      #Un4 = BDF4(Un3, Un2, Un1, Un, z)
+      #Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
+      Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
       # Un1 = TR_BDF2 (Un,z)
       Un  = Un1
       Un1 = Un2
       Un2 = Un3
       Un3 = Un4
-      if linalg.norm(Un1, 2) < tol :
-        plt.plot(real_z, img_z, 'bo', markersize=2)
+      Un4 = Un5
+      Un5 = Un6
+      if linalg.norm(Un6, 2) < tol :
+        plt.plot(real_z, img_z, 'bo', markersize=1)
         break
-      elif linalg.norm(Un1, 2) > 1/tol:
+      elif linalg.norm(Un6, 2) > 1/tol:
         #plt.plot(real_z, img_z, 'ko', markersize=2)
         break
 
