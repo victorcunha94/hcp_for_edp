@@ -30,7 +30,10 @@ def div(a, b):
 
 # print(div(a,b))
 
-
+def runge_kutta(Un, z):
+    Ustar = Un + prod([0.5, 0],prod(Un, z))
+    Un1 = Un + prod(Ustar, z)
+    return Un1
 
 def euler_explicit(Un, z):
   Un1 = Un + prod(z,Un)
@@ -59,7 +62,6 @@ def BDF3(Un2, Un1, Un, z):
   num3 = [2,0]
   den = [11,0] - 6*z
   Un3 = prod(div([18,0],den),Un2) - prod(div([9,0],den),Un1) + prod(div([2,0],den),Un)
-
   return Un3
 
 def BDF4(Un3, Un2, Un1, Un, z):
@@ -108,54 +110,60 @@ def TR_BDF2 (Un,z):
   Un1 = prod(div(num,den),4*Ustar - Un)
   return Un1
 
-
+incle = 100
+xl = -10
+xr = 30
+yb = -20
+yt = 20
 
 # Configuração básica
 fig, ax = plt.subplots(figsize=(8, 8))
 plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
 plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
-ax.set_xlim(-11, 31)
-ax.set_ylim(-21, 21)
+ax.set_xlim(xl - 1, xr + 1)
+ax.set_ylim(yb - 1, yt + 1)
 plt.xlabel('Eixo X')
 plt.ylabel('Eixo Y')
 plt.title('Plano Cartesiano')
 
-incle = 200
+
 
 for h in range(incle):
   print(f"h = {h}")
   for k in range(incle):
-    real_z = -11 + (h*(40/incle))
-    img_z  = -21 + (k*(40/incle))
+    real_z = xl + (h*(np.abs(xr - xl)/incle))
+    img_z  = yb + (k*(np.abs(yb - yt)/incle))
     z      = np.array([real_z, img_z])
     Un     = np.array([1, 0])
-    Un1    = euler_implict(Un, z)
-    Un2 = BDF2(Un1, Un, z)
-    Un3 = BDF3(Un2, Un1, Un, z)
-    Un4 = BDF4(Un3, Un2, Un1, Un, z)
-    Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
+    # Un1    = euler_implict(Un, z)
+    # Un2 = BDF2(Un1, Un, z)
+    # Un3 = BDF3(Un2, Un1, Un, z)
+    # Un4 = BDF4(Un3, Un2, Un1, Un, z)
+    # Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
     #Un1    = trapezio(Un, z)
 
     for n in range(T):
       # Un1 = euler_explicit(Un, z)
+      Un1 = runge_kutta(Un, z)
       # Un1 = euler_implict(Un, z)
       # Un1 = trapezio(Un, z)
       # Un2 = BDF2(Un1, Un, z)
       # Un3 = BDF3(Un2, Un1, Un, z)
       #Un4 = BDF4(Un3, Un2, Un1, Un, z)
       #Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
-      Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
+      #Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
       # Un1 = TR_BDF2 (Un,z)
       Un  = Un1
-      Un1 = Un2
-      Un2 = Un3
-      Un3 = Un4
-      Un4 = Un5
-      Un5 = Un6
-      if linalg.norm(Un6, 2) < tol :
-        plt.plot(real_z, img_z, 'bo', markersize=1)
+      # Un1 = Un2
+      # Un2 = Un3
+      # Un3 = Un4
+      # Un4 = Un5
+      # Un5 = Un6
+    # print(Un)
+      if linalg.norm(Un, 2) < tol :
+        plt.plot(real_z, img_z, 'bo', markersize=2)
         break
-      elif linalg.norm(Un6, 2) > 1/tol:
+      elif linalg.norm(Un, 2) > 1/tol:
         #plt.plot(real_z, img_z, 'ko', markersize=2)
         break
 
