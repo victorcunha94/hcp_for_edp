@@ -4,6 +4,13 @@
 #include <math.h>
 #include <omp.h>
 #include <time.h>
+#include <string.h>
+
+//Gerar os nomes com extensao
+void make_filename(char *dest, size_t size,
+                   const char *basename, const char *ext) {
+    snprintf(dest, size, "%s%s", basename, ext);
+}
 
 // =======================================================
 // Fatores de amplificacao: R(z)
@@ -50,12 +57,22 @@ static inline int is_stable_euler_bruteforce(double complex z,
     }
     return 0; 
 }
+static inline int is_stable_eulerimplicit_bruteforce(double complex z,
+                                             double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    for (int i = 0; i < 1000; i++) {
+        u = u/(1.0 - z);
+        double mag = cabs(u);
+        if (mag > tolsup) return -1; // instavel
+        if (mag < tolinf) return tid; // estavel
+    }
+    return -1; 
+}
 
 static inline int is_stable_rk3_bruteforce(double complex z,
                                            double tolsup, double tolinf) {
     double complex u = 1.0;
     for (int i = 0; i < 3000; i++) {
-        // RK4 step
         double complex k1 = z * u;
         double complex k2 = z * (u + k1/3.0);
         double complex k3 = z * (u + 2*k2/3.0);
@@ -72,7 +89,6 @@ static inline int is_stable_rk4_bruteforce(double complex z,
                                            double tolsup, double tolinf, int tid) {
     double complex u = 1.0;
     for (int i = 0; i < 3000; i++) {
-        // RK4 step
         double complex k1 = z * u;
         double complex k2 = z * (u + 0.5*k1);
         double complex k3 = z * (u + 0.5*k2);
@@ -80,13 +96,119 @@ static inline int is_stable_rk4_bruteforce(double complex z,
         u = u + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
 
         double mag = cabs(u);
-        if (mag > tolsup) return 8; 
+        if (mag > tolsup) return -1; 
         if (mag < tolinf) return tid; 
     }
-    return 8; 
+    return -1; 
 }
 
+static inline int is_stable_trapez(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    for (int i = 0; i < 3000; i++) {
+        double complex k1 = 1 + z/2;
+        double complex k2 = 1 - z/2;
+        u = u*(k1/k2);
 
+        double mag = cabs(u);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
+
+static inline int is_stable_bdf2(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    double complex unp1 = (1+z)*u;
+    for (int i = 0; i < 3000; i++) {
+        double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
+        u = unp1;
+        unp1 = unp2; 
+
+        double mag = cabs(unp2);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
+
+static inline int is_stable_bdf3(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    double complex unp1 = (1+z)*u;
+    double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
+    for (int i = 0; i < 10000; i++) {
+        double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
+        u = unp1;
+        unp1 = unp2;
+        unp2 = unp3;
+        double mag = cabs(unp3);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
+static inline int is_stable_bdf4(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    double complex unp1 = (1+z)*u;
+    double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
+    double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
+    for (int i = 0; i < 10000; i++) {
+        double complex unp4 = unp3 + (z/24)*(55.0*unp3 - 59.0*unp2 + 37.0*unp1 - 9.0*u);
+        u = unp1;
+        unp1 = unp2;
+        unp2 = unp3;
+        unp3 = unp4;
+        double mag = cabs(unp4);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
+static inline int is_stable_bdf5(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    double complex unp1 = (1+z)*u;
+    double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
+    double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
+    double complex unp4 = unp3 + (z/24)*(55.0*unp3 - 59.0*unp2 + 37.0*unp1 - 9.0*u);
+    for (int i = 0; i < 10000; i++) {
+        double complex unp5 = unp4 + (z/720)*(251.0*unp4 - 646.0*unp3 + 264.0*unp2 - 106.0*unp1 + 19.0*u);
+        u = unp1;
+        unp1 = unp2;
+        unp2 = unp3;
+        unp3 = unp4;
+        unp4 = unp5;
+        double mag = cabs(unp5);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
+static inline int is_stable_bdf6(double complex z,
+                                           double tolsup, double tolinf, int tid) {
+    double complex u = 1.0;
+    double complex unp1 = (1+z)*u;
+    double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
+    double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
+    double complex unp4 = unp3 + (z/24)*(55.0*unp3 - 59.0*unp2 + 37.0*unp1 - 9.0*u);
+    double complex unp5 = unp4 + (z/720)*(251.0*unp4 - 646.0*unp3 + 264.0*unp2 - 106.0*unp1 + 19.0*u);
+    for (int i = 0; i < 10000; i++) {
+        double complex unp6 = unp5 + (z/1440)*(475.0*unp5 - 1174.0*unp4 + 515.0*unp3 - 266.0*unp2 + 61.0*unp1 - 6.0*u);
+        u = unp1;
+        unp1 = unp2;
+        unp2 = unp3;
+        unp3 = unp4;
+        unp4 = unp5;
+        unp5 = unp6;
+        double mag = cabs(unp6);
+        if (mag > tolsup) return -1; 
+        if (mag < tolinf) return tid; 
+    }
+    return -1; 
+}
 // =======================================================
 // Salvar um .ppm
 // =======================================================
@@ -151,7 +273,7 @@ void save_ppm(const char *filename, int Nx, int Ny, int *stability,
                 case 7:
                     fprintf(f, "120 120 120 ");    // stable = black
                     break;
-                case 8:
+                case -1:
                     fprintf(f, "255 255 255 ");    // stable = black
                     break;
                 default:
@@ -160,6 +282,31 @@ void save_ppm(const char *filename, int Nx, int Ny, int *stability,
             }
         }
         fprintf(f, "\n");
+    }
+
+    fclose(f);
+}
+// =======================================================
+// Salvar um .csv
+// =======================================================
+void save_csv(const char *filename, int Nx, int Ny, int *stability,
+              double x_min, double x_max, double y_min, double y_max) {
+    FILE *f = fopen(filename, "w");
+    if (!f) { perror("fopen"); return; }
+
+    // header
+    fprintf(f, "x,y,stable\n");
+
+    double dx = (x_max - x_min) / (Nx - 1);
+    double dy = (y_max - y_min) / (Ny - 1);
+
+    for (int i = 0; i < Nx; i++) {
+        double x = x_min + i * dx;
+        for (int j = 0; j < Ny; j++) {
+            double y = y_min + j * dy;
+            int val = stability[i * Ny + j];
+            fprintf(f, "%f,%f,%d\n", x, y, val);
+        }
     }
 
     fclose(f);
@@ -194,12 +341,26 @@ void plot(const char *filename, int Nx, int Ny,
                 case 4: stability[i*Ny+j] = is_stable(rk4_amp(z)); break;
                 case 5: stability[i*Ny+j] = is_stable_rk4_bruteforce(z,tolsup,tolinf,tid); break;
                 case 6: stability[i*Ny+j] = is_stable_rk3_bruteforce(z,tolsup,tolinf); break;
+                case 7: stability[i*Ny+j] = is_stable_eulerimplicit_bruteforce(z,tolsup,tolinf,tid); break;
+                case 8: stability[i*Ny+j] = is_stable_trapez(z,tolsup,tolinf,tid); break;
+                case 9: stability[i*Ny+j] = is_stable_bdf2(z,tolsup,tolinf,tid); break;
+                case 10: stability[i*Ny+j] = is_stable_bdf3(z,tolsup,tolinf,tid); break;
+                case 11: stability[i*Ny+j] = is_stable_bdf4(z,tolsup,tolinf,tid); break;
+                case 12: stability[i*Ny+j] = is_stable_bdf5(z,tolsup,tolinf,tid); break;
+                case 13: stability[i*Ny+j] = is_stable_bdf6(z,tolsup,tolinf,tid); break;
                 default: stability[i*Ny+j] = 0;
             }
         }
     }
+    char csvfile[128], ppmfile[128];
+    make_filename(csvfile, sizeof(csvfile), filename, ".csv");
+    make_filename(ppmfile, sizeof(ppmfile), filename, ".ppm");
 
-    save_ppm(filename, Nx, Ny, stability,
+    save_ppm(ppmfile, Nx, Ny, stability,
+             x_min, x_min + (Nx-1)*h,
+             y_min, y_min + (Ny-1)*h);
+
+    save_csv(csvfile, Nx, Ny, stability,
              x_min, x_min + (Nx-1)*h,
              y_min, y_min + (Ny-1)*h);
 
@@ -210,20 +371,28 @@ void plot(const char *filename, int Nx, int Ny,
 // Main 
 // =======================================================
 int main() {
-    double h = 0.005;
+    double h = 0.01;
     double x_min = -5.0, x_max = 5.0;
     double y_min = -5.0, y_max = 5.0;
     int Nx = (int)((x_max - x_min)/h) + 1;
     int Ny = (int)((y_max - y_min)/h) + 1;
     long int ini = clock();
-    //plot("stability_euler.ppm", Nx, Ny, x_min, y_min, h, 0);
-    //plot("stability_euler_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 1);
-    //plot("stability_rk2.ppm", Nx, Ny, x_min, y_min, h, 2);
-    //plot("stability_rk3.ppm", Nx, Ny, x_min, y_min, h, 3);
-    //plot("stability_rk4.ppm", Nx, Ny, x_min, y_min, h, 4);
-    plot("stability_rk4_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 5 );
-    //plot("stability_rk3_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 6 );
+    //plot("stability_euler", Nx, Ny, x_min, y_min, h, 0);
+    //plot("stability_euler_bruteforce",Nx, Ny, x_min, y_min, h, 1);
+    //plot("stability_rk2", Nx, Ny, x_min, y_min, h, 2);
+    //plot("stability_rk3", Nx, Ny, x_min, y_min, h, 3);
+    //plot("stability_rk4", Nx, Ny, x_min, y_min, h, 4);
+    //plot("stability_rk4_bruteforce",Nx, Ny, x_min, y_min, h, 5 );
+    //plot("stability_rk3_bruteforce",Nx, Ny, x_min, y_min, h, 6 );
+    //plot("stability_eulerimplicit_bruteforce",Nx, Ny, x_min, y_min, h, 7 );
+    //plot("stability_trapezoid",Nx, Ny, x_min, y_min, h, 8 );
+    //plot("stability_bdf2",Nx, Ny, x_min, y_min, h, 9 );
+    //plot("stability_bdf3",Nx, Ny, x_min, y_min, h, 10 );
+    plot("stability_bdf4",Nx, Ny, x_min, y_min, h, 11 );
+    //plot("stability_bdf5",Nx, Ny, x_min, y_min, h, 12 );
+    //plot("stability_bdf6",Nx, Ny, x_min, y_min, h, 13 );
     long int end = clock();
+
 
     printf("%ld", end-ini);
     return 0;
