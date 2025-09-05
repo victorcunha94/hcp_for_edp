@@ -119,10 +119,10 @@ void save_ppm(const char *filename, int Nx, int Ny, int *stability,
 
             if (on_x_axis || on_y_axis) {
                 fprintf(f, "0 0 255 ");   // axes = blue
-            } /*else if (on_vertical || on_horizontal) {
+            } else if (on_vertical || on_horizontal) {
                 fprintf(f, "255 0 0 ");  // grid = red
 
-            }*/ else {
+            } else {
                 switch (val)
                 {
                 case 0:
@@ -184,7 +184,7 @@ void plot(const char *filename, int Nx, int Ny,
         for (int i = 0; i < Nx; i++) {
             int tid = omp_get_thread_num();
             double x = x_min + i * h;
-            double complex z = x + I*y;
+            double complex z = x + y*I;
 
             switch (method) {
                 case 0: stability[i*Ny+j] = is_stable(euler_amp(z)); break;
@@ -216,13 +216,13 @@ int main() {
     int Nx = (int)((x_max - x_min)/h) + 1;
     int Ny = (int)((y_max - y_min)/h) + 1;
     long int ini = clock();
-    //plot("stability_euler.ppm", Nx, Ny, x_min, y_min, h, 0);
-    //plot("stability_euler_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 1);
-    //plot("stability_rk2.ppm", Nx, Ny, x_min, y_min, h, 2);
-    //plot("stability_rk3.ppm", Nx, Ny, x_min, y_min, h, 3);
-    //plot("stability_rk4.ppm", Nx, Ny, x_min, y_min, h, 4);
+    plot("stability_euler.ppm", Nx, Ny, x_min, y_min, h, 0);
+    plot("stability_euler_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 1);
+    plot("stability_rk2.ppm", Nx, Ny, x_min, y_min, h, 2);
+    plot("stability_rk3.ppm", Nx, Ny, x_min, y_min, h, 3);
+    plot("stability_rk4.ppm", Nx, Ny, x_min, y_min, h, 4);
     plot("stability_rk4_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 5 );
-    //plot("stability_rk3_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 6 );
+    plot("stability_rk3_bruteforce.ppm",Nx, Ny, x_min, y_min, h, 6 );
     long int end = clock();
 
     printf("%ld", end-ini);

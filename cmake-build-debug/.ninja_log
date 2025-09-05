@@ -1,0 +1,6 @@
+# ninja log v6
+1	26	1757007782011738748	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main.c.o	828598d7034df049
+1	37	1757008520941936497	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o	215209e0ceaa8fa6
+1	21	1757007782011738748	CMakeFiles/hcp_for_edp.dir/assignment01/C/testetrabalho1.c.o	faf63de34351f5cb
+0	100	1757088968628503265	build.ninja	31f9154950bddaa
+37	56	1757008520977937040	hcp_for_edp	441e43cd2202eec1
