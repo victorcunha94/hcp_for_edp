@@ -112,7 +112,7 @@ def TR_BDF2 (Un,z):
   Un1 = prod(div(num,den),4*Ustar - Un)
   return Un1
 
-incle = 200
+incle = 100
 xl = -10
 xr = 30
 yb = -20
@@ -150,6 +150,29 @@ if tipo =='BDF2':
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
 elif tipo == 'BDF3':
+    for h in range(incle):
+      print(f"h = {h}")
+      for k in range(incle):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = euler_implict(Un, z)
+        Un2    = BDF2(Un1, Un, z)
+        for n in range(T):
+          Un3 = BDF3(Un2, Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+          Un3 = Un2
+        # print(Un)
+          if linalg.norm(Un2, 2) < tol :
+            plt.plot(real_z, img_z, 'bo', markersize=2)
+            break
+          elif linalg.norm(Un2, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
+
+elif tipo == 'BDF4':
     for h in range(incle):
       print(f"h = {h}")
       for k in range(incle):
