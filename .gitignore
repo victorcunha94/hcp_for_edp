@@ -7,6 +7,7 @@
 output/
 build/
 
+
 # Arquivos do LaTeX
 *.aux
 *.log
@@ -26,3 +27,5 @@ build/
 Thumbs.db
 # Pasta para testes e experimentos
 clone_/
+# Pasta 
+pyomp/
