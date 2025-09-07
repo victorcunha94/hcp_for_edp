@@ -55,6 +55,18 @@ build CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o: C_COMPILER__hc
   OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
   OBJECT_FILE_DIR = CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo
 
+build CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.o: C_COMPILER__hcp_for_edp_unscanned_Debug /home/bruno/CLionProjects/hcp_for_edp/assignment02/C-gbispo/metodos_numericos.c || cmake_object_order_depends_target_hcp_for_edp
+  DEP_FILE = CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.o.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always -fopenmp
+  OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
+  OBJECT_FILE_DIR = CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo
+
+build CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o: C_COMPILER__hcp_for_edp_unscanned_Debug /home/bruno/CLionProjects/hcp_for_edp/assignment02/C-gbispo/plotagem.c || cmake_object_order_depends_target_hcp_for_edp
+  DEP_FILE = CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always -fopenmp
+  OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
+  OBJECT_FILE_DIR = CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target hcp_for_edp
@@ -63,7 +75,7 @@ build CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o: C_COMPILER__hc
 #############################################
 # Link the executable hcp_for_edp
 
-build hcp_for_edp: C_EXECUTABLE_LINKER__hcp_for_edp_Debug CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o | /usr/lib/gcc/x86_64-linux-gnu/11/libgomp.so /usr/lib/x86_64-linux-gnu/libpthread.a
+build hcp_for_edp: C_EXECUTABLE_LINKER__hcp_for_edp_Debug CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.o CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o | /usr/lib/gcc/x86_64-linux-gnu/11/libgomp.so /usr/lib/x86_64-linux-gnu/libpthread.a
   FLAGS = -g
   LINK_LIBRARIES = -lm  /usr/lib/gcc/x86_64-linux-gnu/11/libgomp.so  /usr/lib/x86_64-linux-gnu/libpthread.a
   OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
