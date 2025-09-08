@@ -22,5 +22,5 @@ void save_csv(const char *filename, int Nx, int Ny, int *stability,
 // =======================================================
 void plot(const char *filename, int Nx, int Ny,
                       double x_min, double y_min, double h,
-                      int method);
+                      int method,int num_threads);
 #endif //PLOTAGEM_H
