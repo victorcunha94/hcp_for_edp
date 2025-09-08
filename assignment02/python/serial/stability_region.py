@@ -120,13 +120,13 @@ plt.xlabel('Eixo X')
 plt.ylabel('Eixo Y')
 plt.title('Plano Cartesiano')
 
-incle = 200
+incle = 600
 
 for h in range(incle):
   print(f"h = {h}")
   for k in range(incle):
-    real_z = -11 + (h*(40/incle))
-    img_z  = -21 + (k*(40/incle))
+    real_z = -11 + (h*(10/incle))
+    img_z  = -25 + (k*(10/incle))
     z      = np.array([real_z, img_z])
     Un     = np.array([1, 0])
     Un1    = euler_implict(Un, z)
