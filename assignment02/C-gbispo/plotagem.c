@@ -114,14 +114,14 @@ void save_csv(const char *filename, int Nx, int Ny, int *stability,
 
 void plot(const char *filename, int Nx, int Ny,
                       double x_min, double y_min, double h,
-                      int method) {
+                      int method, int n_threads) {
     int *stability = malloc(Nx * Ny * sizeof(int));
     if (!stability) { perror("malloc failed"); exit(1); }
 
     double tolsup = 1e6;
     double tolinf = 1e-6;
 
-    #pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic) num_threads(n_threads)
     for (int j = 0; j < Ny; j++) {
         double y = y_min + j * h;
         for (int i = 0; i < Nx; i++) {
