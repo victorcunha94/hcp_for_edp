@@ -12,7 +12,7 @@ T = 1000
 
 #tipo= 'RK3'
 
-tipo= "PC-AB4-AM4"
+tipo = "AM4"
 
 
 def TR_BDF2 (Un,z):
@@ -25,11 +25,11 @@ def TR_BDF2 (Un,z):
   return Un1
 
 
-incle = 200
-xl = -5
-xr = 5
-yb = -5
-yt = 5
+incle = 100
+xl = -2
+xr = 2
+yb = -2
+yt = 2
 
 # incle = 100
 # xl = -10
@@ -46,9 +46,9 @@ plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
 plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
 ax.set_xlim(xl - 1, xr + 1)
 ax.set_ylim(yb - 1, yt + 1)
-plt.xlabel('Eixo X')
-plt.ylabel('Eixo Y')
-plt.title('Plano Cartesiano')
+plt.xlabel('Re(z)')
+plt.ylabel('Im(z)')
+plt.title(f'{tipo}')
 
 
 if tipo =='BDF2':
@@ -240,10 +240,39 @@ if tipo =='AB4':
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
 
+
+if tipo =='AM4':
+    for h in range(incle + 1):
+      print(f"h = {h}")
+      for k in range(incle + 1):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = euler_implict(Un, z)
+        Un2    = AM2(Un1, Un, z)
+        Un3    = AM3(Un2, Un1, Un, z)
+
+        for n in range(T):
+          Un4 = AM4(Un3, Un2, Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+          Un2 = Un3
+          Un3 = Un4
+
+
+        # print(Un)
+          if linalg.norm(Un4, 2) < tol :
+            plt.plot(real_z, img_z, 'bo', markersize=0.5)
+            break
+          elif linalg.norm(Un4, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
+
 if tipo == 'PC-AB2-AM2':  # Preditor-Corretor AB2-AM2
-    for h in range(incle):
+    for h in range(incle + 1):
         print(f"h = {h}")
-        for k in range(incle):
+        for k in range(incle + 1):
             real_z = xl + (h * (np.abs(xr - xl) / incle))
             img_z = yb + (k * (np.abs(yb - yt) / incle))
             z = np.array([real_z, img_z])
