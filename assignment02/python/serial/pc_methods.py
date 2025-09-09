@@ -27,6 +27,8 @@ def preditor_corrector_AB_AM(Un1, Un, z, preditor_order=2, corretor_order=2, n_c
     history = [Un.copy(), Un1.copy()]
 
     # PREDITOR: Adams-Bashforth
+    if preditor_order == 1:
+        Un_pred = AB1(history[-1], z)
     if preditor_order == 2:
         Un_pred = AB2(history[-1], history[-2], z)
     elif preditor_order == 3:
