@@ -25,11 +25,11 @@ def TR_BDF2 (Un,z):
   return Un1
 
 
-incle = 100
-xl = -2
-xr = 2
-yb = -2
-yt = 2
+incle = 200
+xl = -8
+xr = 3
+yb = -5
+yt = 5
 
 # incle = 100
 # xl = -10
@@ -241,6 +241,58 @@ if tipo =='AB4':
             break
 
 
+if tipo =='AM2':
+    for h in range(incle + 1):
+      print(f"h = {h}")
+      for k in range(incle + 1):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = AM1(Un, z)
+
+
+
+        for n in range(T):
+          Un2    = AM2_correct(Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+
+        # print(Un)
+          if linalg.norm(Un2, 2) < tol :
+            plt.plot(real_z, img_z, 'ro', markersize=0.5)
+            break
+          elif linalg.norm(Un2, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
+
+if tipo =='AM3':
+    for h in range(incle + 1):
+      print(f"h = {h}")
+      for k in range(incle + 1):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+        Un1    = AM1(Un, z)
+        Un2    = AM2(Un1, Un, z)
+
+
+
+        for n in range(T):
+          Un3    = AM3(Un2, Un1, Un, z)
+          Un  = Un1
+          Un1 = Un2
+          Un2 = Un3
+
+        # print(Un)
+          if linalg.norm(Un2, 2) < tol :
+            plt.plot(real_z, img_z, 'ro', markersize=0.5)
+            break
+          elif linalg.norm(Un2, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
+
 if tipo =='AM4':
     for h in range(incle + 1):
       print(f"h = {h}")
@@ -249,7 +301,7 @@ if tipo =='AM4':
         img_z  = yb + (k*(np.abs(yb - yt)/incle))
         z      = np.array([real_z, img_z])
         Un     = np.array([1, 0])
-        Un1    = euler_implict(Un, z)
+        Un1    = AM1(Un, z)
         Un2    = AM2(Un1, Un, z)
         Un3    = AM3(Un2, Un1, Un, z)
 
@@ -268,6 +320,30 @@ if tipo =='AM4':
           elif linalg.norm(Un4, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
+
+
+if tipo == 'PC-AB1-AM1':  # Preditor-Corretor AB1-AM1
+    for h in range(incle + 1):
+        print(f"h = {h}")
+        for k in range(incle + 1):
+            real_z = xl + (h * (np.abs(xr - xl) / incle))
+            img_z = yb + (k * (np.abs(yb - yt) / incle))
+            z = np.array([real_z, img_z])
+            Un = np.array([1, 0])
+            Un1 = euler_implict(Un, z)
+
+
+            for n in range(T):
+                Un2 = preditor_corrector_AB_AM(Un1, Un, z, preditor_order=2, corretor_order=1, n_correcoes=1)
+                Un = Un1
+
+
+                if linalg.norm(Un1, 2) < tol:
+                    plt.plot(real_z, img_z, 'bo', markersize=2)
+                    break
+                elif linalg.norm(Un1, 2) > 1 / tol:
+                    break
+
 
 if tipo == 'PC-AB2-AM2':  # Preditor-Corretor AB2-AM2
     for h in range(incle + 1):
