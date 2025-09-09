@@ -268,3 +268,48 @@ def AM4(Un3, Un2, Un1, Un, z):
     Un4 = [Un4[0] + prod(coef_Un, Un)[0], Un4[1] + prod(coef_Un, Un)[1]]
 
     return Un4
+
+
+def AM5(Un4, Un3, Un2, Un1, Un, z):
+    """
+    Adams-Moulton 5-step - Versão compacta
+    """
+    h = 1.0
+
+    # Denominador: [1 - (475*h*z)/1440]
+    den = [1, 0]
+    term_den = prod([-475 * h / 1440, 0], z)
+    den = [den[0] + term_den[0], den[1] + term_den[1]]
+
+    # Numerador para U^{n+4}: [1 + (1427*h*z)/1440]
+    num_Un4 = [1, 0]
+    term_num4 = prod([1427 * h / 1440, 0], z)
+    num_Un4 = [num_Un4[0] + term_num4[0], num_Un4[1] + term_num4[1]]
+
+    # Numerador para U^{n+3}: [(-798*h*z)/1440]
+    num_Un3 = prod([-798 * h / 1440, 0], z)
+
+    # Numerador para U^{n+2}: [(482*h*z)/1440]
+    num_Un2 = prod([482 * h / 1440, 0], z)
+
+    # Numerador para U^{n+1}: [(-173*h*z)/1440]
+    num_Un1 = prod([-173 * h / 1440, 0], z)
+
+    # Numerador para U^n: [(19*h*z)/1440]
+    num_Un = prod([19 * h / 1440, 0], z)
+
+    # Calcular coeficientes finais
+    coef_Un4 = div(num_Un4, den)
+    coef_Un3 = div(num_Un3, den)
+    coef_Un2 = div(num_Un2, den)
+    coef_Un1 = div(num_Un1, den)
+    coef_Un = div(num_Un, den)
+
+    # Calcular U^{n+5}
+    Un5 = prod(coef_Un4, Un4)
+    Un5 = [Un5[0] + prod(coef_Un3, Un3)[0], Un5[1] + prod(coef_Un3, Un3)[1]]
+    Un5 = [Un5[0] + prod(coef_Un2, Un2)[0], Un5[1] + prod(coef_Un2, Un2)[1]]
+    Un5 = [Un5[0] + prod(coef_Un1, Un1)[0], Un5[1] + prod(coef_Un1, Un1)[1]]
+    Un5 = [Un5[0] + prod(coef_Un, Un)[0], Un5[1] + prod(coef_Un, Un)[1]]
+
+    return Un5
