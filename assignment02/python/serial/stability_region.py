@@ -435,7 +435,7 @@ if tipo == 'PC-AB4-AM4':  # Preditor-Corretor AB4-AM4
             Un3_initial = euler_implict(Un2, z)
 
             for n in range(T):
-                Un4 = preditor_corrector_AB_AM(Un3_initial, Un2, z, preditor_order=4, corretor_order=4, n_correcoes=1)
+                Un4 = preditor_corrector_AB_AM(Un3_initial, Un2, z, preditor_order=4, corretor_order=4, n_correcoes=2)
                 Un = Un1
                 Un1 = Un2
                 Un2 = Un3_initial
