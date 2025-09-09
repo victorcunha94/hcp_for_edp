@@ -19,6 +19,12 @@ def trapezio(Un, z):
   Un1 = prod(div(num,den),Un)
   return Un1
 
+
+def AB1(Un, z):
+  Un1 = Un + prod(z,Un)
+  return Un1
+
+
 def AB2(Un1, Un, z):
   den = [2, 0]
   num1 = [2, 0] + 3*z
@@ -131,34 +137,44 @@ def AM1(Un, z):
     return Un1
 
 
-def AM2(Un1, Un, z):
+def AM2_correct(Un1, Un, z):
     """
-    Adams-Moulton 2-step
-    U^{n+2} = U^{n+1} + k/12 (-f(U^n) + 8f(U^{n+1}) + 5f(U^{n+2}))
-    Para f(U) = z*U
+    Adams-Moulton 2-step CORRETO
+    U^{n+2} = U^{n+1} + h/12 [-z*U^n + 8z*U^{n+1} + 5z*U^{n+2}]
     """
     h = 1.0
 
-    # Rearranjando: U^{n+2} - (5h*z/12)U^{n+2} = U^{n+1} + (h*z/12)(-U^n + 8U^{n+1})
+    # Coeficiente do lado esquerdo: [1 - (5h*z)/12]
+    den = [1, 0]
+    term_den = prod([-5 * h / 12, 0], z)
+    den = [den[0] + term_den[0], den[1] + term_den[1]]
 
-    coef_left = [1, 0]  # 1
-    term_left = prod([-5 * h / 12, 0], z)  # -5h*z/12
-    coef_left = [coef_left[0] + term_left[0], coef_left[1] + term_left[1]]
+    # Termos do lado direito
+    # Coeficiente de U^{n+1}: [1 + (8h*z)/12]
+    num1 = [1, 0]
+    term_num1 = prod([8 * h / 12, 0], z)
+    num1 = [num1[0] + term_num1[0], num1[1] + term_num1[1]]
 
-    coef_right1 = [1, 0]  # coeficiente de U^{n+1}
-    term_right1 = prod([8 * h / 12, 0], z)  # 8h*z/12
-    coef_right1 = [coef_right1[0] + term_right1[0], coef_right1[1] + term_right1[1]]
+    # Coeficiente de U^n: [(-h*z)/12]
+    num2 = prod([-h / 12, 0], z)
 
-    coef_right2 = prod([-h / 12, 0], z)  # coeficiente de U^n: -h*z/12
+    # Calcular U^{n+2}
+    term_part1 = div(num1, den)
+    term_part2 = div(num2, den)
 
-    # U^{n+2} = [coef_right1/coef_left]U^{n+1} + [coef_right2/coef_left]U^n
-    term1 = div(coef_right1, coef_left)
-    term2 = div(coef_right2, coef_left)
-
-    Un2 = prod(term1, Un1)
-    Un2 = [Un2[0] + prod(term2, Un)[0], Un2[1] + prod(term2, Un)[1]]
+    Un2 = prod(term_part1, Un1)
+    Un2 = [Un2[0] + prod(term_part2, Un)[0], Un2[1] + prod(term_part2, Un)[1]]
 
     return Un2
+
+def AM2(Un1, Un, z):
+    den = [1, 0] - div(prod([5,0], z), [12, 0])
+    num1 = [1, 0] + div(prod([8,0], z), [12, 0])
+    num2 = div(z, [12, 0])
+
+    Un2 = prod(div(num1, den), Un1) - prod(div(num2, den), Un)
+    return Un2
+
 
 
 def AM3(Un2, Un1, Un, z):
@@ -196,35 +212,59 @@ def AM3(Un2, Un1, Un, z):
 
 def AM4(Un3, Un2, Un1, Un, z):
     """
-    Adams-Moulton 4-step
+    Adams-Moulton 4-step - Implementação CORRETA
     U^{n+4} = U^{n+3} + k/720 (-19f(U^n) + 106f(U^{n+1}) - 264f(U^{n+2}) + 646f(U^{n+3}) + 251f(U^{n+4}))
     Para f(U) = z*U
     """
     h = 1.0
 
-    # Rearranjando: U^{n+4} - (251h*z/720)U^{n+4} = U^{n+3} + (h*z/720)(-19U^n + 106U^{n+1} - 264U^{n+2} + 646U^{n+3})
+    # A equação original:
+    # U^{n+4} = U^{n+3} + (h/720)[-19*z*U^n + 106*z*U^{n+1} - 264*z*U^{n+2} + 646*z*U^{n+3} + 251*z*U^{n+4}]
 
+    # Rearranjando todos os termos com U^{n+4} do lado esquerdo:
+    # U^{n+4} - (251*h*z/720)U^{n+4} = U^{n+3} + (h*z/720)[-19U^n + 106U^{n+1} - 264U^{n+2} + 646U^{n+3}]
+
+    # Coeficiente do lado esquerdo: [1 - (251*h*z)/720]
     coef_left = [1, 0]  # 1
-    term_left = prod([-251 * h / 720, 0], z)  # -251h*z/720
+    term_left = prod([-251 * h / 720, 0], z)  # -251*h*z/720
     coef_left = [coef_left[0] + term_left[0], coef_left[1] + term_left[1]]
 
-    coef_right1 = [1, 0]  # coeficiente de U^{n+3}
-    term_right1 = prod([646 * h / 720, 0], z)  # 646h*z/720
-    coef_right1 = [coef_right1[0] + term_right1[0], coef_right1[1] + term_right1[1]]
+    # Termos do lado direito:
+    # Termo 1: U^{n+3}
+    term1 = [1, 0]  # coeficiente 1 para U^{n+3}
 
-    coef_right2 = prod([-264 * h / 720, 0], z)  # coeficiente de U^{n+2}: -264h*z/720
-    coef_right3 = prod([106 * h / 720, 0], z)  # coeficiente de U^{n+1}: 106h*z/720
-    coef_right4 = prod([-19 * h / 720, 0], z)  # coeficiente de U^n: -19h*z/720
+    # Termo 2: (646*h*z/720)U^{n+3}
+    term2 = prod([646 * h / 720, 0], z)  # 646*h*z/720
 
-    # U^{n+4} = [coef_right1/coef_left]U^{n+3} + [coef_right2/coef_left]U^{n+2} + [coef_right3/coef_left]U^{n+1} + [coef_right4/coef_left]U^n
-    term1 = div(coef_right1, coef_left)
-    term2 = div(coef_right2, coef_left)
-    term3 = div(coef_right3, coef_left)
-    term4 = div(coef_right4, coef_left)
+    # Termo 3: (-264*h*z/720)U^{n+2}
+    term3 = prod([-264 * h / 720, 0], z)  # -264*h*z/720
 
-    Un4 = prod(term1, Un3)
-    Un4 = [Un4[0] + prod(term2, Un2)[0], Un4[1] + prod(term2, Un2)[1]]
-    Un4 = [Un4[0] + prod(term3, Un1)[0], Un4[1] + prod(term3, Un1)[1]]
-    Un4 = [Un4[0] + prod(term4, Un)[0], Un4[1] + prod(term4, Un)[1]]
+    # Termo 4: (106*h*z/720)U^{n+1}
+    term4 = prod([106 * h / 720, 0], z)  # 106*h*z/720
+
+    # Termo 5: (-19*h*z/720)U^n
+    term5 = prod([-19 * h / 720, 0], z)  # -19*h*z/720
+
+    # Agora, cada U é multiplicado pelo seu coeficiente e dividido por coef_left
+    # U^{n+4} = [term1 + term2]/coef_left * U^{n+3} + [term3]/coef_left * U^{n+2} + [term4]/coef_left * U^{n+1} + [term5]/coef_left * U^n
+
+    # Coeficiente para U^{n+3}
+    coef_Un3 = [term1[0] + term2[0], term1[1] + term2[1]]
+    coef_Un3 = div(coef_Un3, coef_left)
+
+    # Coeficiente para U^{n+2}
+    coef_Un2 = div(term3, coef_left)
+
+    # Coeficiente para U^{n+1}
+    coef_Un1 = div(term4, coef_left)
+
+    # Coeficiente para U^n
+    coef_Un = div(term5, coef_left)
+
+    # Calcular U^{n+4}
+    Un4 = prod(coef_Un3, Un3)
+    Un4 = [Un4[0] + prod(coef_Un2, Un2)[0], Un4[1] + prod(coef_Un2, Un2)[1]]
+    Un4 = [Un4[0] + prod(coef_Un1, Un1)[0], Un4[1] + prod(coef_Un1, Un1)[1]]
+    Un4 = [Un4[0] + prod(coef_Un, Un)[0], Un4[1] + prod(coef_Un, Un)[1]]
 
     return Un4
