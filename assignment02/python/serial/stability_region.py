@@ -76,7 +76,6 @@ if tipo =='BDF2':
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
 
-
 elif tipo == 'BDF3':
     for h in range(incle):
       print(f"h = {h}")
@@ -123,6 +122,7 @@ elif tipo == 'BDF4':
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
 
+
 if tipo =='RK4':
     for h in range(incle):
       print(f"h = {h}")
@@ -143,7 +143,6 @@ if tipo =='RK4':
           elif linalg.norm(Un1, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
-
 
 if tipo =='RK3':
     for h in range(incle):
@@ -189,7 +188,6 @@ if tipo =='AB2':
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
 
-
 if tipo =='AB3':
     for h in range(incle):
       print(f"h = {h}")
@@ -214,7 +212,6 @@ if tipo =='AB3':
           elif linalg.norm(Un2, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
-
 
 if tipo =='AB4':
     for h in range(incle):
@@ -243,7 +240,6 @@ if tipo =='AB4':
           elif linalg.norm(Un4, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
-
 
 if tipo =='AM2':
     for h in range(incle + 1):
@@ -417,7 +413,7 @@ if tipo == 'PC-AB3-AM3':  # Preditor-Corretor AB3-AM3
             for n in range(T):
                 #Un3 = preditor_corrector_AB_AM(Un2_initial, Un1, z, preditor_order=3, corretor_order=3, n_correcoes=1)
                 Un3 = preditor_corrector_AB_AM(Un, Un1, Un2=Un2_initial, Un3=None, z = z,
-                              preditor_order=2, corretor_order=2, n_correcoes=1)
+                              preditor_order=3, corretor_order=3, n_correcoes=1)
                 Un = Un1
                 Un1 = Un2_initial
                 Un2_initial = Un3
@@ -444,7 +440,7 @@ if tipo == 'PC-AB4-AM4':  # Preditor-Corretor AB4-AM4
             for n in range(T):
                 #Un4 = preditor_corrector_AB_AM(Un3_initial, Un2, z, preditor_order=4, corretor_order=4, n_correcoes=2)
                 Un4 = preditor_corrector_AB_AM(Un, Un1, Un2, Un3=Un3_initial, z=z,
-                                               preditor_order=2, corretor_order=2, n_correcoes=1)
+                                               preditor_order=4, corretor_order=4, n_correcoes=1)
                 Un = Un1
                 Un1 = Un2
                 Un2 = Un3_initial

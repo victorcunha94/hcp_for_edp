@@ -25,14 +25,14 @@ def AB1(Un, z):
   return Un1
 
 
-def AB2(Un1, Un, z):
-  den = [2, 0]
-  num1 = [2, 0] + 3*z
-  parcela1 = div(num1, den)
-  parcela2 = div(z, den)
-  Un2 = prod(parcela1, Un1) - prod(parcela2, Un)
-
-  return Un2
+# def AB2(Un1, Un, z):
+#   den = [2, 0]
+#   num1 = [2, 0] + 3*z
+#   parcela1 = div(num1, den)
+#   parcela2 = div(z, den)
+#   Un2 = prod(parcela1, Un1) - prod(parcela2, Un)
+#
+#   return Un2
 
 def AB2(Un1, Un, z):
     den = [2, 0]
