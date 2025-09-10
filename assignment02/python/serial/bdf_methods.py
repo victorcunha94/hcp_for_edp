@@ -48,3 +48,57 @@ def BDF6(Un5, Un4, Un3, Un2, Un1, Un, z):
 	+ prod(div(num3, den), Un3) - prod(div(num4, den), Un2)\
 	+ prod(div(num5, den), Un1) - prod(div(num6, den), Un)
   return Un6
+
+
+
+############################## MÉTODOS TR_BDF'S#########################
+def TR_BDF2(Un, z):
+    h = 1.0
+    # First stage (TR)
+    den_tr = [1, 0] - div(prod([h, 0], z), [4, 0])  # 1 - h*z/4
+    num_tr = [1, 0] + div(prod([h, 0], z), [4, 0])  # 1 + h*z/4
+    Y2 = prod(div(num_tr, den_tr), Un)  # Y₂ = Uⁿ * (1 + h*z/4)/(1 - h*z/4)
+
+    # Second stage (BDF2)
+    den_bdf = [3, 0] - prod([h, 0], z)  # 3 - h*z
+    num_bdf = [4 * Y2[0] - Un[0], 4 * Y2[1] - Un[1]]  # 4Y₂ - Uⁿ
+    Un1 = div(num_bdf, den_bdf)  # Uⁿ⁺¹ = (4Y₂ - Uⁿ)/(3 - h*z)
+    return Un1
+
+
+def TR_BDF2_explicit(Un, z):
+    """
+    TR-BDF2 with explicit coefficient calculation
+    """
+    h = 1.0
+
+    # Calculate coefficients explicitly
+    # Denominator: (3 - h*z) * (1 - h*z/4)
+    hz = prod([h, 0], z)  # h*z
+
+    term1 = div(hz, [4, 0])  # h*z/4
+    den_part1 = [1, 0]  # 1
+    den_part1 = [den_part1[0] - term1[0], den_part1[1] - term1[1]]  # 1 - h*z/4
+
+    den_part2 = [3, 0]  # 3
+    den_part2 = [den_part2[0] - hz[0], den_part2[1] - hz[1]]  # 3 - h*z
+
+    den = prod(den_part1, den_part2)  # (1 - h*z/4)*(3 - h*z)
+
+    # Numerator: (4 + h*z)
+    num = [4, 0]  # 4
+    num = [num[0] + hz[0], num[1] + hz[1]]  # 4 + h*z
+
+    Un1 = prod(div(num, den), Un)
+    return Un1
+
+
+def TR_BDF2_v1 (Un,z):
+  num   = [1,0] + z/4
+  den   = [1,0] - z/4
+  Ustar = prod(div(num,den),Un)
+  num = [1,0]
+  den = [3,0]-z
+  Un1 = prod(div(num,den),4*Ustar - Un)
+  return Un1
+

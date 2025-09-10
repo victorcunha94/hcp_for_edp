@@ -35,13 +35,15 @@ def AB2(Un1, Un, z):
   return Un2
 
 def AB2(Un1, Un, z):
-  den = [2, 0]
-  num1 = [2, 0] + 3*z
-  parcela1 = div(num1, den)
-  parcela2 = div(z, den)
-  Un2 = prod(parcela1, Un1) - prod(parcela2, Un)
+    den = [2, 0]
+    p = prod([3,0], z)
+    num1 = [2 + p[0], 0 + p[1]]
+    parcela1 = div(num1, den)
+    parcela2 = div(z, den)
+    Un2 = prod(parcela1, Un1)
+    Un2 = [Un2[0] - prod(parcela2, Un)[0], Un2[1] - prod(parcela2, Un)[1]]
+    return Un2
 
-  return Un2
 
 
 def AB3(Un2, Un1, Un, z):
