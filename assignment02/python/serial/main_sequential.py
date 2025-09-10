@@ -11,16 +11,16 @@ from joblib import Parallel, delayed
 
 ####################### PARÂMETROS ###############
 tol = 1e-08
-T = 1000
+T = 3000
 
-incle = 10
+incle = 10000
 xl = -2
 xr = 2
 yb = -2
 yt = 2
 
 ##################### TIPO ##########################
-tipo = "BDF2"  # Altere para o método desejado
+tipo = "BDF4"  # Altere para o método desejado
 #####################################################
 
 # Lista para armazenar os dados
@@ -57,6 +57,25 @@ def process_point(real_z, img_z, z, tipo):
             Un2 = BDF2(Un1, Un, z)
             Un = Un1
             Un1 = Un2
+            if linalg.norm(Un2, 2) < tol:
+                return 1
+            elif linalg.norm(Un2, 2) > 1 / tol:
+                return 0
+        return 0.5
+
+    elif tipo == 'BDF4':
+        Un = np.array([1, 0])
+        Un1 = euler_implict(Un, z)
+        Un2 = BDF2(Un1, Un, z)
+        Un3 = BDF3(Un2, Un1, Un, z)
+
+        for n in range(T):
+            Un4 = BDF4(Un3, Un2, Un1, Un, z)
+            Un = Un1
+            Un1 = Un2
+            Un2 = Un3
+            Un3 = Un4
+
             if linalg.norm(Un2, 2) < tol:
                 return 1
             elif linalg.norm(Un2, 2) > 1 / tol:
