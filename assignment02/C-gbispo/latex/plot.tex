@@ -1,0 +1,49 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm, height=12cm,
+    xlabel={Re$(z)$},
+    ylabel={Im$(z)$},
+    axis equal image,
+    grid=both,
+    colormap/viridis,
+    legend style={at={(1.05,1)},anchor=north west},
+]
+
+% Unstable points (-1) in gray
+\addplot[
+    only marks,
+    mark=.,
+    color=gray,
+]
+table[
+    x=x,
+    y=y,
+    col sep=comma,
+    row predicate/.code={\ifnum\thisrow{stable}=-1\else\def\pgfplotstableuserowfalse{}\fi}
+]{stability.csv};
+\addlegendentry{Unstable}
+
+% Stable points (>=0) with colors by thread id
+\addplot[
+    only marks,
+    scatter,
+    scatter src=explicit,
+    mark=*,
+]
+table[
+    x=x,
+    y=y,
+    meta=stable,
+    col sep=comma,
+    row predicate/.code={\ifnum\thisrow{stable}=-1\def\pgfplotstableuserowfalse{}\fi}
+]{stability.csv};
+\addlegendentry{Stable (by thread id)}
+
+\end{axis}
+\end{tikzpicture}
+\end{document}

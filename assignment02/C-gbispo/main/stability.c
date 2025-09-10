@@ -206,7 +206,6 @@ static inline int is_stable_method_bruteforce(double complex z, int method, doub
         case 4: return is_stable_rk4_bruteforce(z,tolsup,tolinf,tid);
         case 7: return is_stable_ieuler_bruteforce(z,tolsup,tolinf,tid);
         case 8: return is_stable_trapez_bruteforce(z,tolsup,tolinf,tid);
-        case 9: return is_stable_radau_bruteforce(z,tolsup,tolinf,tid);
         case 16: return is_stable_bdf2_bruteforce(z,tolsup,tolinf,tid);
         case 17: return is_stable_trbdf2_bruteforce(z,tolsup,tolinf,tid);
         case 18: return is_stable_ab2_bruteforce(z,tolsup,tolinf,tid);
@@ -218,108 +217,116 @@ static inline int is_stable_method_bruteforce(double complex z, int method, doub
         default: return -1;
     };
 };
-
-static inline int is_stable_pece_bruteforce(double complex z, double tolsup, double tolinf,
-                                            int pred_method, int corr_method, int nCE, int tid) {
+static inline int is_stable_pece_bruteforce(double complex z,
+                                            double tolsup, double tolinf,
+                                            int pred_method, int corr_method,
+                                            int nCE, int tid) {
     double complex u_nm3 = 1.0, u_nm2 = 1.0, u_nm1 = 1.0, u_n = 1.0;
 
-    for (int step = 0; step < 3000; ++step) {
-        // Predictor
+    for (int step = 0; step < 10000; ++step) {
+        // -------------------------------
+        // Predictor step
+        // -------------------------------
         double complex u_pred;
         switch (pred_method) {
             case 0: // Euler
-                u_pred = (1.0 + z) * u_n;
+                u_pred = u_n + z*u_n;
                 break;
             case 2: { // RK2
-                double complex k1 = z * u_n;
-                double complex k2 = z * (u_n + 0.5 * k1);
+                double complex k1 = z*u_n;
+                double complex k2 = z*(u_n + 0.5*k1);
                 u_pred = u_n + k2;
                 break;
             }
             case 3: { // RK3
-                double complex k1 = z * u_n;
-                double complex k2 = z * (u_n + k1/3.0);
-                double complex k3 = z * (u_n + 2.0*k2/3.0);
+                double complex k1 = z*u_n;
+                double complex k2 = z*(u_n + k1/3.0);
+                double complex k3 = z*(u_n + 2.0*k2/3.0);
                 u_pred = u_n + (k1 + 3.0*k3)/4.0;
                 break;
             }
             case 4: { // RK4
-                double complex k1 = z * u_n;
-                double complex k2 = z * (u_n + 0.5*k1);
-                double complex k3 = z * (u_n + 0.5*k2);
-                double complex k4 = z * (u_n + k3);
+                double complex k1 = z*u_n;
+                double complex k2 = z*(u_n + 0.5*k1);
+                double complex k3 = z*(u_n + 0.5*k2);
+                double complex k4 = z*(u_n + k3);
                 u_pred = u_n + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
                 break;
             }
-            case 7: // implicit Euler 
-                u_pred = u_n / (1.0 - z);
-                break;
-            case 8: // trapezoid )
-                u_pred = ((1.0 + z/2.0)/(1.0 - z/2.0)) * u_n;
-                break;
             case 18: // AB2
-                u_pred = (1.0 + 1.5*z) * u_n - (0.5*z) * u_nm1;
+                u_pred = (1.0 + 1.5*z) * u_n - (0.5*z)*u_nm1;
                 break;
             case 20: // AB3
-                u_pred = u_n + z*( (23.0/12.0)*u_n - (16.0/12.0)*u_nm1 + (5.0/12.0)*u_nm2 );
+                u_pred = u_n + z*((23.0/12.0)*u_n - (16.0/12.0)*u_nm1 + (5.0/12.0)*u_nm2);
                 break;
             case 21: // AB4
-                u_pred = u_n + z*( (55.0/24.0)*u_n - (59.0/24.0)*u_nm1 + (37.0/24.0)*u_nm2 - (9.0/24.0)*u_nm3 );
+                u_pred = u_n + z*((55.0/24.0)*u_n - (59.0/24.0)*u_nm1
+                                   + (37.0/24.0)*u_nm2 - (9.0/24.0)*u_nm3);
                 break;
-            default:
-                u_pred = (1.0 + z) * u_n; 
+            default: // fallback Euler
+                u_pred = u_n + z*u_n;
                 break;
         }
 
+        // -------------------------------
+        // PECE loop
+        // -------------------------------
         double complex u_est = u_pred;
-
         for (int k = 0; k < nCE; ++k) {
-            switch (corr_method)
-            {
-            case 8:{
-                double complex a_k = u_est / u_n;
-                double complex a_new = 1.0 + z/2.0 * (1.0 + a_k);
-                u_est = a_new * u_n;
+            double complex f_est = z*u_est; // <-- EVALUATION step!
+
+            switch (corr_method) {
+                case 7: // implicit Euler (fixed-point style)
+                    // u_{n+1} = u_n + h f(t_{n+1}, u_{n+1})
+                    u_est = u_n + f_est;
+                    break;
+
+                case 8: // trapezoid (AM2)
+                    // u_{n+1} = u_n + (h/2)(f_n + f_{n+1})
+                    u_est = u_n + 0.5*(z*u_n + f_est);
+                    break;
+
+                case 16: // BDF2 (iterative form)
+                    // (3/2) u_{n+1} - 2 u_n + (1/2) u_{n-1} = h f_{n+1}
+                    // => u_{n+1}^{k+1} = (2 u_n - 0.5 u_{n-1} + h f^{(k)}_{n+1}) / 1.5
+                    u_est = (2.0*u_n - 0.5*u_nm1 + f_est) / 1.5;
+                    break;
+
+                case 19: // AM2 (same as trapezoid, but included separately)
+                    u_est = u_n + 0.5*(z*u_n + f_est);
+                    break;
+
+                case 22: // AM3
+                    // u_{n+1} = u_n + h(5/12 f_{n+1} + 2/3 f_n - 1/12 f_{n-1})
+                    u_est = u_n + (5.0/12.0)*f_est + (2.0/3.0)*(z*u_n) - (1.0/12.0)*(z*u_nm1);
+                    break;
+
+                case 23: // AM4
+                    // u_{n+1} = u_n + h(9/24 f_{n+1} + 19/24 f_n - 5/24 f_{n-1} + 1/24 f_{n-2})
+                    u_est = u_n + (9.0/24.0)*f_est + (19.0/24.0)*(z*u_n)
+                                 - (5.0/24.0)*(z*u_nm1) + (1.0/24.0)*(z*u_nm2);
+                    break;
+
+                default: // no correction
+                    u_est = u_pred;
+                    break;
             }
-                break;
-                case 7:{
-                u_est = u_n / (1.0 - z);
-                };
-                break;
-            
-            case 16: {
-                double complex numerator = 2.0*u_n - 0.5*u_nm1;
-                double complex denom = 1.5 - z;
-                u_est = numerator / denom;}
-                break;
-            case 19: {
-                u_est = ((1.0 + z/2.0) / (1.0 - z/2.0)) * u_n;
-                }    break;
-            case 22: {
-                double complex denom = 1.0 - (5.0/12.0)*z;
-                double complex numer = (1.0 + (2.0/3.0)*z) * u_n - (z/12.0) * u_nm1;
-                u_est = numer / denom;}
-                break;
-            case 23:{
-                double complex denom = 1.0 - (9.0/24.0) * z;
-                double complex numer = (1.0 + (19.0/24.0) * z) * u_n + z * ( (-5.0/24.0) * u_nm1 + (1.0/24.0) * u_nm2 );
-                u_est = numer / denom;}
-                break;
-            default: {
-                u_est = u_pred;}
-         break;
         }
 
+        // -------------------------------
+        // Shift history and update
+        // -------------------------------
         u_nm3 = u_nm2; u_nm2 = u_nm1; u_nm1 = u_n; u_n = u_est;
 
+        // Stability test
         double mag = cabs(u_n);
         if (mag > tolsup) return -1;
         if (mag < tolinf) return tid;
     }
 
     return -1;
-};
-                                            }
+}
+
 // -----------------------------
 // IO: save ppm, png, csv
 // -----------------------------

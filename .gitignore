@@ -29,3 +29,5 @@ Thumbs.db
 clone_/
 # Pasta 
 pyomp/
+
+*.csv
