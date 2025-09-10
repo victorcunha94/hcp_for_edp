@@ -2,9 +2,8 @@ import numpy as np
 from numpy import linalg
 import matplotlib.pyplot as plt
 
-
 tol = 1e-08
-T = 1000
+T = 3000
 
 def prod(a, b):
   c = np.array([a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]])
@@ -24,13 +23,10 @@ def div(a, b):
         (a[1] * b[0] - a[0] * b[1]) / den
     ])
 
-
 # a = np.array([1,0])
 # b = np.array([3,4])
 
 # print(div(a,b))
-
-
 
 def euler_explicit(Un, z):
   Un1 = Un + prod(z,Un)
@@ -54,7 +50,7 @@ def BDF2(Un1,Un,z):
   return Un2
 
 def BDF3(Un2, Un1, Un, z):
-  num1 = [18,0] 
+  num1 = [18,0]
   num2 = [9,0]
   num3 = [2,0]
   den = [11,0] - 6*z
@@ -63,7 +59,7 @@ def BDF3(Un2, Un1, Un, z):
   return Un3
 
 def BDF4(Un3, Un2, Un1, Un, z):
-  num1 = [48,0] 
+  num1 = [48,0]
   num2 = [36,0]
   num3 = [16,0]
   num4 = [3,0]
@@ -73,7 +69,7 @@ def BDF4(Un3, Un2, Un1, Un, z):
   return Un4
 
 def BDF5(Un4, Un3, Un2, Un1, Un, z):
-  num1 = [300,0] 
+  num1 = [300,0]
   num2 = [300,0]
   num3 = [200,0]
   num4 = [75,0]
@@ -109,53 +105,52 @@ def TR_BDF2 (Un,z):
   return Un1
 
 
-
 # Configuração básica
 fig, ax = plt.subplots(figsize=(8, 8))
 plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
 plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
 ax.set_xlim(-11, 31)
 ax.set_ylim(-21, 21)
-plt.xlabel('Eixo X')
-plt.ylabel('Eixo Y')
-plt.title('Plano Cartesiano')
+plt.xlabel('Eixo Re(z)')
+plt.ylabel('Eixo Im(z)')
+plt.title('Região de estabilidade')
 
-incle = 200
+incle = 100
 
 for h in range(incle):
   print(f"h = {h}")
   for k in range(incle):
-    real_z = -11 + (h*(40/incle))
-    img_z  = -21 + (k*(40/incle))
+    real_z = -30 + (h*(80/incle))
+    img_z  = -40 + (k*(80/incle))
     z      = np.array([real_z, img_z])
     Un     = np.array([1, 0])
     Un1    = euler_implict(Un, z)
     Un2 = BDF2(Un1, Un, z)
     Un3 = BDF3(Un2, Un1, Un, z)
     Un4 = BDF4(Un3, Un2, Un1, Un, z)
-    Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
+    #Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
     #Un1    = trapezio(Un, z)
 
     for n in range(T):
       # Un1 = euler_explicit(Un, z)
-      # Un1 = euler_implict(Un, z)
-      # Un1 = trapezio(Un, z)
-      # Un2 = BDF2(Un1, Un, z)
-      # Un3 = BDF3(Un2, Un1, Un, z)
-      #Un4 = BDF4(Un3, Un2, Un1, Un, z)
+      Un1 = euler_implict(Un, z)
+      #Un1 = trapezio(Un, z)
+      Un2 = BDF2(Un1, Un, z)
+      Un3 = BDF3(Un2, Un1, Un, z)
+      Un4 = BDF4(Un3, Un2, Un1, Un, z)
       #Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
-      Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
+      #Un6 = BDF6(Un5, Un4, Un3, Un2, Un1, Un, z)
       # Un1 = TR_BDF2 (Un,z)
       Un  = Un1
       Un1 = Un2
       Un2 = Un3
       Un3 = Un4
-      Un4 = Un5
-      Un5 = Un6
-      if linalg.norm(Un6, 2) < tol :
+      #Un4 = Un5
+      #Un5 = Un6
+      if linalg.norm(Un1, 2) < tol :
         plt.plot(real_z, img_z, 'bo', markersize=1)
         break
-      elif linalg.norm(Un6, 2) > 1/tol:
+      elif linalg.norm(Un1, 2) > 1/tol:
         #plt.plot(real_z, img_z, 'ko', markersize=2)
         break
 
