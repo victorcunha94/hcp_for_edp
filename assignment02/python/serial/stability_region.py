@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import linalg
+import numba as nb
 import matplotlib.pyplot as plt
 from utils_tools import*
 from bdf_methods import*
@@ -7,38 +8,19 @@ from rk_methods import*
 from adams_bashforth_moulton_methods import*
 from pc_methods import*
 
+####################### PARÂMETROS ###############
 tol = 1e-08
-T = 1000
+T = 3000
 
-#tipo= 'RK3'
+incle = 100
+xl = -2
+xr = 2
+yb = -2
+yt = 2
 
-tipo = "AM5"
-
-
-def TR_BDF2 (Un,z):
-  num   = [1,0] + z/4
-  den   = [1,0] - z/4
-  Ustar = prod(div(num,den),Un)
-  num = [1,0]
-  den = [3,0]-z
-  Un1 = prod(div(num,den),4*Ustar - Un)
-  return Un1
-
-
-incle = 200
-xl = -8
-xr = 3
-yb = -5
-yt = 5
-
-# incle = 100
-# xl = -10
-# xr = 30
-# yb = -20
-# yt = 20
-
-
-
+##################### TIPO ##########################
+tipo = "PC-AB4-AM4"
+#####################################################
 
 # Configuração básica
 fig, ax = plt.subplots(figsize=(8, 8))
@@ -49,6 +31,28 @@ ax.set_ylim(yb - 1, yt + 1)
 plt.xlabel('Re(z)')
 plt.ylabel('Im(z)')
 plt.title(f'{tipo}')
+
+
+if tipo =='TR_BDF2':
+    for h in range(incle):
+      print(f"h = {h}")
+      for k in range(incle):
+        real_z = xl + (h*(np.abs(xr - xl)/incle))
+        img_z  = yb + (k*(np.abs(yb - yt)/incle))
+        z      = np.array([real_z, img_z])
+        Un     = np.array([1, 0])
+
+        for n in range(T):
+          Un1 = TR_BDF2_explicit(Un, z)
+          Un  = Un1
+
+        # print(Un)
+          if linalg.norm(Un1, 2) < tol :
+            plt.plot(real_z, img_z, 'bo', markersize=2)
+            break
+          elif linalg.norm(Un1, 2) > 1/tol:
+            #plt.plot(real_z, img_z, 'ko', markersize=2)
+            break
 
 
 if tipo =='BDF2':
@@ -71,6 +75,7 @@ if tipo =='BDF2':
           elif linalg.norm(Un2, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
+
 
 elif tipo == 'BDF3':
     for h in range(incle):
@@ -117,7 +122,6 @@ elif tipo == 'BDF4':
           elif linalg.norm(Un2, 2) > 1/tol:
             #plt.plot(real_z, img_z, 'ko', markersize=2)
             break
-
 
 if tipo =='RK4':
     for h in range(incle):
@@ -365,7 +369,8 @@ if tipo == 'PC-AB1-AM1':  # Preditor-Corretor AB1-AM1
 
 
             for n in range(T):
-                Un2 = preditor_corrector_AB_AM(Un1, Un, z, preditor_order=2, corretor_order=1, n_correcoes=1)
+                Un1 = preditor_corrector_AB_AM(Un, Un1, Un2=None, Un3=None, z=z,
+                                               preditor_order=1, corretor_order=1, n_correcoes=1)
                 Un = Un1
 
 
@@ -374,7 +379,6 @@ if tipo == 'PC-AB1-AM1':  # Preditor-Corretor AB1-AM1
                     break
                 elif linalg.norm(Un1, 2) > 1 / tol:
                     break
-
 
 if tipo == 'PC-AB2-AM2':  # Preditor-Corretor AB2-AM2
     for h in range(incle + 1):
@@ -387,7 +391,8 @@ if tipo == 'PC-AB2-AM2':  # Preditor-Corretor AB2-AM2
             Un1 = euler_implict(Un, z)
 
             for n in range(T):
-                Un2 = preditor_corrector_AB_AM(Un1, Un, z, preditor_order=2, corretor_order=2, n_correcoes=1)
+                Un2 = preditor_corrector_AB_AM(Un, Un1, Un2=None, Un3=None, z = z,
+                              preditor_order=2, corretor_order=2, n_correcoes=1)
                 Un = Un1
                 Un1 = Un2
 
@@ -410,7 +415,9 @@ if tipo == 'PC-AB3-AM3':  # Preditor-Corretor AB3-AM3
             Un2_initial = euler_implict(Un1, z)
 
             for n in range(T):
-                Un3 = preditor_corrector_AB_AM(Un2_initial, Un1, z, preditor_order=3, corretor_order=3, n_correcoes=1)
+                #Un3 = preditor_corrector_AB_AM(Un2_initial, Un1, z, preditor_order=3, corretor_order=3, n_correcoes=1)
+                Un3 = preditor_corrector_AB_AM(Un, Un1, Un2=Un2_initial, Un3=None, z = z,
+                              preditor_order=2, corretor_order=2, n_correcoes=1)
                 Un = Un1
                 Un1 = Un2_initial
                 Un2_initial = Un3
@@ -422,9 +429,9 @@ if tipo == 'PC-AB3-AM3':  # Preditor-Corretor AB3-AM3
                     break
 
 if tipo == 'PC-AB4-AM4':  # Preditor-Corretor AB4-AM4
-    for h in range(incle):
+    for h in range(incle + 1):
         print(f"h = {h}")
-        for k in range(incle):
+        for k in range(incle + 1):
             real_z = xl + (h * (np.abs(xr - xl) / incle))
             img_z = yb + (k * (np.abs(yb - yt) / incle))
             z = np.array([real_z, img_z])
@@ -435,17 +442,20 @@ if tipo == 'PC-AB4-AM4':  # Preditor-Corretor AB4-AM4
             Un3_initial = euler_implict(Un2, z)
 
             for n in range(T):
-                Un4 = preditor_corrector_AB_AM(Un3_initial, Un2, z, preditor_order=4, corretor_order=4, n_correcoes=2)
+                #Un4 = preditor_corrector_AB_AM(Un3_initial, Un2, z, preditor_order=4, corretor_order=4, n_correcoes=2)
+                Un4 = preditor_corrector_AB_AM(Un, Un1, Un2, Un3=Un3_initial, z=z,
+                                               preditor_order=2, corretor_order=2, n_correcoes=1)
                 Un = Un1
                 Un1 = Un2
                 Un2 = Un3_initial
                 Un3_initial = Un4
 
                 if linalg.norm(Un4, 2) < tol:
-                    plt.plot(real_z, img_z, 'go', markersize=2)
+                    plt.plot(real_z, img_z, 'go', markersize=1)
                     break
                 elif linalg.norm(Un4, 2) > 1 / tol:
                     break
+
 
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.show()
