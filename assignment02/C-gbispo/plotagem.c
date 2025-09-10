@@ -120,14 +120,18 @@ void plot(const char *filename, int Nx, int Ny,
 
     double tolsup = 1e6;
     double tolinf = 1e-6;
-
+    double y;
+    int tid;
+    double x;
+    double complex z;
     #pragma omp parallel for schedule(dynamic) num_threads(n_threads)
     for (int j = 0; j < Ny; j++) {
-        double y = y_min + j * h;
+        y = y_min + j * h;
+        //tid = omp_get_thread_num();
         for (int i = 0; i < Nx; i++) {
-            int tid = omp_get_thread_num();
-            double x = x_min + i * h;
-            double complex z = x + I*y;
+            tid = omp_get_thread_num();
+            x = x_min + i * h;
+            z = x + I*y;
 
             switch (method) {
                 case 0: stability[i*Ny+j] = is_stable(euler_amp(z)); break;
@@ -154,12 +158,12 @@ void plot(const char *filename, int Nx, int Ny,
     }
     char csvfile[128], ppmfile[128];
     make_filename(csvfile, sizeof(csvfile), filename, ".csv");
-    make_filename(ppmfile, sizeof(ppmfile), filename, ".ppm");
+    //make_filename(ppmfile, sizeof(ppmfile), filename, ".ppm");
 
-    save_ppm(ppmfile, Nx, Ny, stability,
+/*    save_ppm(ppmfile, Nx, Ny, stability,
              x_min, x_min + (Nx-1)*h,
              y_min, y_min + (Ny-1)*h);
-
+*/
     save_csv(csvfile, Nx, Ny, stability,
              x_min, x_min + (Nx-1)*h,
              y_min, y_min + (Ny-1)*h);
