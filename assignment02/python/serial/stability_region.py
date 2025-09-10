@@ -46,132 +46,34 @@ plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
 plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
 ax.set_xlim(xl - 1, xr + 1)
 ax.set_ylim(yb - 1, yt + 1)
-plt.xlabel('Re(z)')
-plt.ylabel('Im(z)')
-plt.title(f'{tipo}')
+plt.xlabel('Eixo X')
+plt.ylabel('Eixo Y')
+plt.title('Plano Cartesiano')
 
+<<<<<<< HEAD
+incle = 600
+=======
 
-if tipo =='BDF2':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-        Un1    = euler_implict(Un, z)
-        for n in range(T):
-          Un2 = BDF2(Un1, Un, z)
-          Un  = Un1
-          Un1 = Un2
-        # print(Un)
-          if linalg.norm(Un2, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=2)
-            break
-          elif linalg.norm(Un2, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
+>>>>>>> 90c40689f305a10fd90875362e4119e8f16f148c
 
-elif tipo == 'BDF3':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-        Un1    = euler_implict(Un, z)
-        Un2    = BDF2(Un1, Un, z)
-        for n in range(T):
-          Un3 = BDF3(Un2, Un1, Un, z)
-          Un  = Un1
-          Un1 = Un2
-          Un3 = Un2
-        # print(Un)
-          if linalg.norm(Un2, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=2)
-            break
-          elif linalg.norm(Un2, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
-
-elif tipo == 'BDF4':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-        Un1    = euler_implict(Un, z)
-        Un2    = BDF2(Un1, Un, z)
-        for n in range(T):
-          Un3 = BDF3(Un2, Un1, Un, z)
-          Un  = Un1
-          Un1 = Un2
-          Un3 = Un2
-        # print(Un)
-          if linalg.norm(Un2, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=2)
-            break
-          elif linalg.norm(Un2, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
-
-
-if tipo =='RK4':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-
-        for n in range(T):
-          Un1 = RK4(Un, z)
-          Un  = Un1
-
-        # print(Un)
-          if linalg.norm(Un1, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=2)
-            break
-          elif linalg.norm(Un1, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
-
-
-if tipo =='RK3':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-
-        for n in range(T):
-          Un1 = RK3(Un, z)
-          Un  = Un1
-
-        # print(Un)
-          if linalg.norm(Un1, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=2)
-            break
-          elif linalg.norm(Un1, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
-
-
-if tipo =='AB2':
-    for h in range(incle):
-      print(f"h = {h}")
-      for k in range(incle):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-        Un1    = euler_explicit(Un, z)
+for h in range(incle):
+  print(f"h = {h}")
+  for k in range(incle):
+<<<<<<< HEAD
+    real_z = -11 + (h*(10/incle))
+    img_z  = -25 + (k*(10/incle))
+=======
+    real_z = xl + (h*(np.abs(xr - xl)/incle))
+    img_z  = yb + (k*(np.abs(yb - yt)/incle))
+>>>>>>> 90c40689f305a10fd90875362e4119e8f16f148c
+    z      = np.array([real_z, img_z])
+    Un     = np.array([1, 0])
+    # Un1    = euler_implict(Un, z)
+    # Un2 = BDF2(Un1, Un, z)
+    # Un3 = BDF3(Un2, Un1, Un, z)
+    # Un4 = BDF4(Un3, Un2, Un1, Un, z)
+    # Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
+    #Un1    = trapezio(Un, z)
 
         for n in range(T):
           Un2 = AB2(Un1, Un, z)
