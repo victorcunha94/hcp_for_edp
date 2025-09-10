@@ -12,15 +12,10 @@ int main() {
     int Nx = (int)((x_max - x_min)/h) + 1;
     int Ny = (int)((y_max - y_min)/h) + 1;
     for (int i = 1; i <= omp_get_num_procs(); i++) {
-        //omp_set_num_threads(i);
         printf("##########################################\nNúmero de threads=%d\n",i);
         long int ini = clock();
-        plot("stability_euler", Nx, Ny, x_min, y_min, h, 0,i);
+        plot("stability_euler_bruteforce", Nx, Ny, x_min, y_min, h, 0,i);
         long int end = clock();
-        printf("tempo euler%ld\n", end-ini);
-        ini=clock();
-        plot("stability_euler_bruteforce",Nx, Ny, x_min, y_min, h, 1,i);
-        end = clock();
         printf("tempo euler%ld\n", end-ini);
         ini=clock();
         plot("stability_rk2", Nx, Ny, x_min, y_min, h, 2,i);
@@ -47,35 +42,27 @@ int main() {
         ini=clock();
         plot("stability_bdf2",Nx, Ny, x_min, y_min, h, 9,i );
         end = clock();
-        printf("tempo bdf%ld\n", end-ini);
+        printf("tempo bdf %ld\n", end-ini);
         ini=clock();
         plot("stability_bdf3",Nx, Ny, x_min, y_min, h, 10 ,i);
         end = clock();
-        printf("tempo bdf3%ld\n", end-ini);
+        printf("tempo bdf3 %ld\n", end-ini);
         ini=clock();
         plot("stability_ab4",Nx, Ny, x_min, y_min, h, 11 ,i);
         end = clock();
-        printf("tempo ab4%ld\n", end-ini);
-        ini=clock();
-        plot("stability_ab5",Nx, Ny, x_min, y_min, h, 12 ,i);
-        end = clock();
-        printf("tempo ab5%ld\n", end-ini);
+        printf("tempo ab4 %ld\n", end-ini);
         ini=clock();
         plot("stability_am2",Nx, Ny, x_min, y_min, h, 13 ,i);
         end = clock();
-        printf("tempo am2%ld\n", end-ini);
+        printf("tempo am2 %ld\n", end-ini);
         ini=clock();
         plot("stability_am3",Nx, Ny, x_min, y_min, h, 14 ,i);
         end = clock();
-        printf("tempo am3%ld\n", end-ini);
+        printf("tempo am3 %ld\n", end-ini);
         ini=clock();
         plot("stability_am4",Nx, Ny, x_min, y_min, h, 15 ,i);
         end = clock();
-        printf("tempo am4%ld\n", end-ini);
-        ini=clock();
-        plot("stability_am5",Nx, Ny, x_min, y_min, h, 16 ,i);
-        end = clock();
-        printf("tempo am5%ld\n", end-ini);
+        printf("tempo am4 %ld\n", end-ini);
     }
     return 0;
 }
