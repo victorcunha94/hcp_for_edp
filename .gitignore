@@ -31,3 +31,6 @@ clone_/
 pyomp/
 
 *.csv
+*.png
+*.exe
+
