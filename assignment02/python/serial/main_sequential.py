@@ -11,16 +11,16 @@ from joblib import Parallel, delayed
 
 ####################### PARÂMETROS ###############
 tol = 1e-08
-T = 3000
+T = 10000
 
-incle = 10000
+incle = 200
 xl = -2
 xr = 2
 yb = -2
 yt = 2
 
 ##################### TIPO ##########################
-tipo = "BDF4"  # Altere para o método desejado
+tipo = "PC-AB3-AM3"  # Altere para o método desejado
 #####################################################
 
 # Lista para armazenar os dados
@@ -82,8 +82,53 @@ def process_point(real_z, img_z, z, tipo):
                 return 0
         return 0.5
 
+    elif tipo == 'BDF5':
+        Un = np.array([1, 0])
+        Un1 = euler_implict(Un, z)
+        Un2 = BDF2(Un1, Un, z)
+        Un3 = BDF3(Un2, Un1, Un, z)
+        Un4 = BDF4(Un3, Un2, Un1, Un, z)
+
+        for n in range(T):
+            Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
+            Un = Un1
+            Un1 = Un2
+            Un2 = Un3
+            Un3 = Un4
+            Un4 = Un5
+
+            if linalg.norm(Un2, 2) < tol:
+                return 1
+            elif linalg.norm(Un2, 2) > 1 / tol:
+                return 0
+        return 0.5
+
     # Adicione aqui os outros métodos seguindo o mesmo padrão...
     # (BDF3, BDF4, RK4, RK3, AB2, AB3, AB4, AM2, AM3, AM4, AM5, PC-AB1-AM1, etc.)
+
+
+    elif tipo == 'PC-AB3-AM3':
+        Un = np.array([1, 0])
+        Un1 = euler_implict(Un, z)
+        Un2 = euler_implict(Un1, z)
+
+
+        for n in range(T):
+            Un3 = preditor_corrector_AB_AM(Un, Un1, Un2, z=z,
+                                           preditor_order=3, corretor_order=3, n_correcoes=1)
+            Un = Un1
+            Un1 = Un2
+            Un2 = Un3
+
+
+
+            if linalg.norm(Un3, 2) < tol:
+                return 1
+            elif linalg.norm(Un3, 2) > 1 / tol:
+                return 0
+        return 0.5
+
+
 
     elif tipo == 'PC-AB4-AM4':
         Un = np.array([1, 0])
@@ -131,9 +176,9 @@ for h in range(incle + 1):
         if stable_value == 1:
             plt.plot(real_z, img_z, 'bo', markersize=1)
         elif stable_value == 0:
-            plt.plot(real_z, img_z, 'ro', markersize=1)
+            plt.plot(real_z, img_z, 'ro', markersize=0)
         else:
-            plt.plot(real_z, img_z, 'go', markersize=1)
+            plt.plot(real_z, img_z, 'ro', markersize=0)
 
 # Salva os dados em CSV
 df = pd.DataFrame(data)
@@ -148,7 +193,7 @@ plt.show()
 plt.figure(figsize=(8, 8))
 scatter = plt.scatter(
     df["x"], df["y"],
-    c=df["stable"], cmap="plasma",
+    c=df["stable"],
     s=0.5, marker="."
 )
 
@@ -156,8 +201,8 @@ plt.xlabel("Real part (x)")
 plt.ylabel("Imaginary part (y)")
 plt.title(f"Stability in the Complex Plane - {tipo}")
 
-cbar = plt.colorbar(scatter)
-cbar.set_label("Stability value")
+#cbar = plt.colorbar(scatter)
+#cbar.set_label("Stability value")
 
-plt.savefig(f'{tipo}_colorplot.png', dpi=300, bbox_inches='tight')
+#plt.savefig(f'{tipo}_colorplot.png', dpi=300, bbox_inches='tight')
 plt.show()
