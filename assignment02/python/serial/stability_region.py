@@ -50,22 +50,12 @@ plt.xlabel('Eixo X')
 plt.ylabel('Eixo Y')
 plt.title('Plano Cartesiano')
 
-<<<<<<< HEAD
-incle = 600
-=======
-
->>>>>>> 90c40689f305a10fd90875362e4119e8f16f148c
 
 for h in range(incle):
   print(f"h = {h}")
   for k in range(incle):
-<<<<<<< HEAD
-    real_z = -11 + (h*(10/incle))
-    img_z  = -25 + (k*(10/incle))
-=======
     real_z = xl + (h*(np.abs(xr - xl)/incle))
     img_z  = yb + (k*(np.abs(yb - yt)/incle))
->>>>>>> 90c40689f305a10fd90875362e4119e8f16f148c
     z      = np.array([real_z, img_z])
     Un     = np.array([1, 0])
     # Un1    = euler_implict(Un, z)
@@ -75,7 +65,7 @@ for h in range(incle):
     # Un5 = BDF5(Un4, Un3, Un2, Un1, Un, z)
     #Un1    = trapezio(Un, z)
 
-        for n in range(T):
+for n in range(T):
           Un2 = AB2(Un1, Un, z)
           Un  = Un1
           Un1 = Un2
