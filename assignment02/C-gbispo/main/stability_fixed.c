@@ -356,6 +356,7 @@ void save_ppm(const char *filename, int Nx, int Ny, int *stability,
 void save_png(const char *filename, int Nx, int Ny, int *stability) {
     unsigned char *img = malloc(3 * Nx * Ny);
     if (!img) { perror("save_png malloc"); return; }
+    #pragma omp parallel for schedule(dynamic)
     for (int j = 0; j < Ny; ++j) {
         for (int i = 0; i < Nx; ++i) {
             // flip vertically so PNG matches PPM orientation
@@ -378,6 +379,7 @@ void save_csv(const char *filename, int Nx, int Ny, int *stability,
     fprintf(f, "x,y,stable\n");
     double dx = (x_max - x_min) / (Nx - 1);
     double dy = (y_max - y_min) / (Ny - 1);
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < Nx; ++i) {
         double x = x_min + i * dx;
         for (int j = 0; j < Ny; ++j) {
