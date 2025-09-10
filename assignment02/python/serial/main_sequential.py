@@ -8,20 +8,24 @@ from rk_methods import *
 from adams_bashforth_moulton_methods import *
 from pc_methods import *
 from joblib import Parallel, delayed
+import time
 
 ####################### PARÂMETROS ###############
 tol = 1e-08
-T = 10000
+T = 3000
 
-incle = 200
+incle =  100
 xl = -2
 xr = 2
 yb = -2
 yt = 2
 
 ##################### TIPO ##########################
-tipo = "PC-AB3-AM3"  # Altere para o método desejado
+tipo = "PC-AB1-AM1"  # Altere para o método desejado
 #####################################################
+
+# Iniciar contagem de tempo total
+start_time_total = time.time()
 
 # Lista para armazenar os dados
 data = []
@@ -105,7 +109,38 @@ def process_point(real_z, img_z, z, tipo):
 
     # Adicione aqui os outros métodos seguindo o mesmo padrão...
     # (BDF3, BDF4, RK4, RK3, AB2, AB3, AB4, AM2, AM3, AM4, AM5, PC-AB1-AM1, etc.)
+    elif tipo == 'PC-AB1-AM1':
+        Un = np.array([1, 0])
+        Un1 = euler_implict(Un, z)
 
+        for n in range(T):
+            Un1 = preditor_corrector_AB_AM(Un, Un1, z=z,
+                                           preditor_order=1, corretor_order=1, n_correcoes=1)
+            Un = Un1
+
+            if linalg.norm(Un1, 2) < tol:
+                return 1
+            elif linalg.norm(Un1, 2) > 1 / tol:
+                return 0
+        return 0.5
+
+
+    elif tipo == 'PC-AB2-AM2':
+        Un = np.array([1, 0])
+        Un1 = euler_implict(Un, z)
+
+
+        for n in range(T):
+            Un2 = preditor_corrector_AB_AM(Un, Un1, z=z,
+                                           preditor_order=2, corretor_order=2, n_correcoes=1)
+            Un = Un1
+            Un1 = Un2
+
+            if linalg.norm(Un2, 2) < tol:
+                return 1
+            elif linalg.norm(Un2, 2) > 1 / tol:
+                return 0
+        return 0.5
 
     elif tipo == 'PC-AB3-AM3':
         Un = np.array([1, 0])
@@ -155,6 +190,11 @@ def process_point(real_z, img_z, z, tipo):
 
 
 # Processa todos os pontos
+total_points = (incle + 1) * (incle + 1)
+processed_points = 0
+start_time_processing = time.time()
+
+
 for h in range(incle + 1):
     print(f"Processando linha {h}/{incle}")
     for k in range(incle + 1):
@@ -180,10 +220,46 @@ for h in range(incle + 1):
         else:
             plt.plot(real_z, img_z, 'ro', markersize=0)
 
+        processed_points += 1
+
+        # Mostrar progresso a cada 1000 pontos
+        if processed_points % 1000 == 0:
+            elapsed_time = time.time() - start_time_processing
+            points_per_second = processed_points / elapsed_time
+            remaining_points = total_points - processed_points
+            estimated_remaining_time = remaining_points / points_per_second if points_per_second > 0 else 0
+
+            print(f"Progresso: {processed_points}/{total_points} pontos "
+                  f"({processed_points / total_points * 100:.1f}%) - "
+                  f"Tempo estimado restante: {estimated_remaining_time / 60:.1f} minutos")
+
+# Finalizar contagem de tempo
+end_time_total = time.time()
+total_execution_time = end_time_total - start_time_total
+
+
 # Salva os dados em CSV
 df = pd.DataFrame(data)
 df.to_csv(tipo + '.csv', index=False)
 print(f"Dados salvos em '{tipo}.csv'")
+
+
+# Salvar informações de tempo em um arquivo
+with open(f'{tipo}_time_info.txt', 'w') as f:
+    f.write(f"Método: {tipo}\n")
+    f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
+    f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
+    f.write(f"Total de pontos processados: {total_points}\n")
+    f.write(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos\n")
+    f.write(f"Parâmetros: T={T}, incle={incle}, tol={tol}\n")
+
+print(f"\n=== INFORMAÇÕES DE TEMPO ===")
+print(f"Método: {tipo}")
+print(f"Tempo total de execução: {total_execution_time:.2f} segundos")
+print(f"Tempo total de execução: {total_execution_time/60:.2f} minutos")
+print(f"Total de pontos processados: {total_points}")
+print(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos")
+
 
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.savefig(f'{tipo}_plot.png', dpi=300, bbox_inches='tight')
