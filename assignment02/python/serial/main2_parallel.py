@@ -10,9 +10,9 @@ import time
 from joblib import Parallel, delayed
 
 tol = 1e-08
-T = 1000
-tipo = "PC-AB1-AM1"
-incle = 50
+T = 3000
+tipo = "PC-AB3-AM3"
+incle = 1000
 
 #dimensoes leveque:
 
@@ -66,10 +66,10 @@ yt = 4
 
 #PECE
 
-xl = -4
-xr = 0.5
-yb = -2.5
-yt = 2.5
+xl = -3
+xr = 3
+yb = -3
+yt = 3
 
 total_points = (incle + 1) * (incle + 1)
 processed_points = 0
@@ -400,7 +400,7 @@ end_time_total = time.time()
 total_execution_time = end_time_total - start_time_total
 
 # Salvar informações de tempo em um arquivo
-with open(f'{tipo}_time_info.txt', 'w') as f:
+with open(f'{tipo}_parallel_time_info.txt', 'w') as f:
     f.write(f"Método: {tipo}\n")
     f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
     f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
