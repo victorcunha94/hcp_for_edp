@@ -14,14 +14,14 @@ import time
 tol = 1e-08
 T = 3000
 
-incle =  100
+incle =  500
 xl = -2
 xr = 2
 yb = -2
 yt = 2
 
 ##################### TIPO ##########################
-tipo = "PC-AB1-AM1"  # Altere para o método desejado
+tipo = "PC-AB4-AM4"  # Altere para o método desejado
 #####################################################
 
 # Iniciar contagem de tempo total
@@ -173,7 +173,7 @@ def process_point(real_z, img_z, z, tipo):
 
         for n in range(T):
             Un4 = preditor_corrector_AB_AM(Un, Un1, Un2, Un3=Un3_initial, z=z,
-                                           preditor_order=4, corretor_order=4, n_correcoes=1)
+                                           preditor_order=4, corretor_order=4, n_correcoes=2)
             Un = Un1
             Un1 = Un2
             Un2 = Un3_initial

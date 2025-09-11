@@ -1,0 +1,2016 @@
+Loading ambiente Python...
+-------------------------------
+Iniciando script Python...
+/mnt/nfs/home/vcunha/home/hcp_for_edp/assignment02/python/serial/utils_tools.py:5: RuntimeWarning: invalid value encountered in scalar multiply
+  c = np.array([a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]])
+Processando linha 0/1000
+Progresso: 1000/1002001 pontos (0.1%) - Tempo estimado restante: 33.0 minutos
+Processando linha 1/1000
+Progresso: 2000/1002001 pontos (0.2%) - Tempo estimado restante: 33.0 minutos
+Processando linha 2/1000
+Progresso: 3000/1002001 pontos (0.3%) - Tempo estimado restante: 33.1 minutos
+Processando linha 3/1000
+Progresso: 4000/1002001 pontos (0.4%) - Tempo estimado restante: 33.2 minutos
+Processando linha 4/1000
+Progresso: 5000/1002001 pontos (0.5%) - Tempo estimado restante: 33.1 minutos
+Processando linha 5/1000
+Progresso: 6000/1002001 pontos (0.6%) - Tempo estimado restante: 33.3 minutos
+Processando linha 6/1000
+Progresso: 7000/1002001 pontos (0.7%) - Tempo estimado restante: 33.4 minutos
+Processando linha 7/1000
+Progresso: 8000/1002001 pontos (0.8%) - Tempo estimado restante: 33.3 minutos
+Processando linha 8/1000
+Progresso: 9000/1002001 pontos (0.9%) - Tempo estimado restante: 33.3 minutos
+Processando linha 9/1000
+Progresso: 10000/1002001 pontos (1.0%) - Tempo estimado restante: 33.4 minutos
+Processando linha 10/1000
+Progresso: 11000/1002001 pontos (1.1%) - Tempo estimado restante: 33.3 minutos
+Processando linha 11/1000
+Progresso: 12000/1002001 pontos (1.2%) - Tempo estimado restante: 33.5 minutos
+Processando linha 12/1000
+Progresso: 13000/1002001 pontos (1.3%) - Tempo estimado restante: 33.5 minutos
+Processando linha 13/1000
+Progresso: 14000/1002001 pontos (1.4%) - Tempo estimado restante: 33.4 minutos
+Processando linha 14/1000
+Progresso: 15000/1002001 pontos (1.5%) - Tempo estimado restante: 33.3 minutos
+Processando linha 15/1000
+Progresso: 16000/1002001 pontos (1.6%) - Tempo estimado restante: 33.5 minutos
+Processando linha 16/1000
+Progresso: 17000/1002001 pontos (1.7%) - Tempo estimado restante: 33.5 minutos
+Processando linha 17/1000
+Progresso: 18000/1002001 pontos (1.8%) - Tempo estimado restante: 33.4 minutos
+Processando linha 18/1000
+Progresso: 19000/1002001 pontos (1.9%) - Tempo estimado restante: 33.4 minutos
+Processando linha 19/1000
+Progresso: 20000/1002001 pontos (2.0%) - Tempo estimado restante: 33.6 minutos
+Processando linha 20/1000
+Progresso: 21000/1002001 pontos (2.1%) - Tempo estimado restante: 33.5 minutos
+Processando linha 21/1000
+Progresso: 22000/1002001 pontos (2.2%) - Tempo estimado restante: 33.5 minutos
+Processando linha 22/1000
+Progresso: 23000/1002001 pontos (2.3%) - Tempo estimado restante: 33.4 minutos
+Processando linha 23/1000
+Progresso: 24000/1002001 pontos (2.4%) - Tempo estimado restante: 33.4 minutos
+Processando linha 24/1000
+Progresso: 25000/1002001 pontos (2.5%) - Tempo estimado restante: 33.6 minutos
+Processando linha 25/1000
+Progresso: 26000/1002001 pontos (2.6%) - Tempo estimado restante: 33.5 minutos
+Processando linha 26/1000
+Progresso: 27000/1002001 pontos (2.7%) - Tempo estimado restante: 33.5 minutos
+Processando linha 27/1000
+Progresso: 28000/1002001 pontos (2.8%) - Tempo estimado restante: 33.5 minutos
+Processando linha 28/1000
+Progresso: 29000/1002001 pontos (2.9%) - Tempo estimado restante: 33.4 minutos
+Processando linha 29/1000
+Progresso: 30000/1002001 pontos (3.0%) - Tempo estimado restante: 33.4 minutos
+Processando linha 30/1000
+Progresso: 31000/1002001 pontos (3.1%) - Tempo estimado restante: 33.6 minutos
+Processando linha 31/1000
+Progresso: 32000/1002001 pontos (3.2%) - Tempo estimado restante: 33.6 minutos
+Processando linha 32/1000
+Progresso: 33000/1002001 pontos (3.3%) - Tempo estimado restante: 33.5 minutos
+Processando linha 33/1000
+Progresso: 34000/1002001 pontos (3.4%) - Tempo estimado restante: 33.5 minutos
+Processando linha 34/1000
+Progresso: 35000/1002001 pontos (3.5%) - Tempo estimado restante: 33.5 minutos
+Processando linha 35/1000
+Progresso: 36000/1002001 pontos (3.6%) - Tempo estimado restante: 33.4 minutos
+Processando linha 36/1000
+Progresso: 37000/1002001 pontos (3.7%) - Tempo estimado restante: 33.4 minutos
+Processando linha 37/1000
+Progresso: 38000/1002001 pontos (3.8%) - Tempo estimado restante: 33.4 minutos
+Processando linha 38/1000
+Progresso: 39000/1002001 pontos (3.9%) - Tempo estimado restante: 33.4 minutos
+Processando linha 39/1000
+Progresso: 40000/1002001 pontos (4.0%) - Tempo estimado restante: 33.5 minutos
+Processando linha 40/1000
+Progresso: 41000/1002001 pontos (4.1%) - Tempo estimado restante: 33.5 minutos
+Processando linha 41/1000
+Progresso: 42000/1002001 pontos (4.2%) - Tempo estimado restante: 33.5 minutos
+Processando linha 42/1000
+Progresso: 43000/1002001 pontos (4.3%) - Tempo estimado restante: 33.5 minutos
+Processando linha 43/1000
+Progresso: 44000/1002001 pontos (4.4%) - Tempo estimado restante: 33.5 minutos
+Processando linha 44/1000
+Progresso: 45000/1002001 pontos (4.5%) - Tempo estimado restante: 33.4 minutos
+Processando linha 45/1000
+Progresso: 46000/1002001 pontos (4.6%) - Tempo estimado restante: 33.4 minutos
+Processando linha 46/1000
+Progresso: 47000/1002001 pontos (4.7%) - Tempo estimado restante: 33.4 minutos
+Processando linha 47/1000
+Progresso: 48000/1002001 pontos (4.8%) - Tempo estimado restante: 33.4 minutos
+Processando linha 48/1000
+Progresso: 49000/1002001 pontos (4.9%) - Tempo estimado restante: 33.4 minutos
+Processando linha 49/1000
+Progresso: 50000/1002001 pontos (5.0%) - Tempo estimado restante: 33.6 minutos
+Processando linha 50/1000
+Progresso: 51000/1002001 pontos (5.1%) - Tempo estimado restante: 33.5 minutos
+Processando linha 51/1000
+Progresso: 52000/1002001 pontos (5.2%) - Tempo estimado restante: 33.5 minutos
+Processando linha 52/1000
+Progresso: 53000/1002001 pontos (5.3%) - Tempo estimado restante: 33.5 minutos
+Processando linha 53/1000
+Progresso: 54000/1002001 pontos (5.4%) - Tempo estimado restante: 33.5 minutos
+Processando linha 54/1000
+Progresso: 55000/1002001 pontos (5.5%) - Tempo estimado restante: 33.5 minutos
+Processando linha 55/1000
+Progresso: 56000/1002001 pontos (5.6%) - Tempo estimado restante: 33.5 minutos
+Processando linha 56/1000
+Progresso: 57000/1002001 pontos (5.7%) - Tempo estimado restante: 33.4 minutos
+Processando linha 57/1000
+Progresso: 58000/1002001 pontos (5.8%) - Tempo estimado restante: 33.4 minutos
+Processando linha 58/1000
+Progresso: 59000/1002001 pontos (5.9%) - Tempo estimado restante: 33.4 minutos
+Processando linha 59/1000
+Progresso: 60000/1002001 pontos (6.0%) - Tempo estimado restante: 33.4 minutos
+Processando linha 60/1000
+Progresso: 61000/1002001 pontos (6.1%) - Tempo estimado restante: 33.4 minutos
+Processando linha 61/1000
+Progresso: 62000/1002001 pontos (6.2%) - Tempo estimado restante: 33.6 minutos
+Processando linha 62/1000
+Progresso: 63000/1002001 pontos (6.3%) - Tempo estimado restante: 33.6 minutos
+Processando linha 63/1000
+Progresso: 64000/1002001 pontos (6.4%) - Tempo estimado restante: 33.6 minutos
+Processando linha 64/1000
+Progresso: 65000/1002001 pontos (6.5%) - Tempo estimado restante: 33.6 minutos
+Processando linha 65/1000
+Progresso: 66000/1002001 pontos (6.6%) - Tempo estimado restante: 33.6 minutos
+Processando linha 66/1000
+Progresso: 67000/1002001 pontos (6.7%) - Tempo estimado restante: 33.5 minutos
+Processando linha 67/1000
+Progresso: 68000/1002001 pontos (6.8%) - Tempo estimado restante: 33.5 minutos
+Processando linha 68/1000
+Progresso: 69000/1002001 pontos (6.9%) - Tempo estimado restante: 33.5 minutos
+Processando linha 69/1000
+Progresso: 70000/1002001 pontos (7.0%) - Tempo estimado restante: 33.5 minutos
+Processando linha 70/1000
+Progresso: 71000/1002001 pontos (7.1%) - Tempo estimado restante: 33.5 minutos
+Processando linha 71/1000
+Progresso: 72000/1002001 pontos (7.2%) - Tempo estimado restante: 33.5 minutos
+Processando linha 72/1000
+Progresso: 73000/1002001 pontos (7.3%) - Tempo estimado restante: 33.5 minutos
+Processando linha 73/1000
+Progresso: 74000/1002001 pontos (7.4%) - Tempo estimado restante: 33.5 minutos
+Processando linha 74/1000
+Progresso: 75000/1002001 pontos (7.5%) - Tempo estimado restante: 33.5 minutos
+Processando linha 75/1000
+Progresso: 76000/1002001 pontos (7.6%) - Tempo estimado restante: 33.5 minutos
+Processando linha 76/1000
+Progresso: 77000/1002001 pontos (7.7%) - Tempo estimado restante: 33.5 minutos
+Processando linha 77/1000
+Progresso: 78000/1002001 pontos (7.8%) - Tempo estimado restante: 33.7 minutos
+Processando linha 78/1000
+Progresso: 79000/1002001 pontos (7.9%) - Tempo estimado restante: 33.7 minutos
+Processando linha 79/1000
+Progresso: 80000/1002001 pontos (8.0%) - Tempo estimado restante: 33.7 minutos
+Processando linha 80/1000
+Progresso: 81000/1002001 pontos (8.1%) - Tempo estimado restante: 33.7 minutos
+Processando linha 81/1000
+Progresso: 82000/1002001 pontos (8.2%) - Tempo estimado restante: 33.7 minutos
+Processando linha 82/1000
+Progresso: 83000/1002001 pontos (8.3%) - Tempo estimado restante: 33.7 minutos
+Processando linha 83/1000
+Progresso: 84000/1002001 pontos (8.4%) - Tempo estimado restante: 33.7 minutos
+Processando linha 84/1000
+Progresso: 85000/1002001 pontos (8.5%) - Tempo estimado restante: 33.7 minutos
+Processando linha 85/1000
+Progresso: 86000/1002001 pontos (8.6%) - Tempo estimado restante: 33.7 minutos
+Processando linha 86/1000
+Progresso: 87000/1002001 pontos (8.7%) - Tempo estimado restante: 33.7 minutos
+Processando linha 87/1000
+Progresso: 88000/1002001 pontos (8.8%) - Tempo estimado restante: 33.7 minutos
+Processando linha 88/1000
+Progresso: 89000/1002001 pontos (8.9%) - Tempo estimado restante: 33.7 minutos
+Processando linha 89/1000
+Progresso: 90000/1002001 pontos (9.0%) - Tempo estimado restante: 33.7 minutos
+Processando linha 90/1000
+Progresso: 91000/1002001 pontos (9.1%) - Tempo estimado restante: 33.7 minutos
+Processando linha 91/1000
+Progresso: 92000/1002001 pontos (9.2%) - Tempo estimado restante: 33.7 minutos
+Processando linha 92/1000
+Progresso: 93000/1002001 pontos (9.3%) - Tempo estimado restante: 33.7 minutos
+Processando linha 93/1000
+Progresso: 94000/1002001 pontos (9.4%) - Tempo estimado restante: 33.7 minutos
+Processando linha 94/1000
+Progresso: 95000/1002001 pontos (9.5%) - Tempo estimado restante: 33.7 minutos
+Processando linha 95/1000
+Progresso: 96000/1002001 pontos (9.6%) - Tempo estimado restante: 33.7 minutos
+Processando linha 96/1000
+Progresso: 97000/1002001 pontos (9.7%) - Tempo estimado restante: 33.7 minutos
+Processando linha 97/1000
+Progresso: 98000/1002001 pontos (9.8%) - Tempo estimado restante: 33.9 minutos
+Processando linha 98/1000
+Progresso: 99000/1002001 pontos (9.9%) - Tempo estimado restante: 33.9 minutos
+Processando linha 99/1000
+Progresso: 100000/1002001 pontos (10.0%) - Tempo estimado restante: 33.9 minutos
+Processando linha 100/1000
+Progresso: 101000/1002001 pontos (10.1%) - Tempo estimado restante: 33.9 minutos
+Processando linha 101/1000
+Progresso: 102000/1002001 pontos (10.2%) - Tempo estimado restante: 33.9 minutos
+Processando linha 102/1000
+Progresso: 103000/1002001 pontos (10.3%) - Tempo estimado restante: 33.9 minutos
+Processando linha 103/1000
+Progresso: 104000/1002001 pontos (10.4%) - Tempo estimado restante: 33.9 minutos
+Processando linha 104/1000
+Progresso: 105000/1002001 pontos (10.5%) - Tempo estimado restante: 33.9 minutos
+Processando linha 105/1000
+Progresso: 106000/1002001 pontos (10.6%) - Tempo estimado restante: 33.9 minutos
+Processando linha 106/1000
+Progresso: 107000/1002001 pontos (10.7%) - Tempo estimado restante: 34.0 minutos
+Processando linha 107/1000
+Progresso: 108000/1002001 pontos (10.8%) - Tempo estimado restante: 34.0 minutos
+Processando linha 108/1000
+Progresso: 109000/1002001 pontos (10.9%) - Tempo estimado restante: 34.0 minutos
+Processando linha 109/1000
+Progresso: 110000/1002001 pontos (11.0%) - Tempo estimado restante: 34.0 minutos
+Processando linha 110/1000
+Progresso: 111000/1002001 pontos (11.1%) - Tempo estimado restante: 34.0 minutos
+Processando linha 111/1000
+Progresso: 112000/1002001 pontos (11.2%) - Tempo estimado restante: 34.0 minutos
+Processando linha 112/1000
+Progresso: 113000/1002001 pontos (11.3%) - Tempo estimado restante: 34.0 minutos
+Processando linha 113/1000
+Progresso: 114000/1002001 pontos (11.4%) - Tempo estimado restante: 34.0 minutos
+Processando linha 114/1000
+Progresso: 115000/1002001 pontos (11.5%) - Tempo estimado restante: 34.0 minutos
+Processando linha 115/1000
+Progresso: 116000/1002001 pontos (11.6%) - Tempo estimado restante: 34.1 minutos
+Processando linha 116/1000
+Progresso: 117000/1002001 pontos (11.7%) - Tempo estimado restante: 34.1 minutos
+Processando linha 117/1000
+Progresso: 118000/1002001 pontos (11.8%) - Tempo estimado restante: 34.1 minutos
+Processando linha 118/1000
+Progresso: 119000/1002001 pontos (11.9%) - Tempo estimado restante: 34.1 minutos
+Processando linha 119/1000
+Progresso: 120000/1002001 pontos (12.0%) - Tempo estimado restante: 34.1 minutos
+Processando linha 120/1000
+Progresso: 121000/1002001 pontos (12.1%) - Tempo estimado restante: 34.1 minutos
+Processando linha 121/1000
+Progresso: 122000/1002001 pontos (12.2%) - Tempo estimado restante: 34.2 minutos
+Processando linha 122/1000
+Progresso: 123000/1002001 pontos (12.3%) - Tempo estimado restante: 34.4 minutos
+Processando linha 123/1000
+Progresso: 124000/1002001 pontos (12.4%) - Tempo estimado restante: 34.4 minutos
+Processando linha 124/1000
+Progresso: 125000/1002001 pontos (12.5%) - Tempo estimado restante: 34.4 minutos
+Processando linha 125/1000
+Progresso: 126000/1002001 pontos (12.6%) - Tempo estimado restante: 34.4 minutos
+Processando linha 126/1000
+Progresso: 127000/1002001 pontos (12.7%) - Tempo estimado restante: 34.5 minutos
+Processando linha 127/1000
+Progresso: 128000/1002001 pontos (12.8%) - Tempo estimado restante: 34.5 minutos
+Processando linha 128/1000
+Progresso: 129000/1002001 pontos (12.9%) - Tempo estimado restante: 34.5 minutos
+Processando linha 129/1000
+Progresso: 130000/1002001 pontos (13.0%) - Tempo estimado restante: 34.5 minutos
+Processando linha 130/1000
+Progresso: 131000/1002001 pontos (13.1%) - Tempo estimado restante: 34.5 minutos
+Processando linha 131/1000
+Progresso: 132000/1002001 pontos (13.2%) - Tempo estimado restante: 34.6 minutos
+Processando linha 132/1000
+Progresso: 133000/1002001 pontos (13.3%) - Tempo estimado restante: 34.6 minutos
+Processando linha 133/1000
+Progresso: 134000/1002001 pontos (13.4%) - Tempo estimado restante: 34.6 minutos
+Processando linha 134/1000
+Progresso: 135000/1002001 pontos (13.5%) - Tempo estimado restante: 34.6 minutos
+Processando linha 135/1000
+Progresso: 136000/1002001 pontos (13.6%) - Tempo estimado restante: 34.7 minutos
+Processando linha 136/1000
+Progresso: 137000/1002001 pontos (13.7%) - Tempo estimado restante: 34.7 minutos
+Processando linha 137/1000
+Progresso: 138000/1002001 pontos (13.8%) - Tempo estimado restante: 34.7 minutos
+Processando linha 138/1000
+Progresso: 139000/1002001 pontos (13.9%) - Tempo estimado restante: 34.8 minutos
+Processando linha 139/1000
+Progresso: 140000/1002001 pontos (14.0%) - Tempo estimado restante: 34.8 minutos
+Processando linha 140/1000
+Progresso: 141000/1002001 pontos (14.1%) - Tempo estimado restante: 34.8 minutos
+Processando linha 141/1000
+Progresso: 142000/1002001 pontos (14.2%) - Tempo estimado restante: 34.9 minutos
+Processando linha 142/1000
+Progresso: 143000/1002001 pontos (14.3%) - Tempo estimado restante: 34.9 minutos
+Processando linha 143/1000
+Progresso: 144000/1002001 pontos (14.4%) - Tempo estimado restante: 35.0 minutos
+Processando linha 144/1000
+Progresso: 145000/1002001 pontos (14.5%) - Tempo estimado restante: 35.0 minutos
+Processando linha 145/1000
+Progresso: 146000/1002001 pontos (14.6%) - Tempo estimado restante: 35.0 minutos
+Processando linha 146/1000
+Progresso: 147000/1002001 pontos (14.7%) - Tempo estimado restante: 35.1 minutos
+Processando linha 147/1000
+Progresso: 148000/1002001 pontos (14.8%) - Tempo estimado restante: 35.1 minutos
+Processando linha 148/1000
+Progresso: 149000/1002001 pontos (14.9%) - Tempo estimado restante: 35.2 minutos
+Processando linha 149/1000
+Progresso: 150000/1002001 pontos (15.0%) - Tempo estimado restante: 35.2 minutos
+Processando linha 150/1000
+Progresso: 151000/1002001 pontos (15.1%) - Tempo estimado restante: 35.3 minutos
+Processando linha 151/1000
+Progresso: 152000/1002001 pontos (15.2%) - Tempo estimado restante: 35.3 minutos
+Processando linha 152/1000
+Progresso: 153000/1002001 pontos (15.3%) - Tempo estimado restante: 35.4 minutos
+Processando linha 153/1000
+Progresso: 154000/1002001 pontos (15.4%) - Tempo estimado restante: 35.6 minutos
+Processando linha 154/1000
+Progresso: 155000/1002001 pontos (15.5%) - Tempo estimado restante: 35.7 minutos
+Processando linha 155/1000
+Progresso: 156000/1002001 pontos (15.6%) - Tempo estimado restante: 35.7 minutos
+Processando linha 156/1000
+Progresso: 157000/1002001 pontos (15.7%) - Tempo estimado restante: 35.8 minutos
+Processando linha 157/1000
+Progresso: 158000/1002001 pontos (15.8%) - Tempo estimado restante: 35.8 minutos
+Processando linha 158/1000
+Progresso: 159000/1002001 pontos (15.9%) - Tempo estimado restante: 35.9 minutos
+Processando linha 159/1000
+Progresso: 160000/1002001 pontos (16.0%) - Tempo estimado restante: 36.0 minutos
+Processando linha 160/1000
+Progresso: 161000/1002001 pontos (16.1%) - Tempo estimado restante: 36.1 minutos
+Processando linha 161/1000
+Progresso: 162000/1002001 pontos (16.2%) - Tempo estimado restante: 36.1 minutos
+Processando linha 162/1000
+Progresso: 163000/1002001 pontos (16.3%) - Tempo estimado restante: 36.2 minutos
+Processando linha 163/1000
+Progresso: 164000/1002001 pontos (16.4%) - Tempo estimado restante: 36.3 minutos
+Processando linha 164/1000
+Progresso: 165000/1002001 pontos (16.5%) - Tempo estimado restante: 36.4 minutos
+Processando linha 165/1000
+Progresso: 166000/1002001 pontos (16.6%) - Tempo estimado restante: 36.5 minutos
+Processando linha 166/1000
+Progresso: 167000/1002001 pontos (16.7%) - Tempo estimado restante: 36.6 minutos
+Processando linha 167/1000
+Progresso: 168000/1002001 pontos (16.8%) - Tempo estimado restante: 36.7 minutos
+Processando linha 168/1000
+Progresso: 169000/1002001 pontos (16.9%) - Tempo estimado restante: 36.8 minutos
+Processando linha 169/1000
+Progresso: 170000/1002001 pontos (17.0%) - Tempo estimado restante: 36.9 minutos
+Processando linha 170/1000
+Progresso: 171000/1002001 pontos (17.1%) - Tempo estimado restante: 37.0 minutos
+Processando linha 171/1000
+Progresso: 172000/1002001 pontos (17.2%) - Tempo estimado restante: 37.1 minutos
+Processando linha 172/1000
+Progresso: 173000/1002001 pontos (17.3%) - Tempo estimado restante: 37.3 minutos
+Processando linha 173/1000
+Progresso: 174000/1002001 pontos (17.4%) - Tempo estimado restante: 37.4 minutos
+Processando linha 174/1000
+Progresso: 175000/1002001 pontos (17.5%) - Tempo estimado restante: 37.6 minutos
+Processando linha 175/1000
+Progresso: 176000/1002001 pontos (17.6%) - Tempo estimado restante: 37.8 minutos
+Processando linha 176/1000
+Progresso: 177000/1002001 pontos (17.7%) - Tempo estimado restante: 38.0 minutos
+Processando linha 177/1000
+Progresso: 178000/1002001 pontos (17.8%) - Tempo estimado restante: 38.2 minutos
+Processando linha 178/1000
+Progresso: 179000/1002001 pontos (17.9%) - Tempo estimado restante: 38.5 minutos
+Processando linha 179/1000
+Progresso: 180000/1002001 pontos (18.0%) - Tempo estimado restante: 38.8 minutos
+Processando linha 180/1000
+Progresso: 181000/1002001 pontos (18.1%) - Tempo estimado restante: 39.1 minutos
+Processando linha 181/1000
+Progresso: 182000/1002001 pontos (18.2%) - Tempo estimado restante: 39.5 minutos
+Processando linha 182/1000
+Progresso: 183000/1002001 pontos (18.3%) - Tempo estimado restante: 39.8 minutos
+Processando linha 183/1000
+Progresso: 184000/1002001 pontos (18.4%) - Tempo estimado restante: 40.2 minutos
+Processando linha 184/1000
+Progresso: 185000/1002001 pontos (18.5%) - Tempo estimado restante: 40.6 minutos
+Processando linha 185/1000
+Progresso: 186000/1002001 pontos (18.6%) - Tempo estimado restante: 41.0 minutos
+Processando linha 186/1000
+Progresso: 187000/1002001 pontos (18.7%) - Tempo estimado restante: 41.3 minutos
+Processando linha 187/1000
+Progresso: 188000/1002001 pontos (18.8%) - Tempo estimado restante: 41.7 minutos
+Processando linha 188/1000
+Progresso: 189000/1002001 pontos (18.9%) - Tempo estimado restante: 42.1 minutos
+Processando linha 189/1000
+Progresso: 190000/1002001 pontos (19.0%) - Tempo estimado restante: 42.5 minutos
+Processando linha 190/1000
+Progresso: 191000/1002001 pontos (19.1%) - Tempo estimado restante: 42.8 minutos
+Processando linha 191/1000
+Progresso: 192000/1002001 pontos (19.2%) - Tempo estimado restante: 43.4 minutos
+Processando linha 192/1000
+Progresso: 193000/1002001 pontos (19.3%) - Tempo estimado restante: 43.7 minutos
+Processando linha 193/1000
+Progresso: 194000/1002001 pontos (19.4%) - Tempo estimado restante: 44.1 minutos
+Processando linha 194/1000
+Progresso: 195000/1002001 pontos (19.5%) - Tempo estimado restante: 44.4 minutos
+Processando linha 195/1000
+Progresso: 196000/1002001 pontos (19.6%) - Tempo estimado restante: 44.8 minutos
+Processando linha 196/1000
+Progresso: 197000/1002001 pontos (19.7%) - Tempo estimado restante: 45.1 minutos
+Processando linha 197/1000
+Progresso: 198000/1002001 pontos (19.8%) - Tempo estimado restante: 45.5 minutos
+Processando linha 198/1000
+Progresso: 199000/1002001 pontos (19.9%) - Tempo estimado restante: 45.8 minutos
+Processando linha 199/1000
+Progresso: 200000/1002001 pontos (20.0%) - Tempo estimado restante: 46.1 minutos
+Processando linha 200/1000
+Progresso: 201000/1002001 pontos (20.1%) - Tempo estimado restante: 46.4 minutos
+Processando linha 201/1000
+Progresso: 202000/1002001 pontos (20.2%) - Tempo estimado restante: 46.8 minutos
+Processando linha 202/1000
+Progresso: 203000/1002001 pontos (20.3%) - Tempo estimado restante: 47.1 minutos
+Processando linha 203/1000
+Progresso: 204000/1002001 pontos (20.4%) - Tempo estimado restante: 47.4 minutos
+Processando linha 204/1000
+Progresso: 205000/1002001 pontos (20.5%) - Tempo estimado restante: 47.7 minutos
+Processando linha 205/1000
+Progresso: 206000/1002001 pontos (20.6%) - Tempo estimado restante: 48.0 minutos
+Processando linha 206/1000
+Progresso: 207000/1002001 pontos (20.7%) - Tempo estimado restante: 48.3 minutos
+Processando linha 207/1000
+Progresso: 208000/1002001 pontos (20.8%) - Tempo estimado restante: 48.6 minutos
+Processando linha 208/1000
+Progresso: 209000/1002001 pontos (20.9%) - Tempo estimado restante: 48.8 minutos
+Processando linha 209/1000
+Progresso: 210000/1002001 pontos (21.0%) - Tempo estimado restante: 49.1 minutos
+Processando linha 210/1000
+Progresso: 211000/1002001 pontos (21.1%) - Tempo estimado restante: 49.4 minutos
+Processando linha 211/1000
+Progresso: 212000/1002001 pontos (21.2%) - Tempo estimado restante: 49.7 minutos
+Processando linha 212/1000
+Progresso: 213000/1002001 pontos (21.3%) - Tempo estimado restante: 49.9 minutos
+Processando linha 213/1000
+Progresso: 214000/1002001 pontos (21.4%) - Tempo estimado restante: 50.2 minutos
+Processando linha 214/1000
+Progresso: 215000/1002001 pontos (21.5%) - Tempo estimado restante: 50.4 minutos
+Processando linha 215/1000
+Progresso: 216000/1002001 pontos (21.6%) - Tempo estimado restante: 50.7 minutos
+Processando linha 216/1000
+Progresso: 217000/1002001 pontos (21.7%) - Tempo estimado restante: 50.9 minutos
+Processando linha 217/1000
+Progresso: 218000/1002001 pontos (21.8%) - Tempo estimado restante: 51.1 minutos
+Processando linha 218/1000
+Progresso: 219000/1002001 pontos (21.9%) - Tempo estimado restante: 51.4 minutos
+Processando linha 219/1000
+Progresso: 220000/1002001 pontos (22.0%) - Tempo estimado restante: 51.6 minutos
+Processando linha 220/1000
+Progresso: 221000/1002001 pontos (22.1%) - Tempo estimado restante: 51.8 minutos
+Processando linha 221/1000
+Progresso: 222000/1002001 pontos (22.2%) - Tempo estimado restante: 52.0 minutos
+Processando linha 222/1000
+Progresso: 223000/1002001 pontos (22.3%) - Tempo estimado restante: 52.2 minutos
+Processando linha 223/1000
+Progresso: 224000/1002001 pontos (22.4%) - Tempo estimado restante: 52.5 minutos
+Processando linha 224/1000
+Progresso: 225000/1002001 pontos (22.5%) - Tempo estimado restante: 52.7 minutos
+Processando linha 225/1000
+Progresso: 226000/1002001 pontos (22.6%) - Tempo estimado restante: 52.9 minutos
+Processando linha 226/1000
+Progresso: 227000/1002001 pontos (22.7%) - Tempo estimado restante: 53.0 minutos
+Processando linha 227/1000
+Progresso: 228000/1002001 pontos (22.8%) - Tempo estimado restante: 53.2 minutos
+Processando linha 228/1000
+Progresso: 229000/1002001 pontos (22.9%) - Tempo estimado restante: 53.4 minutos
+Processando linha 229/1000
+Progresso: 230000/1002001 pontos (23.0%) - Tempo estimado restante: 53.6 minutos
+Processando linha 230/1000
+Progresso: 231000/1002001 pontos (23.1%) - Tempo estimado restante: 53.8 minutos
+Processando linha 231/1000
+Progresso: 232000/1002001 pontos (23.2%) - Tempo estimado restante: 53.9 minutos
+Processando linha 232/1000
+Progresso: 233000/1002001 pontos (23.3%) - Tempo estimado restante: 54.1 minutos
+Processando linha 233/1000
+Progresso: 234000/1002001 pontos (23.4%) - Tempo estimado restante: 54.3 minutos
+Processando linha 234/1000
+Progresso: 235000/1002001 pontos (23.5%) - Tempo estimado restante: 54.4 minutos
+Processando linha 235/1000
+Progresso: 236000/1002001 pontos (23.6%) - Tempo estimado restante: 54.6 minutos
+Processando linha 236/1000
+Progresso: 237000/1002001 pontos (23.7%) - Tempo estimado restante: 54.7 minutos
+Processando linha 237/1000
+Progresso: 238000/1002001 pontos (23.8%) - Tempo estimado restante: 54.9 minutos
+Processando linha 238/1000
+Progresso: 239000/1002001 pontos (23.9%) - Tempo estimado restante: 55.0 minutos
+Processando linha 239/1000
+Progresso: 240000/1002001 pontos (24.0%) - Tempo estimado restante: 55.2 minutos
+Processando linha 240/1000
+Progresso: 241000/1002001 pontos (24.1%) - Tempo estimado restante: 55.5 minutos
+Processando linha 241/1000
+Progresso: 242000/1002001 pontos (24.2%) - Tempo estimado restante: 55.6 minutos
+Processando linha 242/1000
+Progresso: 243000/1002001 pontos (24.3%) - Tempo estimado restante: 55.7 minutos
+Processando linha 243/1000
+Progresso: 244000/1002001 pontos (24.4%) - Tempo estimado restante: 55.9 minutos
+Processando linha 244/1000
+Progresso: 245000/1002001 pontos (24.5%) - Tempo estimado restante: 56.0 minutos
+Processando linha 245/1000
+Progresso: 246000/1002001 pontos (24.6%) - Tempo estimado restante: 56.1 minutos
+Processando linha 246/1000
+Progresso: 247000/1002001 pontos (24.7%) - Tempo estimado restante: 56.2 minutos
+Processando linha 247/1000
+Progresso: 248000/1002001 pontos (24.8%) - Tempo estimado restante: 56.3 minutos
+Processando linha 248/1000
+Progresso: 249000/1002001 pontos (24.9%) - Tempo estimado restante: 56.4 minutos
+Processando linha 249/1000
+Progresso: 250000/1002001 pontos (25.0%) - Tempo estimado restante: 56.5 minutos
+Processando linha 250/1000
+Progresso: 251000/1002001 pontos (25.0%) - Tempo estimado restante: 56.6 minutos
+Processando linha 251/1000
+Progresso: 252000/1002001 pontos (25.1%) - Tempo estimado restante: 56.7 minutos
+Processando linha 252/1000
+Progresso: 253000/1002001 pontos (25.2%) - Tempo estimado restante: 56.8 minutos
+Processando linha 253/1000
+Progresso: 254000/1002001 pontos (25.3%) - Tempo estimado restante: 56.9 minutos
+Processando linha 254/1000
+Progresso: 255000/1002001 pontos (25.4%) - Tempo estimado restante: 57.0 minutos
+Processando linha 255/1000
+Progresso: 256000/1002001 pontos (25.5%) - Tempo estimado restante: 57.1 minutos
+Processando linha 256/1000
+Progresso: 257000/1002001 pontos (25.6%) - Tempo estimado restante: 57.2 minutos
+Processando linha 257/1000
+Progresso: 258000/1002001 pontos (25.7%) - Tempo estimado restante: 57.2 minutos
+Processando linha 258/1000
+Progresso: 259000/1002001 pontos (25.8%) - Tempo estimado restante: 57.3 minutos
+Processando linha 259/1000
+Progresso: 260000/1002001 pontos (25.9%) - Tempo estimado restante: 57.4 minutos
+Processando linha 260/1000
+Progresso: 261000/1002001 pontos (26.0%) - Tempo estimado restante: 57.4 minutos
+Processando linha 261/1000
+Progresso: 262000/1002001 pontos (26.1%) - Tempo estimado restante: 57.5 minutos
+Processando linha 262/1000
+Progresso: 263000/1002001 pontos (26.2%) - Tempo estimado restante: 57.6 minutos
+Processando linha 263/1000
+Progresso: 264000/1002001 pontos (26.3%) - Tempo estimado restante: 57.6 minutos
+Processando linha 264/1000
+Progresso: 265000/1002001 pontos (26.4%) - Tempo estimado restante: 57.7 minutos
+Processando linha 265/1000
+Progresso: 266000/1002001 pontos (26.5%) - Tempo estimado restante: 57.8 minutos
+Processando linha 266/1000
+Progresso: 267000/1002001 pontos (26.6%) - Tempo estimado restante: 57.8 minutos
+Processando linha 267/1000
+Progresso: 268000/1002001 pontos (26.7%) - Tempo estimado restante: 57.9 minutos
+Processando linha 268/1000
+Progresso: 269000/1002001 pontos (26.8%) - Tempo estimado restante: 57.9 minutos
+Processando linha 269/1000
+Progresso: 270000/1002001 pontos (26.9%) - Tempo estimado restante: 58.0 minutos
+Processando linha 270/1000
+Progresso: 271000/1002001 pontos (27.0%) - Tempo estimado restante: 58.0 minutos
+Processando linha 271/1000
+Progresso: 272000/1002001 pontos (27.1%) - Tempo estimado restante: 58.0 minutos
+Processando linha 272/1000
+Progresso: 273000/1002001 pontos (27.2%) - Tempo estimado restante: 58.1 minutos
+Processando linha 273/1000
+Progresso: 274000/1002001 pontos (27.3%) - Tempo estimado restante: 58.1 minutos
+Processando linha 274/1000
+Progresso: 275000/1002001 pontos (27.4%) - Tempo estimado restante: 58.2 minutos
+Processando linha 275/1000
+Progresso: 276000/1002001 pontos (27.5%) - Tempo estimado restante: 58.2 minutos
+Processando linha 276/1000
+Progresso: 277000/1002001 pontos (27.6%) - Tempo estimado restante: 58.2 minutos
+Processando linha 277/1000
+Progresso: 278000/1002001 pontos (27.7%) - Tempo estimado restante: 58.2 minutos
+Processando linha 278/1000
+Progresso: 279000/1002001 pontos (27.8%) - Tempo estimado restante: 58.3 minutos
+Processando linha 279/1000
+Progresso: 280000/1002001 pontos (27.9%) - Tempo estimado restante: 58.3 minutos
+Processando linha 280/1000
+Progresso: 281000/1002001 pontos (28.0%) - Tempo estimado restante: 58.3 minutos
+Processando linha 281/1000
+Progresso: 282000/1002001 pontos (28.1%) - Tempo estimado restante: 58.3 minutos
+Processando linha 282/1000
+Progresso: 283000/1002001 pontos (28.2%) - Tempo estimado restante: 58.4 minutos
+Processando linha 283/1000
+Progresso: 284000/1002001 pontos (28.3%) - Tempo estimado restante: 58.4 minutos
+Processando linha 284/1000
+Progresso: 285000/1002001 pontos (28.4%) - Tempo estimado restante: 58.4 minutos
+Processando linha 285/1000
+Progresso: 286000/1002001 pontos (28.5%) - Tempo estimado restante: 58.4 minutos
+Processando linha 286/1000
+Progresso: 287000/1002001 pontos (28.6%) - Tempo estimado restante: 58.4 minutos
+Processando linha 287/1000
+Progresso: 288000/1002001 pontos (28.7%) - Tempo estimado restante: 58.4 minutos
+Processando linha 288/1000
+Progresso: 289000/1002001 pontos (28.8%) - Tempo estimado restante: 58.4 minutos
+Processando linha 289/1000
+Progresso: 290000/1002001 pontos (28.9%) - Tempo estimado restante: 58.4 minutos
+Processando linha 290/1000
+Progresso: 291000/1002001 pontos (29.0%) - Tempo estimado restante: 58.4 minutos
+Processando linha 291/1000
+Progresso: 292000/1002001 pontos (29.1%) - Tempo estimado restante: 58.4 minutos
+Processando linha 292/1000
+Progresso: 293000/1002001 pontos (29.2%) - Tempo estimado restante: 58.4 minutos
+Processando linha 293/1000
+Progresso: 294000/1002001 pontos (29.3%) - Tempo estimado restante: 58.4 minutos
+Processando linha 294/1000
+Progresso: 295000/1002001 pontos (29.4%) - Tempo estimado restante: 58.4 minutos
+Processando linha 295/1000
+Progresso: 296000/1002001 pontos (29.5%) - Tempo estimado restante: 58.4 minutos
+Processando linha 296/1000
+Progresso: 297000/1002001 pontos (29.6%) - Tempo estimado restante: 58.4 minutos
+Processando linha 297/1000
+Progresso: 298000/1002001 pontos (29.7%) - Tempo estimado restante: 58.4 minutos
+Processando linha 298/1000
+Progresso: 299000/1002001 pontos (29.8%) - Tempo estimado restante: 58.4 minutos
+Processando linha 299/1000
+Progresso: 300000/1002001 pontos (29.9%) - Tempo estimado restante: 58.3 minutos
+Processando linha 300/1000
+Progresso: 301000/1002001 pontos (30.0%) - Tempo estimado restante: 58.5 minutos
+Processando linha 301/1000
+Progresso: 302000/1002001 pontos (30.1%) - Tempo estimado restante: 58.5 minutos
+Processando linha 302/1000
+Progresso: 303000/1002001 pontos (30.2%) - Tempo estimado restante: 58.4 minutos
+Processando linha 303/1000
+Progresso: 304000/1002001 pontos (30.3%) - Tempo estimado restante: 58.4 minutos
+Processando linha 304/1000
+Progresso: 305000/1002001 pontos (30.4%) - Tempo estimado restante: 58.4 minutos
+Processando linha 305/1000
+Progresso: 306000/1002001 pontos (30.5%) - Tempo estimado restante: 58.4 minutos
+Processando linha 306/1000
+Progresso: 307000/1002001 pontos (30.6%) - Tempo estimado restante: 58.4 minutos
+Processando linha 307/1000
+Progresso: 308000/1002001 pontos (30.7%) - Tempo estimado restante: 58.3 minutos
+Processando linha 308/1000
+Progresso: 309000/1002001 pontos (30.8%) - Tempo estimado restante: 58.3 minutos
+Processando linha 309/1000
+Progresso: 310000/1002001 pontos (30.9%) - Tempo estimado restante: 58.3 minutos
+Processando linha 310/1000
+Progresso: 311000/1002001 pontos (31.0%) - Tempo estimado restante: 58.2 minutos
+Processando linha 311/1000
+Progresso: 312000/1002001 pontos (31.1%) - Tempo estimado restante: 58.2 minutos
+Processando linha 312/1000
+Progresso: 313000/1002001 pontos (31.2%) - Tempo estimado restante: 58.2 minutos
+Processando linha 313/1000
+Progresso: 314000/1002001 pontos (31.3%) - Tempo estimado restante: 58.1 minutos
+Processando linha 314/1000
+Progresso: 315000/1002001 pontos (31.4%) - Tempo estimado restante: 58.1 minutos
+Processando linha 315/1000
+Progresso: 316000/1002001 pontos (31.5%) - Tempo estimado restante: 58.1 minutos
+Processando linha 316/1000
+Progresso: 317000/1002001 pontos (31.6%) - Tempo estimado restante: 58.0 minutos
+Processando linha 317/1000
+Progresso: 318000/1002001 pontos (31.7%) - Tempo estimado restante: 58.0 minutos
+Processando linha 318/1000
+Progresso: 319000/1002001 pontos (31.8%) - Tempo estimado restante: 58.0 minutos
+Processando linha 319/1000
+Progresso: 320000/1002001 pontos (31.9%) - Tempo estimado restante: 57.9 minutos
+Processando linha 320/1000
+Progresso: 321000/1002001 pontos (32.0%) - Tempo estimado restante: 57.9 minutos
+Processando linha 321/1000
+Progresso: 322000/1002001 pontos (32.1%) - Tempo estimado restante: 57.8 minutos
+Processando linha 322/1000
+Progresso: 323000/1002001 pontos (32.2%) - Tempo estimado restante: 57.8 minutos
+Processando linha 323/1000
+Progresso: 324000/1002001 pontos (32.3%) - Tempo estimado restante: 57.7 minutos
+Processando linha 324/1000
+Progresso: 325000/1002001 pontos (32.4%) - Tempo estimado restante: 57.7 minutos
+Processando linha 325/1000
+Progresso: 326000/1002001 pontos (32.5%) - Tempo estimado restante: 57.6 minutos
+Processando linha 326/1000
+Progresso: 327000/1002001 pontos (32.6%) - Tempo estimado restante: 57.6 minutos
+Processando linha 327/1000
+Progresso: 328000/1002001 pontos (32.7%) - Tempo estimado restante: 57.5 minutos
+Processando linha 328/1000
+Progresso: 329000/1002001 pontos (32.8%) - Tempo estimado restante: 57.5 minutos
+Processando linha 329/1000
+Progresso: 330000/1002001 pontos (32.9%) - Tempo estimado restante: 57.4 minutos
+Processando linha 330/1000
+Progresso: 331000/1002001 pontos (33.0%) - Tempo estimado restante: 57.4 minutos
+Processando linha 331/1000
+Progresso: 332000/1002001 pontos (33.1%) - Tempo estimado restante: 57.3 minutos
+Processando linha 332/1000
+Progresso: 333000/1002001 pontos (33.2%) - Tempo estimado restante: 57.3 minutos
+Processando linha 333/1000
+Progresso: 334000/1002001 pontos (33.3%) - Tempo estimado restante: 57.2 minutos
+Processando linha 334/1000
+Progresso: 335000/1002001 pontos (33.4%) - Tempo estimado restante: 57.2 minutos
+Processando linha 335/1000
+Progresso: 336000/1002001 pontos (33.5%) - Tempo estimado restante: 57.1 minutos
+Processando linha 336/1000
+Progresso: 337000/1002001 pontos (33.6%) - Tempo estimado restante: 57.0 minutos
+Processando linha 337/1000
+Progresso: 338000/1002001 pontos (33.7%) - Tempo estimado restante: 57.0 minutos
+Processando linha 338/1000
+Progresso: 339000/1002001 pontos (33.8%) - Tempo estimado restante: 56.9 minutos
+Processando linha 339/1000
+Progresso: 340000/1002001 pontos (33.9%) - Tempo estimado restante: 56.9 minutos
+Processando linha 340/1000
+Progresso: 341000/1002001 pontos (34.0%) - Tempo estimado restante: 56.8 minutos
+Processando linha 341/1000
+Progresso: 342000/1002001 pontos (34.1%) - Tempo estimado restante: 56.7 minutos
+Processando linha 342/1000
+Progresso: 343000/1002001 pontos (34.2%) - Tempo estimado restante: 56.7 minutos
+Processando linha 343/1000
+Progresso: 344000/1002001 pontos (34.3%) - Tempo estimado restante: 56.6 minutos
+Processando linha 344/1000
+Progresso: 345000/1002001 pontos (34.4%) - Tempo estimado restante: 56.6 minutos
+Processando linha 345/1000
+Progresso: 346000/1002001 pontos (34.5%) - Tempo estimado restante: 56.5 minutos
+Processando linha 346/1000
+Progresso: 347000/1002001 pontos (34.6%) - Tempo estimado restante: 56.4 minutos
+Processando linha 347/1000
+Progresso: 348000/1002001 pontos (34.7%) - Tempo estimado restante: 56.4 minutos
+Processando linha 348/1000
+Progresso: 349000/1002001 pontos (34.8%) - Tempo estimado restante: 56.3 minutos
+Processando linha 349/1000
+Progresso: 350000/1002001 pontos (34.9%) - Tempo estimado restante: 56.2 minutos
+Processando linha 350/1000
+Progresso: 351000/1002001 pontos (35.0%) - Tempo estimado restante: 56.2 minutos
+Processando linha 351/1000
+Progresso: 352000/1002001 pontos (35.1%) - Tempo estimado restante: 56.1 minutos
+Processando linha 352/1000
+Progresso: 353000/1002001 pontos (35.2%) - Tempo estimado restante: 56.0 minutos
+Processando linha 353/1000
+Progresso: 354000/1002001 pontos (35.3%) - Tempo estimado restante: 56.0 minutos
+Processando linha 354/1000
+Progresso: 355000/1002001 pontos (35.4%) - Tempo estimado restante: 55.9 minutos
+Processando linha 355/1000
+Progresso: 356000/1002001 pontos (35.5%) - Tempo estimado restante: 55.8 minutos
+Processando linha 356/1000
+Progresso: 357000/1002001 pontos (35.6%) - Tempo estimado restante: 55.8 minutos
+Processando linha 357/1000
+Progresso: 358000/1002001 pontos (35.7%) - Tempo estimado restante: 55.7 minutos
+Processando linha 358/1000
+Progresso: 359000/1002001 pontos (35.8%) - Tempo estimado restante: 55.6 minutos
+Processando linha 359/1000
+Progresso: 360000/1002001 pontos (35.9%) - Tempo estimado restante: 55.6 minutos
+Processando linha 360/1000
+Progresso: 361000/1002001 pontos (36.0%) - Tempo estimado restante: 55.5 minutos
+Processando linha 361/1000
+Progresso: 362000/1002001 pontos (36.1%) - Tempo estimado restante: 55.4 minutos
+Processando linha 362/1000
+Progresso: 363000/1002001 pontos (36.2%) - Tempo estimado restante: 55.4 minutos
+Processando linha 363/1000
+Progresso: 364000/1002001 pontos (36.3%) - Tempo estimado restante: 55.3 minutos
+Processando linha 364/1000
+Progresso: 365000/1002001 pontos (36.4%) - Tempo estimado restante: 55.2 minutos
+Processando linha 365/1000
+Progresso: 366000/1002001 pontos (36.5%) - Tempo estimado restante: 55.1 minutos
+Processando linha 366/1000
+Progresso: 367000/1002001 pontos (36.6%) - Tempo estimado restante: 55.1 minutos
+Processando linha 367/1000
+Progresso: 368000/1002001 pontos (36.7%) - Tempo estimado restante: 55.0 minutos
+Processando linha 368/1000
+Progresso: 369000/1002001 pontos (36.8%) - Tempo estimado restante: 54.9 minutos
+Processando linha 369/1000
+Progresso: 370000/1002001 pontos (36.9%) - Tempo estimado restante: 54.9 minutos
+Processando linha 370/1000
+Progresso: 371000/1002001 pontos (37.0%) - Tempo estimado restante: 54.8 minutos
+Processando linha 371/1000
+Progresso: 372000/1002001 pontos (37.1%) - Tempo estimado restante: 54.7 minutos
+Processando linha 372/1000
+Progresso: 373000/1002001 pontos (37.2%) - Tempo estimado restante: 54.6 minutos
+Processando linha 373/1000
+Progresso: 374000/1002001 pontos (37.3%) - Tempo estimado restante: 54.6 minutos
+Processando linha 374/1000
+Progresso: 375000/1002001 pontos (37.4%) - Tempo estimado restante: 54.5 minutos
+Processando linha 375/1000
+Progresso: 376000/1002001 pontos (37.5%) - Tempo estimado restante: 54.5 minutos
+Processando linha 376/1000
+Progresso: 377000/1002001 pontos (37.6%) - Tempo estimado restante: 54.5 minutos
+Processando linha 377/1000
+Progresso: 378000/1002001 pontos (37.7%) - Tempo estimado restante: 54.4 minutos
+Processando linha 378/1000
+Progresso: 379000/1002001 pontos (37.8%) - Tempo estimado restante: 54.3 minutos
+Processando linha 379/1000
+Progresso: 380000/1002001 pontos (37.9%) - Tempo estimado restante: 54.2 minutos
+Processando linha 380/1000
+Progresso: 381000/1002001 pontos (38.0%) - Tempo estimado restante: 54.2 minutos
+Processando linha 381/1000
+Progresso: 382000/1002001 pontos (38.1%) - Tempo estimado restante: 54.1 minutos
+Processando linha 382/1000
+Progresso: 383000/1002001 pontos (38.2%) - Tempo estimado restante: 54.0 minutos
+Processando linha 383/1000
+Progresso: 384000/1002001 pontos (38.3%) - Tempo estimado restante: 53.9 minutos
+Processando linha 384/1000
+Progresso: 385000/1002001 pontos (38.4%) - Tempo estimado restante: 53.9 minutos
+Processando linha 385/1000
+Progresso: 386000/1002001 pontos (38.5%) - Tempo estimado restante: 53.8 minutos
+Processando linha 386/1000
+Progresso: 387000/1002001 pontos (38.6%) - Tempo estimado restante: 53.7 minutos
+Processando linha 387/1000
+Progresso: 388000/1002001 pontos (38.7%) - Tempo estimado restante: 53.6 minutos
+Processando linha 388/1000
+Progresso: 389000/1002001 pontos (38.8%) - Tempo estimado restante: 53.6 minutos
+Processando linha 389/1000
+Progresso: 390000/1002001 pontos (38.9%) - Tempo estimado restante: 53.5 minutos
+Processando linha 390/1000
+Progresso: 391000/1002001 pontos (39.0%) - Tempo estimado restante: 53.4 minutos
+Processando linha 391/1000
+Progresso: 392000/1002001 pontos (39.1%) - Tempo estimado restante: 53.3 minutos
+Processando linha 392/1000
+Progresso: 393000/1002001 pontos (39.2%) - Tempo estimado restante: 53.2 minutos
+Processando linha 393/1000
+Progresso: 394000/1002001 pontos (39.3%) - Tempo estimado restante: 53.2 minutos
+Processando linha 394/1000
+Progresso: 395000/1002001 pontos (39.4%) - Tempo estimado restante: 53.1 minutos
+Processando linha 395/1000
+Progresso: 396000/1002001 pontos (39.5%) - Tempo estimado restante: 53.0 minutos
+Processando linha 396/1000
+Progresso: 397000/1002001 pontos (39.6%) - Tempo estimado restante: 52.9 minutos
+Processando linha 397/1000
+Progresso: 398000/1002001 pontos (39.7%) - Tempo estimado restante: 52.9 minutos
+Processando linha 398/1000
+Progresso: 399000/1002001 pontos (39.8%) - Tempo estimado restante: 52.8 minutos
+Processando linha 399/1000
+Progresso: 400000/1002001 pontos (39.9%) - Tempo estimado restante: 52.7 minutos
+Processando linha 400/1000
+Progresso: 401000/1002001 pontos (40.0%) - Tempo estimado restante: 52.6 minutos
+Processando linha 401/1000
+Progresso: 402000/1002001 pontos (40.1%) - Tempo estimado restante: 52.5 minutos
+Processando linha 402/1000
+Progresso: 403000/1002001 pontos (40.2%) - Tempo estimado restante: 52.5 minutos
+Processando linha 403/1000
+Progresso: 404000/1002001 pontos (40.3%) - Tempo estimado restante: 52.4 minutos
+Processando linha 404/1000
+Progresso: 405000/1002001 pontos (40.4%) - Tempo estimado restante: 52.3 minutos
+Processando linha 405/1000
+Progresso: 406000/1002001 pontos (40.5%) - Tempo estimado restante: 52.2 minutos
+Processando linha 406/1000
+Progresso: 407000/1002001 pontos (40.6%) - Tempo estimado restante: 52.1 minutos
+Processando linha 407/1000
+Progresso: 408000/1002001 pontos (40.7%) - Tempo estimado restante: 52.1 minutos
+Processando linha 408/1000
+Progresso: 409000/1002001 pontos (40.8%) - Tempo estimado restante: 52.0 minutos
+Processando linha 409/1000
+Progresso: 410000/1002001 pontos (40.9%) - Tempo estimado restante: 51.9 minutos
+Processando linha 410/1000
+Progresso: 411000/1002001 pontos (41.0%) - Tempo estimado restante: 51.8 minutos
+Processando linha 411/1000
+Progresso: 412000/1002001 pontos (41.1%) - Tempo estimado restante: 51.7 minutos
+Processando linha 412/1000
+Progresso: 413000/1002001 pontos (41.2%) - Tempo estimado restante: 51.7 minutos
+Processando linha 413/1000
+Progresso: 414000/1002001 pontos (41.3%) - Tempo estimado restante: 51.6 minutos
+Processando linha 414/1000
+Progresso: 415000/1002001 pontos (41.4%) - Tempo estimado restante: 51.5 minutos
+Processando linha 415/1000
+Progresso: 416000/1002001 pontos (41.5%) - Tempo estimado restante: 51.4 minutos
+Processando linha 416/1000
+Progresso: 417000/1002001 pontos (41.6%) - Tempo estimado restante: 51.4 minutos
+Processando linha 417/1000
+Progresso: 418000/1002001 pontos (41.7%) - Tempo estimado restante: 51.3 minutos
+Processando linha 418/1000
+Progresso: 419000/1002001 pontos (41.8%) - Tempo estimado restante: 51.2 minutos
+Processando linha 419/1000
+Progresso: 420000/1002001 pontos (41.9%) - Tempo estimado restante: 51.1 minutos
+Processando linha 420/1000
+Progresso: 421000/1002001 pontos (42.0%) - Tempo estimado restante: 51.0 minutos
+Processando linha 421/1000
+Progresso: 422000/1002001 pontos (42.1%) - Tempo estimado restante: 51.0 minutos
+Processando linha 422/1000
+Progresso: 423000/1002001 pontos (42.2%) - Tempo estimado restante: 50.9 minutos
+Processando linha 423/1000
+Progresso: 424000/1002001 pontos (42.3%) - Tempo estimado restante: 50.8 minutos
+Processando linha 424/1000
+Progresso: 425000/1002001 pontos (42.4%) - Tempo estimado restante: 50.7 minutos
+Processando linha 425/1000
+Progresso: 426000/1002001 pontos (42.5%) - Tempo estimado restante: 50.6 minutos
+Processando linha 426/1000
+Progresso: 427000/1002001 pontos (42.6%) - Tempo estimado restante: 50.6 minutos
+Processando linha 427/1000
+Progresso: 428000/1002001 pontos (42.7%) - Tempo estimado restante: 50.5 minutos
+Processando linha 428/1000
+Progresso: 429000/1002001 pontos (42.8%) - Tempo estimado restante: 50.4 minutos
+Processando linha 429/1000
+Progresso: 430000/1002001 pontos (42.9%) - Tempo estimado restante: 50.3 minutos
+Processando linha 430/1000
+Progresso: 431000/1002001 pontos (43.0%) - Tempo estimado restante: 50.3 minutos
+Processando linha 431/1000
+Progresso: 432000/1002001 pontos (43.1%) - Tempo estimado restante: 50.2 minutos
+Processando linha 432/1000
+Progresso: 433000/1002001 pontos (43.2%) - Tempo estimado restante: 50.1 minutos
+Processando linha 433/1000
+Progresso: 434000/1002001 pontos (43.3%) - Tempo estimado restante: 50.0 minutos
+Processando linha 434/1000
+Progresso: 435000/1002001 pontos (43.4%) - Tempo estimado restante: 50.0 minutos
+Processando linha 435/1000
+Progresso: 436000/1002001 pontos (43.5%) - Tempo estimado restante: 49.9 minutos
+Processando linha 436/1000
+Progresso: 437000/1002001 pontos (43.6%) - Tempo estimado restante: 49.8 minutos
+Processando linha 437/1000
+Progresso: 438000/1002001 pontos (43.7%) - Tempo estimado restante: 49.7 minutos
+Processando linha 438/1000
+Progresso: 439000/1002001 pontos (43.8%) - Tempo estimado restante: 49.7 minutos
+Processando linha 439/1000
+Progresso: 440000/1002001 pontos (43.9%) - Tempo estimado restante: 49.6 minutos
+Processando linha 440/1000
+Progresso: 441000/1002001 pontos (44.0%) - Tempo estimado restante: 49.5 minutos
+Processando linha 441/1000
+Progresso: 442000/1002001 pontos (44.1%) - Tempo estimado restante: 49.4 minutos
+Processando linha 442/1000
+Progresso: 443000/1002001 pontos (44.2%) - Tempo estimado restante: 49.4 minutos
+Processando linha 443/1000
+Progresso: 444000/1002001 pontos (44.3%) - Tempo estimado restante: 49.3 minutos
+Processando linha 444/1000
+Progresso: 445000/1002001 pontos (44.4%) - Tempo estimado restante: 49.2 minutos
+Processando linha 445/1000
+Progresso: 446000/1002001 pontos (44.5%) - Tempo estimado restante: 49.1 minutos
+Processando linha 446/1000
+Progresso: 447000/1002001 pontos (44.6%) - Tempo estimado restante: 49.1 minutos
+Processando linha 447/1000
+Progresso: 448000/1002001 pontos (44.7%) - Tempo estimado restante: 49.0 minutos
+Processando linha 448/1000
+Progresso: 449000/1002001 pontos (44.8%) - Tempo estimado restante: 48.9 minutos
+Processando linha 449/1000
+Progresso: 450000/1002001 pontos (44.9%) - Tempo estimado restante: 48.9 minutos
+Processando linha 450/1000
+Progresso: 451000/1002001 pontos (45.0%) - Tempo estimado restante: 48.8 minutos
+Processando linha 451/1000
+Progresso: 452000/1002001 pontos (45.1%) - Tempo estimado restante: 48.7 minutos
+Processando linha 452/1000
+Progresso: 453000/1002001 pontos (45.2%) - Tempo estimado restante: 48.7 minutos
+Processando linha 453/1000
+Progresso: 454000/1002001 pontos (45.3%) - Tempo estimado restante: 48.6 minutos
+Processando linha 454/1000
+Progresso: 455000/1002001 pontos (45.4%) - Tempo estimado restante: 48.5 minutos
+Processando linha 455/1000
+Progresso: 456000/1002001 pontos (45.5%) - Tempo estimado restante: 48.5 minutos
+Processando linha 456/1000
+Progresso: 457000/1002001 pontos (45.6%) - Tempo estimado restante: 48.4 minutos
+Processando linha 457/1000
+Progresso: 458000/1002001 pontos (45.7%) - Tempo estimado restante: 48.3 minutos
+Processando linha 458/1000
+Progresso: 459000/1002001 pontos (45.8%) - Tempo estimado restante: 48.3 minutos
+Processando linha 459/1000
+Progresso: 460000/1002001 pontos (45.9%) - Tempo estimado restante: 48.2 minutos
+Processando linha 460/1000
+Progresso: 461000/1002001 pontos (46.0%) - Tempo estimado restante: 48.1 minutos
+Processando linha 461/1000
+Progresso: 462000/1002001 pontos (46.1%) - Tempo estimado restante: 48.1 minutos
+Processando linha 462/1000
+Progresso: 463000/1002001 pontos (46.2%) - Tempo estimado restante: 48.0 minutos
+Processando linha 463/1000
+Progresso: 464000/1002001 pontos (46.3%) - Tempo estimado restante: 48.0 minutos
+Processando linha 464/1000
+Progresso: 465000/1002001 pontos (46.4%) - Tempo estimado restante: 47.9 minutos
+Processando linha 465/1000
+Progresso: 466000/1002001 pontos (46.5%) - Tempo estimado restante: 47.9 minutos
+Processando linha 466/1000
+Progresso: 467000/1002001 pontos (46.6%) - Tempo estimado restante: 47.8 minutos
+Processando linha 467/1000
+Progresso: 468000/1002001 pontos (46.7%) - Tempo estimado restante: 47.7 minutos
+Processando linha 468/1000
+Progresso: 469000/1002001 pontos (46.8%) - Tempo estimado restante: 47.7 minutos
+Processando linha 469/1000
+Progresso: 470000/1002001 pontos (46.9%) - Tempo estimado restante: 47.8 minutos
+Processando linha 470/1000
+Progresso: 471000/1002001 pontos (47.0%) - Tempo estimado restante: 47.7 minutos
+Processando linha 471/1000
+Progresso: 472000/1002001 pontos (47.1%) - Tempo estimado restante: 47.7 minutos
+Processando linha 472/1000
+Progresso: 473000/1002001 pontos (47.2%) - Tempo estimado restante: 47.6 minutos
+Processando linha 473/1000
+Progresso: 474000/1002001 pontos (47.3%) - Tempo estimado restante: 47.6 minutos
+Processando linha 474/1000
+Progresso: 475000/1002001 pontos (47.4%) - Tempo estimado restante: 47.6 minutos
+Processando linha 475/1000
+Progresso: 476000/1002001 pontos (47.5%) - Tempo estimado restante: 47.5 minutos
+Processando linha 476/1000
+Progresso: 477000/1002001 pontos (47.6%) - Tempo estimado restante: 47.5 minutos
+Processando linha 477/1000
+Progresso: 478000/1002001 pontos (47.7%) - Tempo estimado restante: 47.5 minutos
+Processando linha 478/1000
+Progresso: 479000/1002001 pontos (47.8%) - Tempo estimado restante: 47.4 minutos
+Processando linha 479/1000
+Progresso: 480000/1002001 pontos (47.9%) - Tempo estimado restante: 47.4 minutos
+Processando linha 480/1000
+Progresso: 481000/1002001 pontos (48.0%) - Tempo estimado restante: 47.4 minutos
+Processando linha 481/1000
+Progresso: 482000/1002001 pontos (48.1%) - Tempo estimado restante: 47.4 minutos
+Processando linha 482/1000
+Progresso: 483000/1002001 pontos (48.2%) - Tempo estimado restante: 47.4 minutos
+Processando linha 483/1000
+Progresso: 484000/1002001 pontos (48.3%) - Tempo estimado restante: 47.4 minutos
+Processando linha 484/1000
+Progresso: 485000/1002001 pontos (48.4%) - Tempo estimado restante: 47.4 minutos
+Processando linha 485/1000
+Progresso: 486000/1002001 pontos (48.5%) - Tempo estimado restante: 47.4 minutos
+Processando linha 486/1000
+Progresso: 487000/1002001 pontos (48.6%) - Tempo estimado restante: 47.4 minutos
+Processando linha 487/1000
+Progresso: 488000/1002001 pontos (48.7%) - Tempo estimado restante: 47.4 minutos
+Processando linha 488/1000
+Progresso: 489000/1002001 pontos (48.8%) - Tempo estimado restante: 47.5 minutos
+Processando linha 489/1000
+Progresso: 490000/1002001 pontos (48.9%) - Tempo estimado restante: 47.6 minutos
+Processando linha 490/1000
+Progresso: 491000/1002001 pontos (49.0%) - Tempo estimado restante: 47.6 minutos
+Processando linha 491/1000
+Progresso: 492000/1002001 pontos (49.1%) - Tempo estimado restante: 47.7 minutos
+Processando linha 492/1000
+Progresso: 493000/1002001 pontos (49.2%) - Tempo estimado restante: 47.9 minutos
+Processando linha 493/1000
+Progresso: 494000/1002001 pontos (49.3%) - Tempo estimado restante: 48.0 minutos
+Processando linha 494/1000
+Progresso: 495000/1002001 pontos (49.4%) - Tempo estimado restante: 48.3 minutos
+Processando linha 495/1000
+Progresso: 496000/1002001 pontos (49.5%) - Tempo estimado restante: 48.6 minutos
+Processando linha 496/1000
+Progresso: 497000/1002001 pontos (49.6%) - Tempo estimado restante: 49.0 minutos
+Processando linha 497/1000
+Progresso: 498000/1002001 pontos (49.7%) - Tempo estimado restante: 49.6 minutos
+Processando linha 498/1000
+Progresso: 499000/1002001 pontos (49.8%) - Tempo estimado restante: 50.4 minutos
+Processando linha 499/1000
+Progresso: 500000/1002001 pontos (49.9%) - Tempo estimado restante: 51.4 minutos
+Processando linha 500/1000
+Progresso: 501000/1002001 pontos (50.0%) - Tempo estimado restante: 52.5 minutos
+Processando linha 501/1000
+Progresso: 502000/1002001 pontos (50.1%) - Tempo estimado restante: 53.5 minutos
+Processando linha 502/1000
+Progresso: 503000/1002001 pontos (50.2%) - Tempo estimado restante: 54.3 minutos
+Processando linha 503/1000
+Progresso: 504000/1002001 pontos (50.3%) - Tempo estimado restante: 54.8 minutos
+Processando linha 504/1000
+Progresso: 505000/1002001 pontos (50.4%) - Tempo estimado restante: 55.1 minutos
+Processando linha 505/1000
+Progresso: 506000/1002001 pontos (50.5%) - Tempo estimado restante: 55.4 minutos
+Processando linha 506/1000
+Progresso: 507000/1002001 pontos (50.6%) - Tempo estimado restante: 55.5 minutos
+Processando linha 507/1000
+Progresso: 508000/1002001 pontos (50.7%) - Tempo estimado restante: 55.6 minutos
+Processando linha 508/1000
+Progresso: 509000/1002001 pontos (50.8%) - Tempo estimado restante: 55.7 minutos
+Processando linha 509/1000
+Progresso: 510000/1002001 pontos (50.9%) - Tempo estimado restante: 55.7 minutos
+Processando linha 510/1000
+Progresso: 511000/1002001 pontos (51.0%) - Tempo estimado restante: 55.7 minutos
+Processando linha 511/1000
+Progresso: 512000/1002001 pontos (51.1%) - Tempo estimado restante: 55.7 minutos
+Processando linha 512/1000
+Progresso: 513000/1002001 pontos (51.2%) - Tempo estimado restante: 55.7 minutos
+Processando linha 513/1000
+Progresso: 514000/1002001 pontos (51.3%) - Tempo estimado restante: 55.7 minutos
+Processando linha 514/1000
+Progresso: 515000/1002001 pontos (51.4%) - Tempo estimado restante: 55.6 minutos
+Processando linha 515/1000
+Progresso: 516000/1002001 pontos (51.5%) - Tempo estimado restante: 55.6 minutos
+Processando linha 516/1000
+Progresso: 517000/1002001 pontos (51.6%) - Tempo estimado restante: 55.5 minutos
+Processando linha 517/1000
+Progresso: 518000/1002001 pontos (51.7%) - Tempo estimado restante: 55.4 minutos
+Processando linha 518/1000
+Progresso: 519000/1002001 pontos (51.8%) - Tempo estimado restante: 55.3 minutos
+Processando linha 519/1000
+Progresso: 520000/1002001 pontos (51.9%) - Tempo estimado restante: 55.2 minutos
+Processando linha 520/1000
+Progresso: 521000/1002001 pontos (52.0%) - Tempo estimado restante: 55.1 minutos
+Processando linha 521/1000
+Progresso: 522000/1002001 pontos (52.1%) - Tempo estimado restante: 55.1 minutos
+Processando linha 522/1000
+Progresso: 523000/1002001 pontos (52.2%) - Tempo estimado restante: 55.0 minutos
+Processando linha 523/1000
+Progresso: 524000/1002001 pontos (52.3%) - Tempo estimado restante: 54.8 minutos
+Processando linha 524/1000
+Progresso: 525000/1002001 pontos (52.4%) - Tempo estimado restante: 54.7 minutos
+Processando linha 525/1000
+Progresso: 526000/1002001 pontos (52.5%) - Tempo estimado restante: 54.6 minutos
+Processando linha 526/1000
+Progresso: 527000/1002001 pontos (52.6%) - Tempo estimado restante: 54.5 minutos
+Processando linha 527/1000
+Progresso: 528000/1002001 pontos (52.7%) - Tempo estimado restante: 54.4 minutos
+Processando linha 528/1000
+Progresso: 529000/1002001 pontos (52.8%) - Tempo estimado restante: 54.3 minutos
+Processando linha 529/1000
+Progresso: 530000/1002001 pontos (52.9%) - Tempo estimado restante: 54.1 minutos
+Processando linha 530/1000
+Progresso: 531000/1002001 pontos (53.0%) - Tempo estimado restante: 54.0 minutos
+Processando linha 531/1000
+Progresso: 532000/1002001 pontos (53.1%) - Tempo estimado restante: 53.9 minutos
+Processando linha 532/1000
+Progresso: 533000/1002001 pontos (53.2%) - Tempo estimado restante: 53.8 minutos
+Processando linha 533/1000
+Progresso: 534000/1002001 pontos (53.3%) - Tempo estimado restante: 53.6 minutos
+Processando linha 534/1000
+Progresso: 535000/1002001 pontos (53.4%) - Tempo estimado restante: 53.5 minutos
+Processando linha 535/1000
+Progresso: 536000/1002001 pontos (53.5%) - Tempo estimado restante: 53.4 minutos
+Processando linha 536/1000
+Progresso: 537000/1002001 pontos (53.6%) - Tempo estimado restante: 53.2 minutos
+Processando linha 537/1000
+Progresso: 538000/1002001 pontos (53.7%) - Tempo estimado restante: 53.1 minutos
+Processando linha 538/1000
+Progresso: 539000/1002001 pontos (53.8%) - Tempo estimado restante: 52.9 minutos
+Processando linha 539/1000
+Progresso: 540000/1002001 pontos (53.9%) - Tempo estimado restante: 52.8 minutos
+Processando linha 540/1000
+Progresso: 541000/1002001 pontos (54.0%) - Tempo estimado restante: 52.7 minutos
+Processando linha 541/1000
+Progresso: 542000/1002001 pontos (54.1%) - Tempo estimado restante: 52.5 minutos
+Processando linha 542/1000
+Progresso: 543000/1002001 pontos (54.2%) - Tempo estimado restante: 52.4 minutos
+Processando linha 543/1000
+Progresso: 544000/1002001 pontos (54.3%) - Tempo estimado restante: 52.2 minutos
+Processando linha 544/1000
+Progresso: 545000/1002001 pontos (54.4%) - Tempo estimado restante: 52.1 minutos
+Processando linha 545/1000
+Progresso: 546000/1002001 pontos (54.5%) - Tempo estimado restante: 51.9 minutos
+Processando linha 546/1000
+Progresso: 547000/1002001 pontos (54.6%) - Tempo estimado restante: 51.8 minutos
+Processando linha 547/1000
+Progresso: 548000/1002001 pontos (54.7%) - Tempo estimado restante: 51.7 minutos
+Processando linha 548/1000
+Progresso: 549000/1002001 pontos (54.8%) - Tempo estimado restante: 51.5 minutos
+Processando linha 549/1000
+Progresso: 550000/1002001 pontos (54.9%) - Tempo estimado restante: 51.4 minutos
+Processando linha 550/1000
+Progresso: 551000/1002001 pontos (55.0%) - Tempo estimado restante: 51.2 minutos
+Processando linha 551/1000
+Progresso: 552000/1002001 pontos (55.1%) - Tempo estimado restante: 51.1 minutos
+Processando linha 552/1000
+Progresso: 553000/1002001 pontos (55.2%) - Tempo estimado restante: 50.9 minutos
+Processando linha 553/1000
+Progresso: 554000/1002001 pontos (55.3%) - Tempo estimado restante: 50.8 minutos
+Processando linha 554/1000
+Progresso: 555000/1002001 pontos (55.4%) - Tempo estimado restante: 50.6 minutos
+Processando linha 555/1000
+Progresso: 556000/1002001 pontos (55.5%) - Tempo estimado restante: 50.5 minutos
+Processando linha 556/1000
+Progresso: 557000/1002001 pontos (55.6%) - Tempo estimado restante: 50.3 minutos
+Processando linha 557/1000
+Progresso: 558000/1002001 pontos (55.7%) - Tempo estimado restante: 50.2 minutos
+Processando linha 558/1000
+Progresso: 559000/1002001 pontos (55.8%) - Tempo estimado restante: 50.0 minutos
+Processando linha 559/1000
+Progresso: 560000/1002001 pontos (55.9%) - Tempo estimado restante: 49.9 minutos
+Processando linha 560/1000
+Progresso: 561000/1002001 pontos (56.0%) - Tempo estimado restante: 49.7 minutos
+Processando linha 561/1000
+Progresso: 562000/1002001 pontos (56.1%) - Tempo estimado restante: 49.5 minutos
+Processando linha 562/1000
+Progresso: 563000/1002001 pontos (56.2%) - Tempo estimado restante: 49.4 minutos
+Processando linha 563/1000
+Progresso: 564000/1002001 pontos (56.3%) - Tempo estimado restante: 49.2 minutos
+Processando linha 564/1000
+Progresso: 565000/1002001 pontos (56.4%) - Tempo estimado restante: 49.1 minutos
+Processando linha 565/1000
+Progresso: 566000/1002001 pontos (56.5%) - Tempo estimado restante: 48.9 minutos
+Processando linha 566/1000
+Progresso: 567000/1002001 pontos (56.6%) - Tempo estimado restante: 48.8 minutos
+Processando linha 567/1000
+Progresso: 568000/1002001 pontos (56.7%) - Tempo estimado restante: 48.6 minutos
+Processando linha 568/1000
+Progresso: 569000/1002001 pontos (56.8%) - Tempo estimado restante: 48.5 minutos
+Processando linha 569/1000
+Progresso: 570000/1002001 pontos (56.9%) - Tempo estimado restante: 48.3 minutos
+Processando linha 570/1000
+Progresso: 571000/1002001 pontos (57.0%) - Tempo estimado restante: 48.2 minutos
+Processando linha 571/1000
+Progresso: 572000/1002001 pontos (57.1%) - Tempo estimado restante: 48.0 minutos
+Processando linha 572/1000
+Progresso: 573000/1002001 pontos (57.2%) - Tempo estimado restante: 47.9 minutos
+Processando linha 573/1000
+Progresso: 574000/1002001 pontos (57.3%) - Tempo estimado restante: 47.7 minutos
+Processando linha 574/1000
+Progresso: 575000/1002001 pontos (57.4%) - Tempo estimado restante: 47.6 minutos
+Processando linha 575/1000
+Progresso: 576000/1002001 pontos (57.5%) - Tempo estimado restante: 47.4 minutos
+Processando linha 576/1000
+Progresso: 577000/1002001 pontos (57.6%) - Tempo estimado restante: 47.2 minutos
+Processando linha 577/1000
+Progresso: 578000/1002001 pontos (57.7%) - Tempo estimado restante: 47.1 minutos
+Processando linha 578/1000
+Progresso: 579000/1002001 pontos (57.8%) - Tempo estimado restante: 46.9 minutos
+Processando linha 579/1000
+Progresso: 580000/1002001 pontos (57.9%) - Tempo estimado restante: 46.8 minutos
+Processando linha 580/1000
+Progresso: 581000/1002001 pontos (58.0%) - Tempo estimado restante: 46.6 minutos
+Processando linha 581/1000
+Progresso: 582000/1002001 pontos (58.1%) - Tempo estimado restante: 46.5 minutos
+Processando linha 582/1000
+Progresso: 583000/1002001 pontos (58.2%) - Tempo estimado restante: 46.3 minutos
+Processando linha 583/1000
+Progresso: 584000/1002001 pontos (58.3%) - Tempo estimado restante: 46.2 minutos
+Processando linha 584/1000
+Progresso: 585000/1002001 pontos (58.4%) - Tempo estimado restante: 46.0 minutos
+Processando linha 585/1000
+Progresso: 586000/1002001 pontos (58.5%) - Tempo estimado restante: 45.9 minutos
+Processando linha 586/1000
+Progresso: 587000/1002001 pontos (58.6%) - Tempo estimado restante: 45.7 minutos
+Processando linha 587/1000
+Progresso: 588000/1002001 pontos (58.7%) - Tempo estimado restante: 45.6 minutos
+Processando linha 588/1000
+Progresso: 589000/1002001 pontos (58.8%) - Tempo estimado restante: 45.5 minutos
+Processando linha 589/1000
+Progresso: 590000/1002001 pontos (58.9%) - Tempo estimado restante: 45.3 minutos
+Processando linha 590/1000
+Progresso: 591000/1002001 pontos (59.0%) - Tempo estimado restante: 45.2 minutos
+Processando linha 591/1000
+Progresso: 592000/1002001 pontos (59.1%) - Tempo estimado restante: 45.0 minutos
+Processando linha 592/1000
+Progresso: 593000/1002001 pontos (59.2%) - Tempo estimado restante: 44.9 minutos
+Processando linha 593/1000
+Progresso: 594000/1002001 pontos (59.3%) - Tempo estimado restante: 44.7 minutos
+Processando linha 594/1000
+Progresso: 595000/1002001 pontos (59.4%) - Tempo estimado restante: 44.6 minutos
+Processando linha 595/1000
+Progresso: 596000/1002001 pontos (59.5%) - Tempo estimado restante: 44.4 minutos
+Processando linha 596/1000
+Progresso: 597000/1002001 pontos (59.6%) - Tempo estimado restante: 44.3 minutos
+Processando linha 597/1000
+Progresso: 598000/1002001 pontos (59.7%) - Tempo estimado restante: 44.1 minutos
+Processando linha 598/1000
+Progresso: 599000/1002001 pontos (59.8%) - Tempo estimado restante: 44.0 minutos
+Processando linha 599/1000
+Progresso: 600000/1002001 pontos (59.9%) - Tempo estimado restante: 43.8 minutos
+Processando linha 600/1000
+Progresso: 601000/1002001 pontos (60.0%) - Tempo estimado restante: 43.7 minutos
+Processando linha 601/1000
+Progresso: 602000/1002001 pontos (60.1%) - Tempo estimado restante: 43.5 minutos
+Processando linha 602/1000
+Progresso: 603000/1002001 pontos (60.2%) - Tempo estimado restante: 43.3 minutos
+Processando linha 603/1000
+Progresso: 604000/1002001 pontos (60.3%) - Tempo estimado restante: 43.2 minutos
+Processando linha 604/1000
+Progresso: 605000/1002001 pontos (60.4%) - Tempo estimado restante: 43.0 minutos
+Processando linha 605/1000
+Progresso: 606000/1002001 pontos (60.5%) - Tempo estimado restante: 42.9 minutos
+Processando linha 606/1000
+Progresso: 607000/1002001 pontos (60.6%) - Tempo estimado restante: 42.7 minutos
+Processando linha 607/1000
+Progresso: 608000/1002001 pontos (60.7%) - Tempo estimado restante: 42.6 minutos
+Processando linha 608/1000
+Progresso: 609000/1002001 pontos (60.8%) - Tempo estimado restante: 42.4 minutos
+Processando linha 609/1000
+Progresso: 610000/1002001 pontos (60.9%) - Tempo estimado restante: 42.3 minutos
+Processando linha 610/1000
+Progresso: 611000/1002001 pontos (61.0%) - Tempo estimado restante: 42.1 minutos
+Processando linha 611/1000
+Progresso: 612000/1002001 pontos (61.1%) - Tempo estimado restante: 42.0 minutos
+Processando linha 612/1000
+Progresso: 613000/1002001 pontos (61.2%) - Tempo estimado restante: 41.8 minutos
+Processando linha 613/1000
+Progresso: 614000/1002001 pontos (61.3%) - Tempo estimado restante: 41.7 minutos
+Processando linha 614/1000
+Progresso: 615000/1002001 pontos (61.4%) - Tempo estimado restante: 41.5 minutos
+Processando linha 615/1000
+Progresso: 616000/1002001 pontos (61.5%) - Tempo estimado restante: 41.4 minutos
+Processando linha 616/1000
+Progresso: 617000/1002001 pontos (61.6%) - Tempo estimado restante: 41.2 minutos
+Processando linha 617/1000
+Progresso: 618000/1002001 pontos (61.7%) - Tempo estimado restante: 41.1 minutos
+Processando linha 618/1000
+Progresso: 619000/1002001 pontos (61.8%) - Tempo estimado restante: 40.9 minutos
+Processando linha 619/1000
+Progresso: 620000/1002001 pontos (61.9%) - Tempo estimado restante: 40.8 minutos
+Processando linha 620/1000
+Progresso: 621000/1002001 pontos (62.0%) - Tempo estimado restante: 40.6 minutos
+Processando linha 621/1000
+Progresso: 622000/1002001 pontos (62.1%) - Tempo estimado restante: 40.5 minutos
+Processando linha 622/1000
+Progresso: 623000/1002001 pontos (62.2%) - Tempo estimado restante: 40.3 minutos
+Processando linha 623/1000
+Progresso: 624000/1002001 pontos (62.3%) - Tempo estimado restante: 40.2 minutos
+Processando linha 624/1000
+Progresso: 625000/1002001 pontos (62.4%) - Tempo estimado restante: 40.0 minutos
+Processando linha 625/1000
+Progresso: 626000/1002001 pontos (62.5%) - Tempo estimado restante: 39.9 minutos
+Processando linha 626/1000
+Progresso: 627000/1002001 pontos (62.6%) - Tempo estimado restante: 39.8 minutos
+Processando linha 627/1000
+Progresso: 628000/1002001 pontos (62.7%) - Tempo estimado restante: 39.6 minutos
+Processando linha 628/1000
+Progresso: 629000/1002001 pontos (62.8%) - Tempo estimado restante: 39.5 minutos
+Processando linha 629/1000
+Progresso: 630000/1002001 pontos (62.9%) - Tempo estimado restante: 39.3 minutos
+Processando linha 630/1000
+Progresso: 631000/1002001 pontos (63.0%) - Tempo estimado restante: 39.2 minutos
+Processando linha 631/1000
+Progresso: 632000/1002001 pontos (63.1%) - Tempo estimado restante: 39.0 minutos
+Processando linha 632/1000
+Progresso: 633000/1002001 pontos (63.2%) - Tempo estimado restante: 38.9 minutos
+Processando linha 633/1000
+Progresso: 634000/1002001 pontos (63.3%) - Tempo estimado restante: 38.7 minutos
+Processando linha 634/1000
+Progresso: 635000/1002001 pontos (63.4%) - Tempo estimado restante: 38.6 minutos
+Processando linha 635/1000
+Progresso: 636000/1002001 pontos (63.5%) - Tempo estimado restante: 38.4 minutos
+Processando linha 636/1000
+Progresso: 637000/1002001 pontos (63.6%) - Tempo estimado restante: 38.3 minutos
+Processando linha 637/1000
+Progresso: 638000/1002001 pontos (63.7%) - Tempo estimado restante: 38.1 minutos
+Processando linha 638/1000
+Progresso: 639000/1002001 pontos (63.8%) - Tempo estimado restante: 38.0 minutos
+Processando linha 639/1000
+Progresso: 640000/1002001 pontos (63.9%) - Tempo estimado restante: 37.9 minutos
+Processando linha 640/1000
+Progresso: 641000/1002001 pontos (64.0%) - Tempo estimado restante: 37.7 minutos
+Processando linha 641/1000
+Progresso: 642000/1002001 pontos (64.1%) - Tempo estimado restante: 37.6 minutos
+Processando linha 642/1000
+Progresso: 643000/1002001 pontos (64.2%) - Tempo estimado restante: 37.4 minutos
+Processando linha 643/1000
+Progresso: 644000/1002001 pontos (64.3%) - Tempo estimado restante: 37.3 minutos
+Processando linha 644/1000
+Progresso: 645000/1002001 pontos (64.4%) - Tempo estimado restante: 37.1 minutos
+Processando linha 645/1000
+Progresso: 646000/1002001 pontos (64.5%) - Tempo estimado restante: 37.0 minutos
+Processando linha 646/1000
+Progresso: 647000/1002001 pontos (64.6%) - Tempo estimado restante: 36.8 minutos
+Processando linha 647/1000
+Progresso: 648000/1002001 pontos (64.7%) - Tempo estimado restante: 36.7 minutos
+Processando linha 648/1000
+Progresso: 649000/1002001 pontos (64.8%) - Tempo estimado restante: 36.6 minutos
+Processando linha 649/1000
+Progresso: 650000/1002001 pontos (64.9%) - Tempo estimado restante: 36.4 minutos
+Processando linha 650/1000
+Progresso: 651000/1002001 pontos (65.0%) - Tempo estimado restante: 36.3 minutos
+Processando linha 651/1000
+Progresso: 652000/1002001 pontos (65.1%) - Tempo estimado restante: 36.1 minutos
+Processando linha 652/1000
+Progresso: 653000/1002001 pontos (65.2%) - Tempo estimado restante: 36.0 minutos
+Processando linha 653/1000
+Progresso: 654000/1002001 pontos (65.3%) - Tempo estimado restante: 35.8 minutos
+Processando linha 654/1000
+Progresso: 655000/1002001 pontos (65.4%) - Tempo estimado restante: 35.7 minutos
+Processando linha 655/1000
+Progresso: 656000/1002001 pontos (65.5%) - Tempo estimado restante: 35.6 minutos
+Processando linha 656/1000
+Progresso: 657000/1002001 pontos (65.6%) - Tempo estimado restante: 35.4 minutos
+Processando linha 657/1000
+Progresso: 658000/1002001 pontos (65.7%) - Tempo estimado restante: 35.3 minutos
+Processando linha 658/1000
+Progresso: 659000/1002001 pontos (65.8%) - Tempo estimado restante: 35.1 minutos
+Processando linha 659/1000
+Progresso: 660000/1002001 pontos (65.9%) - Tempo estimado restante: 35.0 minutos
+Processando linha 660/1000
+Progresso: 661000/1002001 pontos (66.0%) - Tempo estimado restante: 34.9 minutos
+Processando linha 661/1000
+Progresso: 662000/1002001 pontos (66.1%) - Tempo estimado restante: 34.7 minutos
+Processando linha 662/1000
+Progresso: 663000/1002001 pontos (66.2%) - Tempo estimado restante: 34.6 minutos
+Processando linha 663/1000
+Progresso: 664000/1002001 pontos (66.3%) - Tempo estimado restante: 34.5 minutos
+Processando linha 664/1000
+Progresso: 665000/1002001 pontos (66.4%) - Tempo estimado restante: 34.3 minutos
+Processando linha 665/1000
+Progresso: 666000/1002001 pontos (66.5%) - Tempo estimado restante: 34.2 minutos
+Processando linha 666/1000
+Progresso: 667000/1002001 pontos (66.6%) - Tempo estimado restante: 34.0 minutos
+Processando linha 667/1000
+Progresso: 668000/1002001 pontos (66.7%) - Tempo estimado restante: 33.9 minutos
+Processando linha 668/1000
+Progresso: 669000/1002001 pontos (66.8%) - Tempo estimado restante: 33.8 minutos
+Processando linha 669/1000
+Progresso: 670000/1002001 pontos (66.9%) - Tempo estimado restante: 33.6 minutos
+Processando linha 670/1000
+Progresso: 671000/1002001 pontos (67.0%) - Tempo estimado restante: 33.5 minutos
+Processando linha 671/1000
+Progresso: 672000/1002001 pontos (67.1%) - Tempo estimado restante: 33.3 minutos
+Processando linha 672/1000
+Progresso: 673000/1002001 pontos (67.2%) - Tempo estimado restante: 33.2 minutos
+Processando linha 673/1000
+Progresso: 674000/1002001 pontos (67.3%) - Tempo estimado restante: 33.1 minutos
+Processando linha 674/1000
+Progresso: 675000/1002001 pontos (67.4%) - Tempo estimado restante: 32.9 minutos
+Processando linha 675/1000
+Progresso: 676000/1002001 pontos (67.5%) - Tempo estimado restante: 32.8 minutos
+Processando linha 676/1000
+Progresso: 677000/1002001 pontos (67.6%) - Tempo estimado restante: 32.7 minutos
+Processando linha 677/1000
+Progresso: 678000/1002001 pontos (67.7%) - Tempo estimado restante: 32.5 minutos
+Processando linha 678/1000
+Progresso: 679000/1002001 pontos (67.8%) - Tempo estimado restante: 32.4 minutos
+Processando linha 679/1000
+Progresso: 680000/1002001 pontos (67.9%) - Tempo estimado restante: 32.3 minutos
+Processando linha 680/1000
+Progresso: 681000/1002001 pontos (68.0%) - Tempo estimado restante: 32.1 minutos
+Processando linha 681/1000
+Progresso: 682000/1002001 pontos (68.1%) - Tempo estimado restante: 32.0 minutos
+Processando linha 682/1000
+Progresso: 683000/1002001 pontos (68.2%) - Tempo estimado restante: 31.9 minutos
+Processando linha 683/1000
+Progresso: 684000/1002001 pontos (68.3%) - Tempo estimado restante: 31.7 minutos
+Processando linha 684/1000
+Progresso: 685000/1002001 pontos (68.4%) - Tempo estimado restante: 31.6 minutos
+Processando linha 685/1000
+Progresso: 686000/1002001 pontos (68.5%) - Tempo estimado restante: 31.5 minutos
+Processando linha 686/1000
+Progresso: 687000/1002001 pontos (68.6%) - Tempo estimado restante: 31.3 minutos
+Processando linha 687/1000
+Progresso: 688000/1002001 pontos (68.7%) - Tempo estimado restante: 31.2 minutos
+Processando linha 688/1000
+Progresso: 689000/1002001 pontos (68.8%) - Tempo estimado restante: 31.1 minutos
+Processando linha 689/1000
+Progresso: 690000/1002001 pontos (68.9%) - Tempo estimado restante: 30.9 minutos
+Processando linha 690/1000
+Progresso: 691000/1002001 pontos (69.0%) - Tempo estimado restante: 30.8 minutos
+Processando linha 691/1000
+Progresso: 692000/1002001 pontos (69.1%) - Tempo estimado restante: 30.7 minutos
+Processando linha 692/1000
+Progresso: 693000/1002001 pontos (69.2%) - Tempo estimado restante: 30.5 minutos
+Processando linha 693/1000
+Progresso: 694000/1002001 pontos (69.3%) - Tempo estimado restante: 30.4 minutos
+Processando linha 694/1000
+Progresso: 695000/1002001 pontos (69.4%) - Tempo estimado restante: 30.3 minutos
+Processando linha 695/1000
+Progresso: 696000/1002001 pontos (69.5%) - Tempo estimado restante: 30.2 minutos
+Processando linha 696/1000
+Progresso: 697000/1002001 pontos (69.6%) - Tempo estimado restante: 30.0 minutos
+Processando linha 697/1000
+Progresso: 698000/1002001 pontos (69.7%) - Tempo estimado restante: 29.9 minutos
+Processando linha 698/1000
+Progresso: 699000/1002001 pontos (69.8%) - Tempo estimado restante: 29.8 minutos
+Processando linha 699/1000
+Progresso: 700000/1002001 pontos (69.9%) - Tempo estimado restante: 29.6 minutos
+Processando linha 700/1000
+Progresso: 701000/1002001 pontos (70.0%) - Tempo estimado restante: 29.5 minutos
+Processando linha 701/1000
+Progresso: 702000/1002001 pontos (70.1%) - Tempo estimado restante: 29.4 minutos
+Processando linha 702/1000
+Progresso: 703000/1002001 pontos (70.2%) - Tempo estimado restante: 29.2 minutos
+Processando linha 703/1000
+Progresso: 704000/1002001 pontos (70.3%) - Tempo estimado restante: 29.1 minutos
+Processando linha 704/1000
+Progresso: 705000/1002001 pontos (70.4%) - Tempo estimado restante: 29.0 minutos
+Processando linha 705/1000
+Progresso: 706000/1002001 pontos (70.5%) - Tempo estimado restante: 28.9 minutos
+Processando linha 706/1000
+Progresso: 707000/1002001 pontos (70.6%) - Tempo estimado restante: 28.7 minutos
+Processando linha 707/1000
+Progresso: 708000/1002001 pontos (70.7%) - Tempo estimado restante: 28.6 minutos
+Processando linha 708/1000
+Progresso: 709000/1002001 pontos (70.8%) - Tempo estimado restante: 28.5 minutos
+Processando linha 709/1000
+Progresso: 710000/1002001 pontos (70.9%) - Tempo estimado restante: 28.4 minutos
+Processando linha 710/1000
+Progresso: 711000/1002001 pontos (71.0%) - Tempo estimado restante: 28.2 minutos
+Processando linha 711/1000
+Progresso: 712000/1002001 pontos (71.1%) - Tempo estimado restante: 28.1 minutos
+Processando linha 712/1000
+Progresso: 713000/1002001 pontos (71.2%) - Tempo estimado restante: 28.0 minutos
+Processando linha 713/1000
+Progresso: 714000/1002001 pontos (71.3%) - Tempo estimado restante: 27.9 minutos
+Processando linha 714/1000
+Progresso: 715000/1002001 pontos (71.4%) - Tempo estimado restante: 27.7 minutos
+Processando linha 715/1000
+Progresso: 716000/1002001 pontos (71.5%) - Tempo estimado restante: 27.6 minutos
+Processando linha 716/1000
+Progresso: 717000/1002001 pontos (71.6%) - Tempo estimado restante: 27.5 minutos
+Processando linha 717/1000
+Progresso: 718000/1002001 pontos (71.7%) - Tempo estimado restante: 27.4 minutos
+Processando linha 718/1000
+Progresso: 719000/1002001 pontos (71.8%) - Tempo estimado restante: 27.2 minutos
+Processando linha 719/1000
+Progresso: 720000/1002001 pontos (71.9%) - Tempo estimado restante: 27.1 minutos
+Processando linha 720/1000
+Progresso: 721000/1002001 pontos (72.0%) - Tempo estimado restante: 27.0 minutos
+Processando linha 721/1000
+Progresso: 722000/1002001 pontos (72.1%) - Tempo estimado restante: 26.9 minutos
+Processando linha 722/1000
+Progresso: 723000/1002001 pontos (72.2%) - Tempo estimado restante: 26.7 minutos
+Processando linha 723/1000
+Progresso: 724000/1002001 pontos (72.3%) - Tempo estimado restante: 26.6 minutos
+Processando linha 724/1000
+Progresso: 725000/1002001 pontos (72.4%) - Tempo estimado restante: 26.5 minutos
+Processando linha 725/1000
+Progresso: 726000/1002001 pontos (72.5%) - Tempo estimado restante: 26.4 minutos
+Processando linha 726/1000
+Progresso: 727000/1002001 pontos (72.6%) - Tempo estimado restante: 26.2 minutos
+Processando linha 727/1000
+Progresso: 728000/1002001 pontos (72.7%) - Tempo estimado restante: 26.1 minutos
+Processando linha 728/1000
+Progresso: 729000/1002001 pontos (72.8%) - Tempo estimado restante: 26.0 minutos
+Processando linha 729/1000
+Progresso: 730000/1002001 pontos (72.9%) - Tempo estimado restante: 25.9 minutos
+Processando linha 730/1000
+Progresso: 731000/1002001 pontos (73.0%) - Tempo estimado restante: 25.8 minutos
+Processando linha 731/1000
+Progresso: 732000/1002001 pontos (73.1%) - Tempo estimado restante: 25.6 minutos
+Processando linha 732/1000
+Progresso: 733000/1002001 pontos (73.2%) - Tempo estimado restante: 25.5 minutos
+Processando linha 733/1000
+Progresso: 734000/1002001 pontos (73.3%) - Tempo estimado restante: 25.5 minutos
+Processando linha 734/1000
+Progresso: 735000/1002001 pontos (73.4%) - Tempo estimado restante: 25.3 minutos
+Processando linha 735/1000
+Progresso: 736000/1002001 pontos (73.5%) - Tempo estimado restante: 25.2 minutos
+Processando linha 736/1000
+Progresso: 737000/1002001 pontos (73.6%) - Tempo estimado restante: 25.1 minutos
+Processando linha 737/1000
+Progresso: 738000/1002001 pontos (73.7%) - Tempo estimado restante: 25.0 minutos
+Processando linha 738/1000
+Progresso: 739000/1002001 pontos (73.8%) - Tempo estimado restante: 24.8 minutos
+Processando linha 739/1000
+Progresso: 740000/1002001 pontos (73.9%) - Tempo estimado restante: 24.7 minutos
+Processando linha 740/1000
+Progresso: 741000/1002001 pontos (74.0%) - Tempo estimado restante: 24.6 minutos
+Processando linha 741/1000
+Progresso: 742000/1002001 pontos (74.1%) - Tempo estimado restante: 24.5 minutos
+Processando linha 742/1000
+Progresso: 743000/1002001 pontos (74.2%) - Tempo estimado restante: 24.4 minutos
+Processando linha 743/1000
+Progresso: 744000/1002001 pontos (74.3%) - Tempo estimado restante: 24.3 minutos
+Processando linha 744/1000
+Progresso: 745000/1002001 pontos (74.4%) - Tempo estimado restante: 24.1 minutos
+Processando linha 745/1000
+Progresso: 746000/1002001 pontos (74.5%) - Tempo estimado restante: 24.0 minutos
+Processando linha 746/1000
+Progresso: 747000/1002001 pontos (74.6%) - Tempo estimado restante: 23.9 minutos
+Processando linha 747/1000
+Progresso: 748000/1002001 pontos (74.7%) - Tempo estimado restante: 23.8 minutos
+Processando linha 748/1000
+Progresso: 749000/1002001 pontos (74.8%) - Tempo estimado restante: 23.7 minutos
+Processando linha 749/1000
+Progresso: 750000/1002001 pontos (74.9%) - Tempo estimado restante: 23.5 minutos
+Processando linha 750/1000
+Progresso: 751000/1002001 pontos (75.0%) - Tempo estimado restante: 23.4 minutos
+Processando linha 751/1000
+Progresso: 752000/1002001 pontos (75.0%) - Tempo estimado restante: 23.3 minutos
+Processando linha 752/1000
+Progresso: 753000/1002001 pontos (75.1%) - Tempo estimado restante: 23.2 minutos
+Processando linha 753/1000
+Progresso: 754000/1002001 pontos (75.2%) - Tempo estimado restante: 23.1 minutos
+Processando linha 754/1000
+Progresso: 755000/1002001 pontos (75.3%) - Tempo estimado restante: 23.0 minutos
+Processando linha 755/1000
+Progresso: 756000/1002001 pontos (75.4%) - Tempo estimado restante: 22.9 minutos
+Processando linha 756/1000
+Progresso: 757000/1002001 pontos (75.5%) - Tempo estimado restante: 22.7 minutos
+Processando linha 757/1000
+Progresso: 758000/1002001 pontos (75.6%) - Tempo estimado restante: 22.6 minutos
+Processando linha 758/1000
+Progresso: 759000/1002001 pontos (75.7%) - Tempo estimado restante: 22.5 minutos
+Processando linha 759/1000
+Progresso: 760000/1002001 pontos (75.8%) - Tempo estimado restante: 22.4 minutos
+Processando linha 760/1000
+Progresso: 761000/1002001 pontos (75.9%) - Tempo estimado restante: 22.3 minutos
+Processando linha 761/1000
+Progresso: 762000/1002001 pontos (76.0%) - Tempo estimado restante: 22.2 minutos
+Processando linha 762/1000
+Progresso: 763000/1002001 pontos (76.1%) - Tempo estimado restante: 22.0 minutos
+Processando linha 763/1000
+Progresso: 764000/1002001 pontos (76.2%) - Tempo estimado restante: 21.9 minutos
+Processando linha 764/1000
+Progresso: 765000/1002001 pontos (76.3%) - Tempo estimado restante: 21.8 minutos
+Processando linha 765/1000
+Progresso: 766000/1002001 pontos (76.4%) - Tempo estimado restante: 21.7 minutos
+Processando linha 766/1000
+Progresso: 767000/1002001 pontos (76.5%) - Tempo estimado restante: 21.6 minutos
+Processando linha 767/1000
+Progresso: 768000/1002001 pontos (76.6%) - Tempo estimado restante: 21.5 minutos
+Processando linha 768/1000
+Progresso: 769000/1002001 pontos (76.7%) - Tempo estimado restante: 21.4 minutos
+Processando linha 769/1000
+Progresso: 770000/1002001 pontos (76.8%) - Tempo estimado restante: 21.3 minutos
+Processando linha 770/1000
+Progresso: 771000/1002001 pontos (76.9%) - Tempo estimado restante: 21.1 minutos
+Processando linha 771/1000
+Progresso: 772000/1002001 pontos (77.0%) - Tempo estimado restante: 21.0 minutos
+Processando linha 772/1000
+Progresso: 773000/1002001 pontos (77.1%) - Tempo estimado restante: 20.9 minutos
+Processando linha 773/1000
+Progresso: 774000/1002001 pontos (77.2%) - Tempo estimado restante: 20.8 minutos
+Processando linha 774/1000
+Progresso: 775000/1002001 pontos (77.3%) - Tempo estimado restante: 20.7 minutos
+Processando linha 775/1000
+Progresso: 776000/1002001 pontos (77.4%) - Tempo estimado restante: 20.6 minutos
+Processando linha 776/1000
+Progresso: 777000/1002001 pontos (77.5%) - Tempo estimado restante: 20.5 minutos
+Processando linha 777/1000
+Progresso: 778000/1002001 pontos (77.6%) - Tempo estimado restante: 20.4 minutos
+Processando linha 778/1000
+Progresso: 779000/1002001 pontos (77.7%) - Tempo estimado restante: 20.3 minutos
+Processando linha 779/1000
+Progresso: 780000/1002001 pontos (77.8%) - Tempo estimado restante: 20.1 minutos
+Processando linha 780/1000
+Progresso: 781000/1002001 pontos (77.9%) - Tempo estimado restante: 20.0 minutos
+Processando linha 781/1000
+Progresso: 782000/1002001 pontos (78.0%) - Tempo estimado restante: 19.9 minutos
+Processando linha 782/1000
+Progresso: 783000/1002001 pontos (78.1%) - Tempo estimado restante: 19.8 minutos
+Processando linha 783/1000
+Progresso: 784000/1002001 pontos (78.2%) - Tempo estimado restante: 19.7 minutos
+Processando linha 784/1000
+Progresso: 785000/1002001 pontos (78.3%) - Tempo estimado restante: 19.6 minutos
+Processando linha 785/1000
+Progresso: 786000/1002001 pontos (78.4%) - Tempo estimado restante: 19.5 minutos
+Processando linha 786/1000
+Progresso: 787000/1002001 pontos (78.5%) - Tempo estimado restante: 19.4 minutos
+Processando linha 787/1000
+Progresso: 788000/1002001 pontos (78.6%) - Tempo estimado restante: 19.3 minutos
+Processando linha 788/1000
+Progresso: 789000/1002001 pontos (78.7%) - Tempo estimado restante: 19.2 minutos
+Processando linha 789/1000
+Progresso: 790000/1002001 pontos (78.8%) - Tempo estimado restante: 19.0 minutos
+Processando linha 790/1000
+Progresso: 791000/1002001 pontos (78.9%) - Tempo estimado restante: 18.9 minutos
+Processando linha 791/1000
+Progresso: 792000/1002001 pontos (79.0%) - Tempo estimado restante: 18.8 minutos
+Processando linha 792/1000
+Progresso: 793000/1002001 pontos (79.1%) - Tempo estimado restante: 18.7 minutos
+Processando linha 793/1000
+Progresso: 794000/1002001 pontos (79.2%) - Tempo estimado restante: 18.6 minutos
+Processando linha 794/1000
+Progresso: 795000/1002001 pontos (79.3%) - Tempo estimado restante: 18.5 minutos
+Processando linha 795/1000
+Progresso: 796000/1002001 pontos (79.4%) - Tempo estimado restante: 18.4 minutos
+Processando linha 796/1000
+Progresso: 797000/1002001 pontos (79.5%) - Tempo estimado restante: 18.3 minutos
+Processando linha 797/1000
+Progresso: 798000/1002001 pontos (79.6%) - Tempo estimado restante: 18.2 minutos
+Processando linha 798/1000
+Progresso: 799000/1002001 pontos (79.7%) - Tempo estimado restante: 18.1 minutos
+Processando linha 799/1000
+Progresso: 800000/1002001 pontos (79.8%) - Tempo estimado restante: 18.0 minutos
+Processando linha 800/1000
+Progresso: 801000/1002001 pontos (79.9%) - Tempo estimado restante: 17.9 minutos
+Processando linha 801/1000
+Progresso: 802000/1002001 pontos (80.0%) - Tempo estimado restante: 17.8 minutos
+Processando linha 802/1000
+Progresso: 803000/1002001 pontos (80.1%) - Tempo estimado restante: 17.7 minutos
+Processando linha 803/1000
+Progresso: 804000/1002001 pontos (80.2%) - Tempo estimado restante: 17.6 minutos
+Processando linha 804/1000
+Progresso: 805000/1002001 pontos (80.3%) - Tempo estimado restante: 17.4 minutos
+Processando linha 805/1000
+Progresso: 806000/1002001 pontos (80.4%) - Tempo estimado restante: 17.3 minutos
+Processando linha 806/1000
+Progresso: 807000/1002001 pontos (80.5%) - Tempo estimado restante: 17.2 minutos
+Processando linha 807/1000
+Progresso: 808000/1002001 pontos (80.6%) - Tempo estimado restante: 17.1 minutos
+Processando linha 808/1000
+Progresso: 809000/1002001 pontos (80.7%) - Tempo estimado restante: 17.0 minutos
+Processando linha 809/1000
+Progresso: 810000/1002001 pontos (80.8%) - Tempo estimado restante: 16.9 minutos
+Processando linha 810/1000
+Progresso: 811000/1002001 pontos (80.9%) - Tempo estimado restante: 16.8 minutos
+Processando linha 811/1000
+Progresso: 812000/1002001 pontos (81.0%) - Tempo estimado restante: 16.7 minutos
+Processando linha 812/1000
+Progresso: 813000/1002001 pontos (81.1%) - Tempo estimado restante: 16.6 minutos
+Processando linha 813/1000
+Progresso: 814000/1002001 pontos (81.2%) - Tempo estimado restante: 16.5 minutos
+Processando linha 814/1000
+Progresso: 815000/1002001 pontos (81.3%) - Tempo estimado restante: 16.4 minutos
+Processando linha 815/1000
+Progresso: 816000/1002001 pontos (81.4%) - Tempo estimado restante: 16.3 minutos
+Processando linha 816/1000
+Progresso: 817000/1002001 pontos (81.5%) - Tempo estimado restante: 16.2 minutos
+Processando linha 817/1000
+Progresso: 818000/1002001 pontos (81.6%) - Tempo estimado restante: 16.1 minutos
+Processando linha 818/1000
+Progresso: 819000/1002001 pontos (81.7%) - Tempo estimado restante: 16.0 minutos
+Processando linha 819/1000
+Progresso: 820000/1002001 pontos (81.8%) - Tempo estimado restante: 15.9 minutos
+Processando linha 820/1000
+Progresso: 821000/1002001 pontos (81.9%) - Tempo estimado restante: 15.8 minutos
+Processando linha 821/1000
+Progresso: 822000/1002001 pontos (82.0%) - Tempo estimado restante: 15.7 minutos
+Processando linha 822/1000
+Progresso: 823000/1002001 pontos (82.1%) - Tempo estimado restante: 15.6 minutos
+Processando linha 823/1000
+Progresso: 824000/1002001 pontos (82.2%) - Tempo estimado restante: 15.5 minutos
+Processando linha 824/1000
+Progresso: 825000/1002001 pontos (82.3%) - Tempo estimado restante: 15.4 minutos
+Processando linha 825/1000
+Progresso: 826000/1002001 pontos (82.4%) - Tempo estimado restante: 15.3 minutos
+Processando linha 826/1000
+Progresso: 827000/1002001 pontos (82.5%) - Tempo estimado restante: 15.2 minutos
+Processando linha 827/1000
+Progresso: 828000/1002001 pontos (82.6%) - Tempo estimado restante: 15.1 minutos
+Processando linha 828/1000
+Progresso: 829000/1002001 pontos (82.7%) - Tempo estimado restante: 15.0 minutos
+Processando linha 829/1000
+Progresso: 830000/1002001 pontos (82.8%) - Tempo estimado restante: 14.9 minutos
+Processando linha 830/1000
+Progresso: 831000/1002001 pontos (82.9%) - Tempo estimado restante: 14.8 minutos
+Processando linha 831/1000
+Progresso: 832000/1002001 pontos (83.0%) - Tempo estimado restante: 14.7 minutos
+Processando linha 832/1000
+Progresso: 833000/1002001 pontos (83.1%) - Tempo estimado restante: 14.6 minutos
+Processando linha 833/1000
+Progresso: 834000/1002001 pontos (83.2%) - Tempo estimado restante: 14.5 minutos
+Processando linha 834/1000
+Progresso: 835000/1002001 pontos (83.3%) - Tempo estimado restante: 14.4 minutos
+Processando linha 835/1000
+Progresso: 836000/1002001 pontos (83.4%) - Tempo estimado restante: 14.3 minutos
+Processando linha 836/1000
+Progresso: 837000/1002001 pontos (83.5%) - Tempo estimado restante: 14.2 minutos
+Processando linha 837/1000
+Progresso: 838000/1002001 pontos (83.6%) - Tempo estimado restante: 14.1 minutos
+Processando linha 838/1000
+Progresso: 839000/1002001 pontos (83.7%) - Tempo estimado restante: 14.0 minutos
+Processando linha 839/1000
+Progresso: 840000/1002001 pontos (83.8%) - Tempo estimado restante: 13.9 minutos
+Processando linha 840/1000
+Progresso: 841000/1002001 pontos (83.9%) - Tempo estimado restante: 13.8 minutos
+Processando linha 841/1000
+Progresso: 842000/1002001 pontos (84.0%) - Tempo estimado restante: 13.7 minutos
+Processando linha 842/1000
+Progresso: 843000/1002001 pontos (84.1%) - Tempo estimado restante: 13.6 minutos
+Processando linha 843/1000
+Progresso: 844000/1002001 pontos (84.2%) - Tempo estimado restante: 13.5 minutos
+Processando linha 844/1000
+Progresso: 845000/1002001 pontos (84.3%) - Tempo estimado restante: 13.4 minutos
+Processando linha 845/1000
+Progresso: 846000/1002001 pontos (84.4%) - Tempo estimado restante: 13.3 minutos
+Processando linha 846/1000
+Progresso: 847000/1002001 pontos (84.5%) - Tempo estimado restante: 13.2 minutos
+Processando linha 847/1000
+Progresso: 848000/1002001 pontos (84.6%) - Tempo estimado restante: 13.1 minutos
+Processando linha 848/1000
+Progresso: 849000/1002001 pontos (84.7%) - Tempo estimado restante: 13.0 minutos
+Processando linha 849/1000
+Progresso: 850000/1002001 pontos (84.8%) - Tempo estimado restante: 12.9 minutos
+Processando linha 850/1000
+Progresso: 851000/1002001 pontos (84.9%) - Tempo estimado restante: 12.8 minutos
+Processando linha 851/1000
+Progresso: 852000/1002001 pontos (85.0%) - Tempo estimado restante: 12.7 minutos
+Processando linha 852/1000
+Progresso: 853000/1002001 pontos (85.1%) - Tempo estimado restante: 12.6 minutos
+Processando linha 853/1000
+Progresso: 854000/1002001 pontos (85.2%) - Tempo estimado restante: 12.5 minutos
+Processando linha 854/1000
+Progresso: 855000/1002001 pontos (85.3%) - Tempo estimado restante: 12.4 minutos
+Processando linha 855/1000
+Progresso: 856000/1002001 pontos (85.4%) - Tempo estimado restante: 12.3 minutos
+Processando linha 856/1000
+Progresso: 857000/1002001 pontos (85.5%) - Tempo estimado restante: 12.2 minutos
+Processando linha 857/1000
+Progresso: 858000/1002001 pontos (85.6%) - Tempo estimado restante: 12.2 minutos
+Processando linha 858/1000
+Progresso: 859000/1002001 pontos (85.7%) - Tempo estimado restante: 12.1 minutos
+Processando linha 859/1000
+Progresso: 860000/1002001 pontos (85.8%) - Tempo estimado restante: 12.0 minutos
+Processando linha 860/1000
+Progresso: 861000/1002001 pontos (85.9%) - Tempo estimado restante: 11.9 minutos
+Processando linha 861/1000
+Progresso: 862000/1002001 pontos (86.0%) - Tempo estimado restante: 11.8 minutos
+Processando linha 862/1000
+Progresso: 863000/1002001 pontos (86.1%) - Tempo estimado restante: 11.7 minutos
+Processando linha 863/1000
+Progresso: 864000/1002001 pontos (86.2%) - Tempo estimado restante: 11.6 minutos
+Processando linha 864/1000
+Progresso: 865000/1002001 pontos (86.3%) - Tempo estimado restante: 11.5 minutos
+Processando linha 865/1000
+Progresso: 866000/1002001 pontos (86.4%) - Tempo estimado restante: 11.4 minutos
+Processando linha 866/1000
+Progresso: 867000/1002001 pontos (86.5%) - Tempo estimado restante: 11.3 minutos
+Processando linha 867/1000
+Progresso: 868000/1002001 pontos (86.6%) - Tempo estimado restante: 11.2 minutos
+Processando linha 868/1000
+Progresso: 869000/1002001 pontos (86.7%) - Tempo estimado restante: 11.1 minutos
+Processando linha 869/1000
+Progresso: 870000/1002001 pontos (86.8%) - Tempo estimado restante: 11.0 minutos
+Processando linha 870/1000
+Progresso: 871000/1002001 pontos (86.9%) - Tempo estimado restante: 10.9 minutos
+Processando linha 871/1000
+Progresso: 872000/1002001 pontos (87.0%) - Tempo estimado restante: 10.8 minutos
+Processando linha 872/1000
+Progresso: 873000/1002001 pontos (87.1%) - Tempo estimado restante: 10.7 minutos
+Processando linha 873/1000
+Progresso: 874000/1002001 pontos (87.2%) - Tempo estimado restante: 10.7 minutos
+Processando linha 874/1000
+Progresso: 875000/1002001 pontos (87.3%) - Tempo estimado restante: 10.6 minutos
+Processando linha 875/1000
+Progresso: 876000/1002001 pontos (87.4%) - Tempo estimado restante: 10.5 minutos
+Processando linha 876/1000
+Progresso: 877000/1002001 pontos (87.5%) - Tempo estimado restante: 10.4 minutos
+Processando linha 877/1000
+Progresso: 878000/1002001 pontos (87.6%) - Tempo estimado restante: 10.3 minutos
+Processando linha 878/1000
+Progresso: 879000/1002001 pontos (87.7%) - Tempo estimado restante: 10.2 minutos
+Processando linha 879/1000
+Progresso: 880000/1002001 pontos (87.8%) - Tempo estimado restante: 10.1 minutos
+Processando linha 880/1000
+Progresso: 881000/1002001 pontos (87.9%) - Tempo estimado restante: 10.0 minutos
+Processando linha 881/1000
+Progresso: 882000/1002001 pontos (88.0%) - Tempo estimado restante: 9.9 minutos
+Processando linha 882/1000
+Progresso: 883000/1002001 pontos (88.1%) - Tempo estimado restante: 9.8 minutos
+Processando linha 883/1000
+Progresso: 884000/1002001 pontos (88.2%) - Tempo estimado restante: 9.7 minutos
+Processando linha 884/1000
+Progresso: 885000/1002001 pontos (88.3%) - Tempo estimado restante: 9.6 minutos
+Processando linha 885/1000
+Progresso: 886000/1002001 pontos (88.4%) - Tempo estimado restante: 9.6 minutos
+Processando linha 886/1000
+Progresso: 887000/1002001 pontos (88.5%) - Tempo estimado restante: 9.5 minutos
+Processando linha 887/1000
+Progresso: 888000/1002001 pontos (88.6%) - Tempo estimado restante: 9.4 minutos
+Processando linha 888/1000
+Progresso: 889000/1002001 pontos (88.7%) - Tempo estimado restante: 9.3 minutos
+Processando linha 889/1000
+Progresso: 890000/1002001 pontos (88.8%) - Tempo estimado restante: 9.2 minutos
+Processando linha 890/1000
+Progresso: 891000/1002001 pontos (88.9%) - Tempo estimado restante: 9.1 minutos
+Processando linha 891/1000
+Progresso: 892000/1002001 pontos (89.0%) - Tempo estimado restante: 9.0 minutos
+Processando linha 892/1000
+Progresso: 893000/1002001 pontos (89.1%) - Tempo estimado restante: 8.9 minutos
+Processando linha 893/1000
+Progresso: 894000/1002001 pontos (89.2%) - Tempo estimado restante: 8.8 minutos
+Processando linha 894/1000
+Progresso: 895000/1002001 pontos (89.3%) - Tempo estimado restante: 8.7 minutos
+Processando linha 895/1000
+Progresso: 896000/1002001 pontos (89.4%) - Tempo estimado restante: 8.7 minutos
+Processando linha 896/1000
+Progresso: 897000/1002001 pontos (89.5%) - Tempo estimado restante: 8.6 minutos
+Processando linha 897/1000
+Progresso: 898000/1002001 pontos (89.6%) - Tempo estimado restante: 8.5 minutos
+Processando linha 898/1000
+Progresso: 899000/1002001 pontos (89.7%) - Tempo estimado restante: 8.4 minutos
+Processando linha 899/1000
+Progresso: 900000/1002001 pontos (89.8%) - Tempo estimado restante: 8.3 minutos
+Processando linha 900/1000
+Progresso: 901000/1002001 pontos (89.9%) - Tempo estimado restante: 8.2 minutos
+Processando linha 901/1000
+Progresso: 902000/1002001 pontos (90.0%) - Tempo estimado restante: 8.1 minutos
+Processando linha 902/1000
+Progresso: 903000/1002001 pontos (90.1%) - Tempo estimado restante: 8.0 minutos
+Processando linha 903/1000
+Progresso: 904000/1002001 pontos (90.2%) - Tempo estimado restante: 7.9 minutos
+Processando linha 904/1000
+Progresso: 905000/1002001 pontos (90.3%) - Tempo estimado restante: 7.9 minutos
+Processando linha 905/1000
+Progresso: 906000/1002001 pontos (90.4%) - Tempo estimado restante: 7.8 minutos
+Processando linha 906/1000
+Progresso: 907000/1002001 pontos (90.5%) - Tempo estimado restante: 7.7 minutos
+Processando linha 907/1000
+Progresso: 908000/1002001 pontos (90.6%) - Tempo estimado restante: 7.6 minutos
+Processando linha 908/1000
+Progresso: 909000/1002001 pontos (90.7%) - Tempo estimado restante: 7.5 minutos
+Processando linha 909/1000
+Progresso: 910000/1002001 pontos (90.8%) - Tempo estimado restante: 7.4 minutos
+Processando linha 910/1000
+Progresso: 911000/1002001 pontos (90.9%) - Tempo estimado restante: 7.3 minutos
+Processando linha 911/1000
+Progresso: 912000/1002001 pontos (91.0%) - Tempo estimado restante: 7.2 minutos
+Processando linha 912/1000
+Progresso: 913000/1002001 pontos (91.1%) - Tempo estimado restante: 7.2 minutos
+Processando linha 913/1000
+Progresso: 914000/1002001 pontos (91.2%) - Tempo estimado restante: 7.1 minutos
+Processando linha 914/1000
+Progresso: 915000/1002001 pontos (91.3%) - Tempo estimado restante: 7.0 minutos
+Processando linha 915/1000
+Progresso: 916000/1002001 pontos (91.4%) - Tempo estimado restante: 6.9 minutos
+Processando linha 916/1000
+Progresso: 917000/1002001 pontos (91.5%) - Tempo estimado restante: 6.8 minutos
+Processando linha 917/1000
+Progresso: 918000/1002001 pontos (91.6%) - Tempo estimado restante: 6.8 minutos
+Processando linha 918/1000
+Progresso: 919000/1002001 pontos (91.7%) - Tempo estimado restante: 6.7 minutos
+Processando linha 919/1000
+Progresso: 920000/1002001 pontos (91.8%) - Tempo estimado restante: 6.6 minutos
+Processando linha 920/1000
+Progresso: 921000/1002001 pontos (91.9%) - Tempo estimado restante: 6.5 minutos
+Processando linha 921/1000
+Progresso: 922000/1002001 pontos (92.0%) - Tempo estimado restante: 6.4 minutos
+Processando linha 922/1000
+Progresso: 923000/1002001 pontos (92.1%) - Tempo estimado restante: 6.3 minutos
+Processando linha 923/1000
+Progresso: 924000/1002001 pontos (92.2%) - Tempo estimado restante: 6.2 minutos
+Processando linha 924/1000
+Progresso: 925000/1002001 pontos (92.3%) - Tempo estimado restante: 6.2 minutos
+Processando linha 925/1000
+Progresso: 926000/1002001 pontos (92.4%) - Tempo estimado restante: 6.1 minutos
+Processando linha 926/1000
+Progresso: 927000/1002001 pontos (92.5%) - Tempo estimado restante: 6.0 minutos
+Processando linha 927/1000
+Progresso: 928000/1002001 pontos (92.6%) - Tempo estimado restante: 5.9 minutos
+Processando linha 928/1000
+Progresso: 929000/1002001 pontos (92.7%) - Tempo estimado restante: 5.8 minutos
+Processando linha 929/1000
+Progresso: 930000/1002001 pontos (92.8%) - Tempo estimado restante: 5.7 minutos
+Processando linha 930/1000
+Progresso: 931000/1002001 pontos (92.9%) - Tempo estimado restante: 5.6 minutos
+Processando linha 931/1000
+Progresso: 932000/1002001 pontos (93.0%) - Tempo estimado restante: 5.6 minutos
+Processando linha 932/1000
+Progresso: 933000/1002001 pontos (93.1%) - Tempo estimado restante: 5.5 minutos
+Processando linha 933/1000
+Progresso: 934000/1002001 pontos (93.2%) - Tempo estimado restante: 5.4 minutos
+Processando linha 934/1000
+Progresso: 935000/1002001 pontos (93.3%) - Tempo estimado restante: 5.3 minutos
+Processando linha 935/1000
+Progresso: 936000/1002001 pontos (93.4%) - Tempo estimado restante: 5.2 minutos
+Processando linha 936/1000
+Progresso: 937000/1002001 pontos (93.5%) - Tempo estimado restante: 5.1 minutos
+Processando linha 937/1000
+Progresso: 938000/1002001 pontos (93.6%) - Tempo estimado restante: 5.1 minutos
+Processando linha 938/1000
+Progresso: 939000/1002001 pontos (93.7%) - Tempo estimado restante: 5.0 minutos
+Processando linha 939/1000
+Progresso: 940000/1002001 pontos (93.8%) - Tempo estimado restante: 4.9 minutos
+Processando linha 940/1000
+Progresso: 941000/1002001 pontos (93.9%) - Tempo estimado restante: 4.8 minutos
+Processando linha 941/1000
+Progresso: 942000/1002001 pontos (94.0%) - Tempo estimado restante: 4.7 minutos
+Processando linha 942/1000
+Progresso: 943000/1002001 pontos (94.1%) - Tempo estimado restante: 4.6 minutos
+Processando linha 943/1000
+Progresso: 944000/1002001 pontos (94.2%) - Tempo estimado restante: 4.6 minutos
+Processando linha 944/1000
+Progresso: 945000/1002001 pontos (94.3%) - Tempo estimado restante: 4.5 minutos
+Processando linha 945/1000
+Progresso: 946000/1002001 pontos (94.4%) - Tempo estimado restante: 4.4 minutos
+Processando linha 946/1000
+Progresso: 947000/1002001 pontos (94.5%) - Tempo estimado restante: 4.3 minutos
+Processando linha 947/1000
+Progresso: 948000/1002001 pontos (94.6%) - Tempo estimado restante: 4.2 minutos
+Processando linha 948/1000
+Progresso: 949000/1002001 pontos (94.7%) - Tempo estimado restante: 4.2 minutos
+Processando linha 949/1000
+Progresso: 950000/1002001 pontos (94.8%) - Tempo estimado restante: 4.1 minutos
+Processando linha 950/1000
+Progresso: 951000/1002001 pontos (94.9%) - Tempo estimado restante: 4.0 minutos
+Processando linha 951/1000
+Progresso: 952000/1002001 pontos (95.0%) - Tempo estimado restante: 3.9 minutos
+Processando linha 952/1000
+Progresso: 953000/1002001 pontos (95.1%) - Tempo estimado restante: 3.8 minutos
+Processando linha 953/1000
+Progresso: 954000/1002001 pontos (95.2%) - Tempo estimado restante: 3.7 minutos
+Processando linha 954/1000
+Progresso: 955000/1002001 pontos (95.3%) - Tempo estimado restante: 3.7 minutos
+Processando linha 955/1000
+Progresso: 956000/1002001 pontos (95.4%) - Tempo estimado restante: 3.6 minutos
+Processando linha 956/1000
+Progresso: 957000/1002001 pontos (95.5%) - Tempo estimado restante: 3.5 minutos
+Processando linha 957/1000
+Progresso: 958000/1002001 pontos (95.6%) - Tempo estimado restante: 3.4 minutos
+Processando linha 958/1000
+Progresso: 959000/1002001 pontos (95.7%) - Tempo estimado restante: 3.3 minutos
+Processando linha 959/1000
+Progresso: 960000/1002001 pontos (95.8%) - Tempo estimado restante: 3.3 minutos
+Processando linha 960/1000
+Progresso: 961000/1002001 pontos (95.9%) - Tempo estimado restante: 3.2 minutos
+Processando linha 961/1000
+Progresso: 962000/1002001 pontos (96.0%) - Tempo estimado restante: 3.1 minutos
+Processando linha 962/1000
+Progresso: 963000/1002001 pontos (96.1%) - Tempo estimado restante: 3.0 minutos
+Processando linha 963/1000
+Progresso: 964000/1002001 pontos (96.2%) - Tempo estimado restante: 2.9 minutos
+Processando linha 964/1000
+Progresso: 965000/1002001 pontos (96.3%) - Tempo estimado restante: 2.9 minutos
+Processando linha 965/1000
+Progresso: 966000/1002001 pontos (96.4%) - Tempo estimado restante: 2.8 minutos
+Processando linha 966/1000
+Progresso: 967000/1002001 pontos (96.5%) - Tempo estimado restante: 2.7 minutos
+Processando linha 967/1000
+Progresso: 968000/1002001 pontos (96.6%) - Tempo estimado restante: 2.6 minutos
+Processando linha 968/1000
+Progresso: 969000/1002001 pontos (96.7%) - Tempo estimado restante: 2.5 minutos
+Processando linha 969/1000
+Progresso: 970000/1002001 pontos (96.8%) - Tempo estimado restante: 2.5 minutos
+Processando linha 970/1000
+Progresso: 971000/1002001 pontos (96.9%) - Tempo estimado restante: 2.4 minutos
+Processando linha 971/1000
+Progresso: 972000/1002001 pontos (97.0%) - Tempo estimado restante: 2.3 minutos
+Processando linha 972/1000
+Progresso: 973000/1002001 pontos (97.1%) - Tempo estimado restante: 2.2 minutos
+Processando linha 973/1000
+Progresso: 974000/1002001 pontos (97.2%) - Tempo estimado restante: 2.2 minutos
+Processando linha 974/1000
+Progresso: 975000/1002001 pontos (97.3%) - Tempo estimado restante: 2.1 minutos
+Processando linha 975/1000
+Progresso: 976000/1002001 pontos (97.4%) - Tempo estimado restante: 2.0 minutos
+Processando linha 976/1000
+Progresso: 977000/1002001 pontos (97.5%) - Tempo estimado restante: 1.9 minutos
+Processando linha 977/1000
+Progresso: 978000/1002001 pontos (97.6%) - Tempo estimado restante: 1.8 minutos
+Processando linha 978/1000
+Progresso: 979000/1002001 pontos (97.7%) - Tempo estimado restante: 1.8 minutos
+Processando linha 979/1000
+Progresso: 980000/1002001 pontos (97.8%) - Tempo estimado restante: 1.7 minutos
+Processando linha 980/1000
+Progresso: 981000/1002001 pontos (97.9%) - Tempo estimado restante: 1.6 minutos
+Processando linha 981/1000
+Progresso: 982000/1002001 pontos (98.0%) - Tempo estimado restante: 1.5 minutos
+Processando linha 982/1000
+Progresso: 983000/1002001 pontos (98.1%) - Tempo estimado restante: 1.4 minutos
+Processando linha 983/1000
+Progresso: 984000/1002001 pontos (98.2%) - Tempo estimado restante: 1.4 minutos
+Processando linha 984/1000
+Progresso: 985000/1002001 pontos (98.3%) - Tempo estimado restante: 1.3 minutos
+Processando linha 985/1000
+Progresso: 986000/1002001 pontos (98.4%) - Tempo estimado restante: 1.2 minutos
+Processando linha 986/1000
+Progresso: 987000/1002001 pontos (98.5%) - Tempo estimado restante: 1.1 minutos
+Processando linha 987/1000
+Progresso: 988000/1002001 pontos (98.6%) - Tempo estimado restante: 1.1 minutos
+Processando linha 988/1000
+Progresso: 989000/1002001 pontos (98.7%) - Tempo estimado restante: 1.0 minutos
+Processando linha 989/1000
+Progresso: 990000/1002001 pontos (98.8%) - Tempo estimado restante: 0.9 minutos
+Processando linha 990/1000
+Progresso: 991000/1002001 pontos (98.9%) - Tempo estimado restante: 0.8 minutos
+Processando linha 991/1000
+Progresso: 992000/1002001 pontos (99.0%) - Tempo estimado restante: 0.8 minutos
+Processando linha 992/1000
+Progresso: 993000/1002001 pontos (99.1%) - Tempo estimado restante: 0.7 minutos
+Processando linha 993/1000
+Progresso: 994000/1002001 pontos (99.2%) - Tempo estimado restante: 0.6 minutos
+Processando linha 994/1000
+Progresso: 995000/1002001 pontos (99.3%) - Tempo estimado restante: 0.5 minutos
+Processando linha 995/1000
+Progresso: 996000/1002001 pontos (99.4%) - Tempo estimado restante: 0.5 minutos
+Processando linha 996/1000
+Progresso: 997000/1002001 pontos (99.5%) - Tempo estimado restante: 0.4 minutos
+Processando linha 997/1000
+Progresso: 998000/1002001 pontos (99.6%) - Tempo estimado restante: 0.3 minutos
+Processando linha 998/1000
+Progresso: 999000/1002001 pontos (99.7%) - Tempo estimado restante: 0.2 minutos
+Processando linha 999/1000
+Progresso: 1000000/1002001 pontos (99.8%) - Tempo estimado restante: 0.2 minutos
+Progresso: 1001000/1002001 pontos (99.9%) - Tempo estimado restante: 0.1 minutos
+Processando linha 1000/1000
+Progresso: 1002000/1002001 pontos (100.0%) - Tempo estimado restante: 0.0 minutos
+Dados salvos em 'PC-AB4-AM4.csv'
+
+=== INFORMAÇÕES DE TEMPO ===
+Método: PC-AB4-AM4
+Tempo total de execução: 4520.46 segundos
+Tempo total de execução: 75.34 minutos
+Total de pontos processados: 1002001
+Tempo médio por ponto: 4.5114 milissegundos
