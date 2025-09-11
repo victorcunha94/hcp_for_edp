@@ -439,4 +439,3 @@ with open(f'{tipo}_time_info.txt', 'w') as f:
 print(f"{total_execution_time:.2f}")
 
 plt.grid(True, linestyle='--', alpha=0.7)
-plt.show()
