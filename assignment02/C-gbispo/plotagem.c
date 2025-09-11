@@ -119,7 +119,7 @@ void plot(const char *filename, int Nx, int Ny,
     double tolsup = 1e6;
     double tolinf = 1e-6;
     double complex z;
-    #pragma omp parallel for schedule(dynamic) num_threads(n_threads)
+    #pragma omp parallel for schedule(auto) num_threads(n_threads)
     for (int j = 0; j < Ny; j++) {
         for (int i = 0; i < Nx; i++) {
             z=i+I*j;
