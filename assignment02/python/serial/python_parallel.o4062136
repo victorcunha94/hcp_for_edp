@@ -1,0 +1,6 @@
+Loading ambiente Python...
+-------------------------------
+Iniciando script Python...
+/mnt/nfs/home/vcunha/home/hcp_for_edp/assignment02/python/serial/utils_tools.py:5: RuntimeWarning: invalid value encountered in scalar multiply
+  c = np.array([a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]])
+201.04
