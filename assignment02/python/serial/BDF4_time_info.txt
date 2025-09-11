@@ -1,0 +1,6 @@
+Método: BDF4
+Tempo total de execução: 30.66 segundos
+Tempo total de execução: 0.51 minutos
+Total de pontos processados: 251001
+Tempo médio por ponto: 0.1222 milissegundos
+Parâmetros: T=2000, incle=500, tol=1e-08
