@@ -1,4 +1,4 @@
-Método: PC-AB4-AM4
+Método: PC-AB3-AM3
 Tempo total de execução: 0.02 segundos
 Tempo total de execução: 0.00 minutos
 Total de pontos processados: 1002001

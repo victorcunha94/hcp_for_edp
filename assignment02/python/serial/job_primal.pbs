@@ -1,4 +1,4 @@
-#PBS -N python_parallel
+#PBS -N solution_python
 #PBS -l select=1:ncpus=56:nodetype=n56
 #PBS -l walltime=07:00:00
 #PBS -j oe
@@ -22,4 +22,4 @@ echo "-------------------------------"
 
 
 echo "Iniciando script Python..."
-python3 main2_parallel.py 
+python3 main_sequential.py 

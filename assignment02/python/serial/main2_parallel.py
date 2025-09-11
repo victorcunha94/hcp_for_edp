@@ -10,9 +10,15 @@ import time
 from joblib import Parallel, delayed
 
 tol = 1e-08
+<<<<<<< HEAD
 T = 3000
-tipo = "PC-AB4-AM4"
-incle = 500
+tipo = "PC-AB3-AM3"
+incle = 1000
+=======
+T = 2000
+tipo = "BDF3"
+incle = 200
+>>>>>>> 4a9f2ef2354d129bc673c4df79a42cca71396995
 
 #dimensoes leveque:
 
@@ -41,12 +47,11 @@ yt = 4
 """
 
 #BDF
-"""
+
 xl = -10
 xr = 30
 yb = -20
 yt = 20
-"""
 
 
 #trapezio/ponto medio
@@ -66,12 +71,20 @@ yt = 4
 """
 
 #PECE
+<<<<<<< HEAD
 
 xl = -3
 xr = 3
 yb = -3
 yt = 3
-
+=======
+"""
+xl = -4
+xr = 0.5
+yb = -2.5
+yt = 2.5
+"""
+>>>>>>> 4a9f2ef2354d129bc673c4df79a42cca71396995
 
 total_points = (incle + 1) * (incle + 1)
 processed_points = 0
@@ -337,7 +350,7 @@ def process_point(h, k, tipo):
 
         for n in range(T):
             Un2 = preditor_corrector_AB_AM(Un, Un1, z=z,
-                                           preditor_order=2, corretor_order=2, n_correcoes=4)
+                                           preditor_order=2, corretor_order=2, n_correcoes=1)
             Un = Un1
             Un1 = Un2
 
@@ -354,7 +367,7 @@ def process_point(h, k, tipo):
 
         for n in range(T):
             Un3 = preditor_corrector_AB_AM(Un, Un1, Un2, z=z,
-                                           preditor_order=3, corretor_order=3, n_correcoes=4)
+                                           preditor_order=3, corretor_order=3, n_correcoes=1)
             Un = Un1
             Un1 = Un2
             Un2 = Un3
@@ -373,7 +386,7 @@ def process_point(h, k, tipo):
 
         for n in range(T):
             Un4 = preditor_corrector_AB_AM(Un, Un1, Un2, Un3, z=z,
-                                           preditor_order=4, corretor_order=4, n_correcoes=4)
+                                           preditor_order=4, corretor_order=4, n_correcoes=1)
             Un = Un1
             Un1 = Un2
             Un2 = Un3
@@ -396,7 +409,22 @@ plt.xlabel('Re(z)')
 plt.ylabel('Im(z)')
 plt.title(f'Região de Estabilidade - {tipo}')
 
+
+<<<<<<< HEAD
+# Salvar informações de tempo em um arquivo
+with open(f'{tipo}_parallel_time_info.txt', 'w') as f:
+    f.write(f"Método: {tipo}\n")
+    f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
+    f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
+    f.write(f"Total de pontos processados: {total_points}\n")
+    f.write(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos\n")
+    f.write(f"Parâmetros: T={T}, incle={incle}, tol={tol}\n")
+=======
+
+
+
 start_time_total = time.time()
+>>>>>>> 4a9f2ef2354d129bc673c4df79a42cca71396995
 
 # Executar todos os pontos em paralelo
 results = Parallel(n_jobs=-1, prefer="processes")(
