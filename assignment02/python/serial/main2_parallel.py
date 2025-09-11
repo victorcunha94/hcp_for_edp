@@ -429,8 +429,8 @@ for real_z, img_z, is_stable in results:
         else:
             plt.plot(real_z, img_z, 'bo', markersize=0.5)
 
-t1 = time.time()
 print(f"{total_execution_time:.2f}")
 
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.show()
+
