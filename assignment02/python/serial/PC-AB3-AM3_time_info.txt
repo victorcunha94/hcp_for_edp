@@ -1,0 +1,6 @@
+Método: PC-AB3-AM3
+Tempo total de execução: 44.14 segundos
+Tempo total de execução: 0.74 minutos
+Total de pontos processados: 251001
+Tempo médio por ponto: 0.1759 milissegundos
+Parâmetros: T=3000, incle=500, tol=1e-08
