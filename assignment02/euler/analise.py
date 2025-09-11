@@ -43,11 +43,12 @@ for i, incel in enumerate(incel_list):
     # Plot da curva de speedup para esta dimensão da malha
     cor = cores[i % len(cores)]
     plt.plot(jobs_list, speedups, 'o-', color=cor, label=f'Tamanho da malha={incel}')
-    #plt.plot(jobs_list, jobs_list, '--', color='gray', alpha=0.5, label='Speedup ideal' if i == 0 else "")
+    plt.plot(jobs_list, jobs_list, '--', color='gray', alpha=0.5, label='Speedup ideal' if i == 0 else "")
 
 plt.xlabel('Número de processos')
 plt.ylabel('Speedup')
 plt.title('Comparação Sequencial vs Paralelo para Diferentes Dimensões da Malha')
 plt.grid(True)
 plt.legend()
+
 plt.show()
