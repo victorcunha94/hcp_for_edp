@@ -11,8 +11,8 @@ from joblib import Parallel, delayed
 
 tol = 1e-08
 T = 1000
-tipo = "PC-AB3-AM3"
-incle = 100
+tipo = "PC-AB1-AM1"
+incle = 50
 
 #dimensoes leveque:
 
@@ -66,11 +66,14 @@ yt = 4
 
 #PECE
 
-xl = -2
-xr = 2
-yb = -2
-yt = 2
+xl = -4
+xr = 0.5
+yb = -2.5
+yt = 2.5
 
+total_points = (incle + 1) * (incle + 1)
+processed_points = 0
+start_time_total = time.time()
 
 # Função para processar um ponto individual
 def process_point(h, k, tipo):
@@ -388,12 +391,22 @@ plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
 plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
 ax.set_xlim(xl, xr)
 ax.set_ylim(yb, yt)
-plt.xlabel('Eixo Re(z)')
-plt.ylabel('Eixo Im(z)')
+plt.xlabel('Re(z)')
+plt.ylabel('Im(z)')
 plt.title(f'Região de Estabilidade - {tipo}')
 
-# Paralelização com Joblib
-t0 = time.time()
+# Finalizar contagem de tempo
+end_time_total = time.time()
+total_execution_time = end_time_total - start_time_total
+
+# Salvar informações de tempo em um arquivo
+with open(f'{tipo}_time_info.txt', 'w') as f:
+    f.write(f"Método: {tipo}\n")
+    f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
+    f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
+    f.write(f"Total de pontos processados: {total_points}\n")
+    f.write(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos\n")
+    f.write(f"Parâmetros: T={T}, incle={incle}, tol={tol}\n")
 
 # Executar todos os pontos em paralelo
 results = Parallel(n_jobs=-1, prefer="processes")(
@@ -417,7 +430,7 @@ for real_z, img_z, is_stable in results:
             plt.plot(real_z, img_z, 'bo', markersize=0.5)
 
 t1 = time.time()
-print(f"{t1 - t0:.2f}")
+print(f"{total_execution_time:.2f}")
 
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.show()
