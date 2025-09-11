@@ -14,7 +14,7 @@ import time
 tol = 1e-08
 T = 3000
 
-incle =  100
+incle =  200
 xl = -2
 xr = 2
 yb = -2
