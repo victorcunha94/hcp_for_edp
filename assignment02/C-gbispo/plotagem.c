@@ -115,58 +115,37 @@ void save_csv(const char *filename, int Nx, int Ny, int *stability,
 void plot(const char *filename, int Nx, int Ny,
                       double x_min, double y_min, double h,
                       int method, int n_threads) {
-    int *stability = malloc(Nx * Ny * sizeof(int));
-    if (!stability) { perror("malloc failed"); exit(1); }
-
+    int stability[Nx][Ny];
     double tolsup = 1e6;
     double tolinf = 1e-6;
-    double y;
-    int tid;
-    double x;
     double complex z;
     #pragma omp parallel for schedule(dynamic) num_threads(n_threads)
     for (int j = 0; j < Ny; j++) {
-        y = y_min + j * h;
-        //tid = omp_get_thread_num();
         for (int i = 0; i < Nx; i++) {
-            tid = omp_get_thread_num();
-            x = x_min + i * h;
-            z = x + I*y;
-
+            z=i+I*j;
             switch (method) {
-                case 0: stability[i*Ny+j] = is_stable(euler_amp(z)); break;
-                case 1: stability[i*Ny+j] = is_stable_euler_bruteforce(z,tolsup,tolinf); break;
-                case 2: stability[i*Ny+j] = is_stable(rk2_amp(z)); break;
-                case 3: stability[i*Ny+j] = is_stable(rk3_amp(z)); break;
-                case 4: stability[i*Ny+j] = is_stable(rk4_amp(z)); break;
-                case 5: stability[i*Ny+j] = is_stable_rk4_bruteforce(z,tolsup,tolinf,tid); break;
-                case 6: stability[i*Ny+j] = is_stable_rk3_bruteforce(z,tolsup,tolinf); break;
-                case 7: stability[i*Ny+j] = is_stable_eulerimplicit_bruteforce(z,tolsup,tolinf,tid); break;
-                case 8: stability[i*Ny+j] = is_stable_trapez(z,tolsup,tolinf,tid); break;
-                case 9: stability[i*Ny+j] = is_stable_ab2(z,tolsup,tolinf,tid); break;
-                case 10: stability[i*Ny+j] = is_stable_ab3(z,tolsup,tolinf,tid); break;
-                case 11: stability[i*Ny+j] = is_stable_ab4(z,tolsup,tolinf,tid); break;
-                case 12: stability[i*Ny+j] = is_stable_ab5(z,tolsup,tolinf,tid); break;
-                case 13: stability[i*Ny+j] = is_stable_am2(z,tolsup,tolinf,tid); break;
-                case 14: stability[i*Ny+j] = is_stable_am3(z,tolsup,tolinf,tid); break;
-                case 15: stability[i*Ny+j] = is_stable_am4(z,tolsup,tolinf,tid); break;
-                case 16: stability[i*Ny+j] = is_stable_am5(z,tolsup,tolinf,tid); break;
+                case 0: stability[i][j] = is_stable(euler_amp(z)); break;
+                case 1: stability[i][j] = is_stable_euler_bruteforce(z,tolsup,tolinf); break;
+                case 2: stability[i][j] = is_stable(rk2_amp(z)); break;
+                case 3: stability[i][j] = is_stable(rk3_amp(z)); break;
+                case 4: stability[i][j] = is_stable(rk4_amp(z)); break;
+                case 5: stability[i][j] = is_stable_rk4_bruteforce(z,tolsup,tolinf); break;
+                case 6: stability[i][j] = is_stable_rk3_bruteforce(z,tolsup,tolinf); break;
+                case 7: stability[i][j] = is_stable_eulerimplicit_bruteforce(z,tolsup,tolinf); break;
+                case 8: stability[i][j] = is_stable_trapez(z,tolsup,tolinf); break;
+                case 9: stability[i][j] = is_stable_ab2(z,tolsup,tolinf); break;
+                case 10: stability[i][j] = is_stable_ab3(z,tolsup,tolinf); break;
+                case 11: stability[i][j] = is_stable_ab4(z,tolsup,tolinf); break;
+                case 12: stability[i][j] = is_stable_ab5(z,tolsup,tolinf); break;
+                case 13: stability[i][j] = is_stable_am2(z,tolsup,tolinf); break;
+                case 14: stability[i][j] = is_stable_am3(z,tolsup,tolinf); break;
+                case 15: stability[i][j] = is_stable_am4(z,tolsup,tolinf); break;
+                case 16: stability[i][j] = is_stable_am5(z,tolsup,tolinf); break;
 
-                default: stability[i*Ny+j] = 0;
+                default: stability[i][j] = 0;
             }
         }
     }
-    char csvfile[128], ppmfile[128];
-    make_filename(csvfile, sizeof(csvfile), filename, ".csv");
-    //make_filename(ppmfile, sizeof(ppmfile), filename, ".ppm");
+    
 
-/*    save_ppm(ppmfile, Nx, Ny, stability,
-             x_min, x_min + (Nx-1)*h,
-             y_min, y_min + (Ny-1)*h);
-*/
-    save_csv(csvfile, Nx, Ny, stability,
-             x_min, x_min + (Nx-1)*h,
-             y_min, y_min + (Ny-1)*h);
-
-    free(stability);
 }

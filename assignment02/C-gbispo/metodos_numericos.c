@@ -45,13 +45,13 @@ int is_stable_euler_bruteforce(double complex z,
     return 0;
 }
 int is_stable_eulerimplicit_bruteforce(double complex z,
-                                             double tolsup, double tolinf, int tid) {
+                                             double tolsup, double tolinf) {
     double complex u = 1.0;
     for (int i = 0; i < 1000; i++) {
         u = u/(1.0 - z);
         double mag = cabs(u);
         if (mag > tolsup) return -1; // instavel
-        if (mag < tolinf) return tid; // estavel
+        if (mag < tolinf) return 1; // estavel
     }
     return -1;
 }
@@ -73,7 +73,7 @@ int is_stable_rk3_bruteforce(double complex z,
 }
 
 int is_stable_rk4_bruteforce(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     for (int i = 0; i < 3000; i++) {
         double complex k1 = z * u;
@@ -84,13 +84,13 @@ int is_stable_rk4_bruteforce(double complex z,
 
         double mag = cabs(u);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 
 int is_stable_trapez(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     for (int i = 0; i < 3000; i++) {
         double complex k1 = 1 + z/2;
@@ -99,13 +99,13 @@ int is_stable_trapez(double complex z,
 
         double mag = cabs(u);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 
 int is_stable_ab2(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = (1+z)*u;
     for (int i = 0; i < 3000; i++) {
@@ -115,13 +115,13 @@ int is_stable_ab2(double complex z,
 
         double mag = cabs(unp2);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 
 int is_stable_ab3(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = (1+z)*u;
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
@@ -132,12 +132,12 @@ int is_stable_ab3(double complex z,
         unp2 = unp3;
         double mag = cabs(unp3);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 int is_stable_ab4(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = (1+z)*u;
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
@@ -150,12 +150,12 @@ int is_stable_ab4(double complex z,
         unp3 = unp4;
         double mag = cabs(unp4);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 int is_stable_ab5(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = (1+z)*u;
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
@@ -170,13 +170,13 @@ int is_stable_ab5(double complex z,
         unp4 = unp5;
         double mag = cabs(unp5);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 
 int is_stable_am2(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = u/(1-z);
     double complex unp2 = unp1*((1 + z/2)/(1 - z/2));
@@ -188,12 +188,12 @@ int is_stable_am2(double complex z,
 
         double mag = cabs(unp3);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 int is_stable_am3(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = u/(1-z);
     double complex unp2 = unp1*((1 + z/2)/(1 - z/2));
@@ -206,12 +206,12 @@ int is_stable_am3(double complex z,
         unp3 = unp4;
         double mag = cabs(unp3);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 int is_stable_am4(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = u/(1-z);
     double complex unp2 = unp1*((1 + z/2)/(1 - z/2));
@@ -226,12 +226,12 @@ int is_stable_am4(double complex z,
         unp4 = unp5;
         double mag = cabs(unp5);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
 int is_stable_am5(double complex z,
-                                           double tolsup, double tolinf, int tid) {
+                                           double tolsup, double tolinf) {
     double complex u = 1.0;
     double complex unp1 = u/(1-z);
     double complex unp2 = unp1*((1 + z/2)/(1 - z/2));
@@ -248,7 +248,7 @@ int is_stable_am5(double complex z,
         unp5 = unp6;
         double mag = cabs(unp6);
         if (mag > tolsup) return -1;
-        if (mag < tolinf) return tid;
+        if (mag < tolinf) return 1;
     }
     return -1;
 }
