@@ -14,14 +14,14 @@ import time
 tol = 1e-08
 T = 3000
 
-incle =  500
-xl = -2
-xr = 2
-yb = -2
-yt = 2
+incle =  100
+xl = -5
+xr = 5
+yb = -5
+yt = 5
 
 ##################### TIPO ##########################
-tipo = "PC-AB4-AM4"  # Altere para o método desejado
+tipo = "euler_explicit'"  # Altere para o método desejado
 #####################################################
 
 # Iniciar contagem de tempo total
@@ -53,6 +53,20 @@ def process_point(real_z, img_z, z, tipo):
             elif linalg.norm(Un1, 2) > 1 / tol:
                 return 0  # Instável
         return 0.5  # Indefinido
+
+    elif tipo == 'euler_explicit':
+        Un = np.array([1, 0])
+
+        for n in range(T):
+            Un1 = euler_explicit(Un, z)
+            Un = Un1
+
+            if linalg.norm(Un, 2) < tol:
+                return 1
+            elif linalg.norm(Un, 2) > 1 / tol:
+                return 0
+        return 0.5
+
 
     elif tipo == 'BDF2':
         Un = np.array([1, 0])
@@ -237,21 +251,21 @@ for h in range(incle + 1):
 end_time_total = time.time()
 total_execution_time = end_time_total - start_time_total
 
-
-# Salva os dados em CSV
-df = pd.DataFrame(data)
-df.to_csv(tipo + '.csv', index=False)
-print(f"Dados salvos em '{tipo}.csv'")
-
-
-# Salvar informações de tempo em um arquivo
-with open(f'{tipo}_time_info.txt', 'w') as f:
-    f.write(f"Método: {tipo}\n")
-    f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
-    f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
-    f.write(f"Total de pontos processados: {total_points}\n")
-    f.write(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos\n")
-    f.write(f"Parâmetros: T={T}, incle={incle}, tol={tol}\n")
+#
+# # Salva os dados em CSV
+# df = pd.DataFrame(data)
+# df.to_csv(tipo + '.csv', index=False)
+# print(f"Dados salvos em '{tipo}.csv'")
+#
+#
+# # Salvar informações de tempo em um arquivo
+# with open(f'{tipo}_time_info.txt', 'w') as f:
+#     f.write(f"Método: {tipo}\n")
+#     f.write(f"Tempo total de execução: {total_execution_time:.2f} segundos\n")
+#     f.write(f"Tempo total de execução: {total_execution_time/60:.2f} minutos\n")
+#     f.write(f"Total de pontos processados: {total_points}\n")
+#     f.write(f"Tempo médio por ponto: {total_execution_time/total_points*1000:.4f} milissegundos\n")
+#     f.write(f"Parâmetros: T={T}, incle={incle}, tol={tol}\n")
 
 print(f"\n=== INFORMAÇÕES DE TEMPO ===")
 print(f"Método: {tipo}")

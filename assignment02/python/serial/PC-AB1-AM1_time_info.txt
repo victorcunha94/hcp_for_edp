@@ -1,6 +1,0 @@
-Método: PC-AB1-AM1
-Tempo total de execução: 111.33 segundos
-Tempo total de execução: 1.86 minutos
-Total de pontos processados: 40401
-Tempo médio por ponto: 2.7557 milissegundos
-Parâmetros: T=3000, incle=200, tol=1e-08
