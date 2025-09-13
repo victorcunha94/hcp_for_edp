@@ -12,7 +12,7 @@ T = 1000
 
 #tipo= 'RK3'
 
-tipo = "AM4"
+tipo = "euler_implict"
 
 
 def TR_BDF2 (Un,z):

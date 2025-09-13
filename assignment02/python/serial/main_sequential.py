@@ -15,13 +15,13 @@ tol = 1e-08
 T = 3000
 
 incle =  100
-xl = -5
-xr = 5
-yb = -5
-yt = 5
+xl = -2
+xr = 2
+yb = -2
+yt = 2
 
 ##################### TIPO ##########################
-tipo = "euler_explicit'"  # Altere para o método desejado
+tipo = "euler_explicit"  # Altere para o método desejado
 #####################################################
 
 # Iniciar contagem de tempo total
@@ -280,12 +280,12 @@ plt.savefig(f'{tipo}_plot.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # Agora plota usando o formato do primeiro programa
-plt.figure(figsize=(8, 8))
-scatter = plt.scatter(
-    df["x"], df["y"],
-    c=df["stable"],
-    s=0.5, marker="."
-)
+# plt.figure(figsize=(8, 8))
+# scatter = plt.scatter(
+#     df["x"], df["y"],
+#     c=df["stable"],
+#     s=0.5, marker="."
+# )
 
 plt.xlabel("Real part (x)")
 plt.ylabel("Imaginary part (y)")
