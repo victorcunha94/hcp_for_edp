@@ -1,14 +1,16 @@
 from utils_tools import*
+from numba import njit
 
 
-
+@njit(cache=True)
 def euler_explicit(Un, z):
   Un1 = Un + prod(z,Un)
   return Un1
 
 
+@njit(cache=True)
 def euler_implict(Un, z):
-  den = [1,0] - z
+  den = [1,0] - prod([1,0],z)
   Un1 = prod(div([1,0],den),Un)
   return Un1
 
@@ -75,7 +77,7 @@ def AB3(Un2, Un1, Un, z):
     return Un3
 
 
-
+@njit(cache=True)
 def AB4(Un3, Un2, Un1, Un, z):
     """
     Adams-Bashforth de 4ª ordem
@@ -211,7 +213,7 @@ def AM3(Un2, Un1, Un, z):
 
     return Un3
 
-
+@njit(cache=True)
 def AM4(Un3, Un2, Un1, Un, z):
     """
     Adams-Moulton 4-step - Implementação CORRETA

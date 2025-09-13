@@ -1,0 +1,10 @@
+Método: PC-AB4-AM4
+Threads: 2
+Tempo total: 8.02 segundos
+Tempo total: 0.13 minutos
+Total de pontos: 40401
+Pontos estáveis: 1030
+Pontos instáveis: 39241
+Pontos indeterminados: 130
+Tempo médio por ponto: 0.1986 ms
+Parâmetros: T=2000, incle=200, tol=1e-08

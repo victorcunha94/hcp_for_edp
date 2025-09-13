@@ -1,0 +1,6 @@
+Método: PC-AB4-AM4
+Tempo total de execução: 0.00 segundos
+Tempo total de execução: 0.00 minutos
+Total de pontos processados: 40401
+Tempo médio por ponto: 0.0000 milissegundos
+Parâmetros: T=2000, incle=200, tol=1e-08
