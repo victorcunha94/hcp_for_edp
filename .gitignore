@@ -2,10 +2,12 @@
 *.exe
 *.o
 *.out
+*.png
 
 # Pastas de output
 output/
 build/
+
 
 # Arquivos do LaTeX
 *.aux
@@ -26,3 +28,5 @@ build/
 Thumbs.db
 # Pasta para testes e experimentos
 clone_/
+# Pasta 
+pyomp/
