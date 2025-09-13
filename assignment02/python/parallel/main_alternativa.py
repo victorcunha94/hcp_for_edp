@@ -1,7 +1,8 @@
 import numpy as np
-from numpy import linalg
+from pc_methods import*
 import matplotlib.pyplot as plt
 import time
+from utils_tools import*
 from numba import njit, prange, config, set_num_threads
 from time import perf_counter
 import threading
@@ -12,10 +13,10 @@ import concurrent.futures
 config.THREADING_LAYER = 'omp'
 os.environ['OMP_NUM_THREADS'] = '4'
 
-tol = 1e-08
+tol = 1e-05
 T = 2000
 tipo = "PC-AB4-AM4"
-incle = 200
+incle = 150
 
 xl = -4
 xr = 0.5
@@ -24,35 +25,6 @@ yt = 2.5
 
 total_points = (incle + 1) * (incle + 1)
 
-
-# Funções auxiliares para operações com números complexos como arrays [real, imag]
-@njit(cache=True)
-def complex_prod(a, b):
-    """Multiplicação de números complexos representados como [real, imag]"""
-    real = a[0] * b[0] - a[1] * b[1]
-    imag = a[0] * b[1] + a[1] * b[0]
-    return np.array([real, imag])
-
-
-@njit(cache=True)
-def complex_div(a, b):
-    """Divisão de números complexos representados como [real, imag]"""
-    denominator = b[0] * b[0] + b[1] * b[1]
-    real = (a[0] * b[0] + a[1] * b[1]) / denominator
-    imag = (a[1] * b[0] - a[0] * b[1]) / denominator
-    return np.array([real, imag])
-
-
-@njit(cache=True)
-def complex_sub(a, b):
-    """Subtração de números complexos representados como [real, imag]"""
-    return np.array([a[0] - b[0], a[1] - b[1]])
-
-
-@njit(cache=True)
-def complex_norm(a):
-    """Norma de número complexo representado como [real, imag]"""
-    return np.sqrt(a[0] * a[0] + a[1] * a[1])
 
 
 # Implementação correta do Euler implícito seguindo sua lógica
@@ -74,68 +46,106 @@ def euler_implict_numba(Un, z):
 
 @njit(cache=True)
 def preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, preditor_order, corretor_order, n_correcoes):
-    """Método Preditor-Corretor AB4-AM4 para números complexos como arrays"""
-    # Para o problema y' = z*y, f(y) = prod(z, y)
-    h = np.array([1.0, 0.0])  # Passo de tempo como número complexo [1, 0]
+    """
+    Preditor-Corretor AB-AM compatível com Numba, seguindo a mesma lógica da função original
+    Un, Un1, Un2, Un3: arrays [real, imag] representando números complexos
+    z: array [real, imag] representando h*lambda
+    """
+    # Montar histórico (apenas entradas não-nulas)
+    history = [Un, Un1, Un2, Un3]
+    hist = [h for h in history if not np.isnan(h[0])]  # Filtra valores válidos
 
-    if preditor_order == 4 and corretor_order == 4:
-        # Calcular f(y) = z * y
-        f_n = complex_prod(z, Un)
-        f_n1 = complex_prod(z, Un1)
-        f_n2 = complex_prod(z, Un2)
-        f_n3 = complex_prod(z, Un3)
+    if len(hist) < 2:
+        return Un3  # Fallback se não há histórico suficiente
 
-        # Coeficientes como números complexos [real, 0]
-        coeff_55 = np.array([55.0, 0.0])
-        coeff_59 = np.array([59.0, 0.0])
-        coeff_37 = np.array([37.0, 0.0])
-        coeff_9 = np.array([9.0, 0.0])
-        coeff_24 = np.array([24.0, 0.0])
+    # --- PREDITOR: AB4 ---
+    if preditor_order == 4:
+        # Usar os 4 pontos mais recentes
+        u_n = hist[-1]  # Mais recente (Un3)
+        u_nm1 = hist[-2]  # Un2
+        u_nm2 = hist[-3]  # Un1
+        u_nm3 = hist[-4]  # Un (mais antigo)
 
-        coeff_19 = np.array([19.0, 0.0])
-        coeff_5 = np.array([5.0, 0.0])
+        # AB4: u_pred = u_n + (55*f_n - 59*f_nm1 + 37*f_nm2 - 9*f_nm3)/24
+        f_n = complex_prod(z, u_n)
+        f_nm1 = complex_prod(z, u_nm1)
+        f_nm2 = complex_prod(z, u_nm2)
+        f_nm3 = complex_prod(z, u_nm3)
 
-        # Preditor AB4: Un4 = Un3 + h*(55*f_n3 - 59*f_n2 + 37*f_n1 - 9*f_n)/24
-        term1 = complex_prod(coeff_55, f_n3)
-        term2 = complex_prod(coeff_59, f_n2)
-        term3 = complex_prod(coeff_37, f_n1)
-        term4 = complex_prod(coeff_9, f_n)
+        # Calcular termos
+        term1 = complex_scale(f_n, 55.0)
+        term2 = complex_scale(f_nm1, 59.0)
+        term3 = complex_scale(f_nm2, 37.0)
+        term4 = complex_scale(f_nm3, 9.0)
 
-        # Calcular 55*f_n3 - 59*f_n2 + 37*f_n1 - 9*f_n
+        # Combinar termos: 55*f_n - 59*f_nm1 + 37*f_nm2 - 9*f_nm3
         temp1 = complex_sub(term1, term2)
-        temp2 = complex_sub(term3, term4)
-        pred_sum = complex_sub(temp1, temp2)  # Note: temp1 - temp2 = (term1-term2) - (term3-term4)
+        temp2 = complex_add(term3, complex_neg(term4))  # +37 -9 = +37 + (-9)
+        pred_terms = complex_add(temp1, temp2)
 
-        # Dividir por 24 e multiplicar por h
-        pred_scaled = complex_prod(complex_div(pred_sum, coeff_24), h)
-        U_pred = complex_add(Un3, pred_scaled)
+        # Dividir por 24 e somar a u_n
+        pred_scaled = complex_scale(pred_terms, 1.0 / 24.0)
+        u_pred = complex_add(u_n, pred_scaled)
 
-        # Corretor AM4: Un4 = Un3 + h*(9*f_pred + 19*f_n3 - 5*f_n2 + f_n1)/24
-        f_pred = complex_prod(z, U_pred)
+    else:
+        u_pred = Un3  # Fallback para outras ordens
 
-        term1_corr = complex_prod(coeff_9, f_pred)
-        term2_corr = complex_prod(coeff_19, f_n3)
-        term3_corr = complex_prod(coeff_5, f_n2)
+    # --- ESTIMATIVA inicial: f_pred = z * u_pred ---
+    f_est = complex_prod(z, u_pred)
 
-        # Calcular 9*f_pred + 19*f_n3 - 5*f_n2 + f_n1
-        temp1_corr = complex_add(term1_corr, term2_corr)
-        temp2_corr = complex_sub(term3_corr, f_n1)  # -5*f_n2 + f_n1 = -(5*f_n2 - f_n1)
-        corr_sum = complex_sub(temp1_corr, temp2_corr)
+    # --- CORRETOR: AM4 com n_correcoes iterações ---
+    if corretor_order == 4:
+        u_est = u_pred
+        u_n = hist[-1]  # Ponto mais recente
+        u_nm1 = hist[-2]  # Ponto anterior
+        u_nm2 = hist[-3]  # Dois pontos atrás
 
-        # Dividir por 24 e multiplicar por h
-        corr_scaled = complex_prod(complex_div(corr_sum, coeff_24), h)
-        U_corr = complex_add(Un3, corr_scaled)
+        for _ in range(n_correcoes):
+            # AM4: u_est = u_n + (9*f_est + 19*f_n - 5*f_nm1 + f_nm2)/24
+            f_n = complex_prod(z, u_n)
+            f_nm1 = complex_prod(z, u_nm1)
+            f_nm2 = complex_prod(z, u_nm2)
 
-        return U_corr
+            # Calcular termos
+            term1 = complex_scale(f_est, 9.0)
+            term2 = complex_scale(f_n, 19.0)
+            term3 = complex_scale(f_nm1, 5.0)
+            term4 = complex_scale(f_nm2, 1.0)
 
-    return Un3  # Fallback
+            # Combinar termos: 9*f_est + 19*f_n - 5*f_nm1 + f_nm2
+            temp1 = complex_add(term1, term2)
+            temp2 = complex_add(complex_neg(term3), term4)  # -5 +1
+            corr_terms = complex_add(temp1, temp2)
+
+            # Dividir por 24 e somar a u_n
+            corr_scaled = complex_scale(corr_terms, 1.0 / 24.0)
+            u_est = complex_add(u_n, corr_scaled)
+
+            # Re-avaliar f_est para próxima iteração
+            f_est = complex_prod(z, u_est)
+
+        return u_est
+
+    return u_pred  # Retorna preditor se corretor não for AM4
+
+
+# Funções auxiliares adicionais necessárias
+@njit(cache=True)
+def complex_scale(a, alpha):
+    """Multiplica número complexo [real, imag] por escalar"""
+    return np.array([alpha * a[0], alpha * a[1]])
+
+
+@njit(cache=True)
+def complex_neg(a):
+    """Negação de número complexo"""
+    return np.array([-a[0], -a[1]])
 
 
 @njit(cache=True)
 def complex_add(a, b):
-    """Adição de números complexos representados como [real, imag]"""
+    """Adição de números complexos"""
     return np.array([a[0] + b[0], a[1] + b[1]])
-
 
 # Função para processar um ponto individual
 @njit(cache=True)
@@ -153,8 +163,10 @@ def process_single_point(h, k, xl, xr, yb, yt, incle, T, tol):
     is_stable = False
     is_unstable = False
 
-    for n in range(T):
-        Un4 = preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, 4, 4, 1)
+    for n in prange(T):
+        #Un4 = preditor_corrector_AB_AM(Un, Un1, Un2, Un3, z, 4, 4, 1)
+        Un4 = preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z,
+                                 preditor_order=4, corretor_order=4, n_correcoes=1)
         Un = Un1
         Un1 = Un2
         Un2 = Un3
@@ -273,7 +285,7 @@ def run_with_threads(num_threads):
 
 # Executar para diferentes números de threads
 if __name__ == "__main__":
-    threads_to_test = [1, 2, 3, 4, 5, 6, 7, 8]
+    threads_to_test = list(range(1, 9))
     execution_times = {}
 
     print("Iniciando processamento da região de estabilidade...")

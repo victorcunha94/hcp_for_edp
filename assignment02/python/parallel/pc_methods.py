@@ -105,3 +105,107 @@ def preditor_corrector_AB_AM(Un, Un1, Un2=None, Un3=None, z=None,
 
     # u_est já é o U^{próximo} (e f_est é f(U^{próximo}))
     return u_est
+
+
+@njit(cache=True)
+def preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, preditor_order, corretor_order, n_correcoes):
+    """
+    Preditor-Corretor AB-AM compatível com Numba, seguindo a mesma lógica da função original
+    Un, Un1, Un2, Un3: arrays [real, imag] representando números complexos
+    z: array [real, imag] representando h*lambda
+    """
+    # Montar histórico (apenas entradas não-nulas)
+    history = [Un, Un1, Un2, Un3]
+    hist = [h for h in history if not np.isnan(h[0])]  # Filtra valores válidos
+
+    if len(hist) < 2:
+        return Un3  # Fallback se não há histórico suficiente
+
+    # --- PREDITOR: AB4 ---
+    if preditor_order == 4:
+        # Usar os 4 pontos mais recentes
+        u_n = hist[-1]  # Mais recente (Un3)
+        u_nm1 = hist[-2]  # Un2
+        u_nm2 = hist[-3]  # Un1
+        u_nm3 = hist[-4]  # Un (mais antigo)
+
+        # AB4: u_pred = u_n + (55*f_n - 59*f_nm1 + 37*f_nm2 - 9*f_nm3)/24
+        f_n = complex_prod(z, u_n)
+        f_nm1 = complex_prod(z, u_nm1)
+        f_nm2 = complex_prod(z, u_nm2)
+        f_nm3 = complex_prod(z, u_nm3)
+
+        # Calcular termos
+        term1 = complex_scale(f_n, 55.0)
+        term2 = complex_scale(f_nm1, 59.0)
+        term3 = complex_scale(f_nm2, 37.0)
+        term4 = complex_scale(f_nm3, 9.0)
+
+        # Combinar termos: 55*f_n - 59*f_nm1 + 37*f_nm2 - 9*f_nm3
+        temp1 = complex_sub(term1, term2)
+        temp2 = complex_add(term3, complex_neg(term4))  # +37 -9 = +37 + (-9)
+        pred_terms = complex_add(temp1, temp2)
+
+        # Dividir por 24 e somar a u_n
+        pred_scaled = complex_scale(pred_terms, 1.0 / 24.0)
+        u_pred = complex_add(u_n, pred_scaled)
+
+    else:
+        u_pred = Un3  # Fallback para outras ordens
+
+    # --- ESTIMATIVA inicial: f_pred = z * u_pred ---
+    f_est = complex_prod(z, u_pred)
+
+    # --- CORRETOR: AM4 com n_correcoes iterações ---
+    if corretor_order == 4:
+        u_est = u_pred
+        u_n = hist[-1]  # Ponto mais recente
+        u_nm1 = hist[-2]  # Ponto anterior
+        u_nm2 = hist[-3]  # Dois pontos atrás
+
+        for _ in range(n_correcoes):
+            # AM4: u_est = u_n + (9*f_est + 19*f_n - 5*f_nm1 + f_nm2)/24
+            f_n = complex_prod(z, u_n)
+            f_nm1 = complex_prod(z, u_nm1)
+            f_nm2 = complex_prod(z, u_nm2)
+
+            # Calcular termos
+            term1 = complex_scale(f_est, 9.0)
+            term2 = complex_scale(f_n, 19.0)
+            term3 = complex_scale(f_nm1, 5.0)
+            term4 = complex_scale(f_nm2, 1.0)
+
+            # Combinar termos: 9*f_est + 19*f_n - 5*f_nm1 + f_nm2
+            temp1 = complex_add(term1, term2)
+            temp2 = complex_add(complex_neg(term3), term4)  # -5 +1
+            corr_terms = complex_add(temp1, temp2)
+
+            # Dividir por 24 e somar a u_n
+            corr_scaled = complex_scale(corr_terms, 1.0 / 24.0)
+            u_est = complex_add(u_n, corr_scaled)
+
+            # Re-avaliar f_est para próxima iteração
+            f_est = complex_prod(z, u_est)
+
+        return u_est
+
+    return u_pred  # Retorna preditor se corretor não for AM4
+
+
+# Funções auxiliares adicionais necessárias
+@njit(cache=True)
+def complex_scale(a, alpha):
+    """Multiplica número complexo [real, imag] por escalar"""
+    return np.array([alpha * a[0], alpha * a[1]])
+
+
+@njit(cache=True)
+def complex_neg(a):
+    """Negação de número complexo"""
+    return np.array([-a[0], -a[1]])
+
+
+@njit(cache=True)
+def complex_add(a, b):
+    """Adição de números complexos"""
+    return np.array([a[0] + b[0], a[1] + b[1]])
