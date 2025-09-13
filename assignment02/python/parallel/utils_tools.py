@@ -1,11 +1,12 @@
 import numpy as np
+from numba import njit, prange
 
-
+@njit(cache=True)
 def prod(a, b):
   c = np.array([a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]])
   return c
 
-
+@njit(cache=True)
 def div(a, b):
     den = b[0]**2 + b[1]**2
     if abs(den) < 1e-14:
@@ -15,7 +16,7 @@ def div(a, b):
         (a[1] * b[0] - a[0] * b[1]) / den
     ])
 
-
+@njit(cache=True)
 def div_a (a, b):
   den = b[0]**2 + b[1]**2
   c   = np.array([(a[0] * b[0] + a[1] * b[1])/den , (a[1] * b[0] - a[0] * b[1])/den] )

@@ -7,7 +7,7 @@ from rk_methods import*
 from adams_bashforth_moulton_methods import*
 
 
-
+@njit(cache=True)
 def preditor_corrector_AB_AM(Un, Un1, Un2=None, Un3=None, z=None,
                              preditor_order=2, corretor_order=2, n_correcoes=1):
     """
