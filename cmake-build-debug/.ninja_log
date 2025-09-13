@@ -1,6 +1,12 @@
 # ninja log v6
-0	100	7791661883374294	build.ninja	31f9154950bddaa
+0	100	1757769283206593815	build.ninja	31f9154950bddaa
 33	53	1757291841820581532	hcp_for_edp	c112c1e5a4db6a9
-72	976	7791662379975798	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.obj	29c052c44e008acb
-8	979	7791662379347493	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.obj	f2296e4eb15514f8
-45	980	7791662379716547	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.obj	4a700f6f4e25481e
+0	19	1757769293029032253	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/main2.c.o	215209e0ceaa8fa6
+1	35	1757769293030451733	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o	3b0c952e5d205a6b
+0	49	1757769293030275069	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.o	e89eeb33e5678716
+49	70	1757769293078032985	hcp_for_edp	c112c1e5a4db6a9
+1	33	1757769343451703897	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o	3b0c952e5d205a6b
+34	54	1757769343484704237	hcp_for_edp	c112c1e5a4db6a9
+1	33	1757769580367100918	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/plotagem.c.o	3b0c952e5d205a6b
+1	46	1757769580365869939	CMakeFiles/hcp_for_edp.dir/assignment02/C-gbispo/metodos_numericos.c.o	e89eeb33e5678716
+46	66	1757769580410870615	hcp_for_edp	c112c1e5a4db6a9

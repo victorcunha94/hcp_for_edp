@@ -36,7 +36,7 @@ double complex rk4_amp(double complex z) {
 int is_stable_euler_bruteforce(double complex z,
                                              double tolsup, double tolinf) {
     double complex u = 1.0;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 3000; i++) {
         u = (1.0 + z) * u;
         double mag = cabs(u);
         if (mag > tolsup) return 0; // instavel
@@ -47,7 +47,7 @@ int is_stable_euler_bruteforce(double complex z,
 int is_stable_eulerimplicit_bruteforce(double complex z,
                                              double tolsup, double tolinf, int tid) {
     double complex u = 1.0;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 3000; i++) {
         u = u/(1.0 - z);
         double mag = cabs(u);
         if (mag > tolsup) return -1; // instavel
@@ -125,7 +125,7 @@ int is_stable_ab3(double complex z,
     double complex u = 1.0;
     double complex unp1 = (1+z)*u;
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 3000; i++) {
         double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
         u = unp1;
         unp1 = unp2;
@@ -142,7 +142,7 @@ int is_stable_ab4(double complex z,
     double complex unp1 = (1+z)*u;
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
     double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 3000; i++) {
         double complex unp4 = unp3 + (z/24)*(55.0*unp3 - 59.0*unp2 + 37.0*unp1 - 9.0*u);
         u = unp1;
         unp1 = unp2;
@@ -161,7 +161,7 @@ int is_stable_ab5(double complex z,
     double complex unp2 = unp1 + (z/2)*(3.0*unp1 - u);
     double complex unp3 = unp2 + (z/12)*(23.0*unp2 - 16.0*unp1 + 5.0*u);
     double complex unp4 = unp3 + (z/24)*(55.0*unp3 - 59.0*unp2 + 37.0*unp1 - 9.0*u);
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 3000; i++) {
         double complex unp5 = unp4 + (z/720)*(1901.0*unp4 - 2774.0*unp3 + 2616.0*unp2 - 1274.0*unp1 + 251.0*u);
         u = unp1;
         unp1 = unp2;
