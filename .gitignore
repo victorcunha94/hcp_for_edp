@@ -3,6 +3,7 @@
 *.o
 *.out
 *.png
+*.pbs
 
 # Pastas de output
 output/
