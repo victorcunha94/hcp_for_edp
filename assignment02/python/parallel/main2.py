@@ -1,18 +1,13 @@
 import numpy as np
-from numpy import linalg
 import matplotlib.pyplot as plt
 from utils_tools import *
-from bdf_methods import *
-from rk_methods import *
-from adams_bashforth_moulton_methods import *
 from pc_methods import *
-import time
-from numba import njit, prange, config, set_num_threads
 from time import perf_counter
 import threading
 import os
 import concurrent.futures
-
+import colorsys
+from numba import njit, config
 
 ############ Configuração ###################
 config.THREADING_LAYER = 'omp'
@@ -27,7 +22,7 @@ xl, xr, yb, yt = -4, 0.5, -2.5, 2.5
 total_points = (incle + 1) * (incle + 1)
 
 # Criar pasta de output
-os.makedirs('output_2', exist_ok=True)
+os.makedirs('output', exist_ok=True)
 
 
 # Implementação compatível com Numba do Euler implícito
@@ -40,7 +35,7 @@ def euler_implict_numba(Un, z):
     return Un1
 
 
-# Implementação correta do preditor-corretor seguindo sua lógica exata
+# Implementação correta do preditor-corretor
 @njit(cache=True)
 def preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, preditor_order, corretor_order, n_correcoes):
     """Preditor-Corretor AB-AM compatível com Numba seguindo a lógica exata"""
@@ -117,10 +112,45 @@ def preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, preditor_order, correto
     return u_pred
 
 
+# Função para processar um ponto individual (sem timing)
+@njit(cache=True)
+def process_single_point_numba(h, k, xl, xr, yb, yt, incle, T, tol):
+    """Processa um único ponto - compatível com Numba"""
+    real_z = xl + (h * np.abs(xr - xl) / incle)
+    img_z = yb + (k * np.abs(yt - yb) / incle)
+    z = np.array([real_z, img_z])
+
+    # Inicialização
+    Un = np.array([1.0, 0.0])
+    Un1 = euler_implict_numba(Un, z)
+    Un2 = euler_implict_numba(Un1, z)
+    Un3 = euler_implict_numba(Un2, z)
+
+    is_stable = False
+    is_unstable = False
+
+    for n in range(T):
+        Un4 = preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, 4, 4, 1)
+        Un = Un1
+        Un1 = Un2
+        Un2 = Un3
+        Un3 = Un4
+
+        norm = np.sqrt(Un4[0] ** 2 + Un4[1] ** 2)
+        if norm < tol:
+            is_stable = True
+            break
+        elif norm > 1.0 / tol:
+            is_unstable = True
+            break
+
+    return real_z, img_z, is_stable, is_unstable
+
+
 # Função principal que processa TODOS os pontos em paralelo com prange
 @njit(parallel=True, cache=True)
 def process_all_points_parallel(xl, xr, yb, yt, incle, T, tol):
-    """Processa todos os pontos em paralelo usando prange - MUITO MAIS EFICIENTE"""
+    """Processa todos os pontos em paralelo usando prange"""
     total_points = (incle + 1) * (incle + 1)
 
     # Arrays para resultados
@@ -128,57 +158,25 @@ def process_all_points_parallel(xl, xr, yb, yt, incle, T, tol):
     all_img_z = np.zeros(total_points)
     all_stable = np.zeros(total_points, dtype=np.bool_)
     all_unstable = np.zeros(total_points, dtype=np.bool_)
-    all_processing_times = np.zeros(total_points)
-    all_thread_ids = np.zeros(total_points, dtype=np.int32)
 
-    # Paralelização REAL com prange
+    # Paralelização REAL com prange - cada thread processa um subconjunto de pontos
     for idx in prange(total_points):
-        start_time = perf_counter()
-
         # Calcular coordenadas (h, k) from linear index
         h = idx // (incle + 1)
         k = idx % (incle + 1)
 
-        # Coordenadas complexas
-        real_z = xl + (h * np.abs(xr - xl) / incle)
-        img_z = yb + (k * np.abs(yt - yb) / incle)
-        z = np.array([real_z, img_z])
-
-        # Processamento do ponto
-        Un = np.array([1.0, 0.0])
-        Un1 = euler_implict_numba(Un, z)
-        Un2 = euler_implict_numba(Un1, z)
-        Un3 = euler_implict_numba(Un2, z)
-
-        is_stable = False
-        is_unstable = False
-
-        for n in range(T):
-            Un4 = preditor_corrector_AB_AM_numba(Un, Un1, Un2, Un3, z, 4, 4, 1)
-            Un = Un1
-            Un1 = Un2
-            Un2 = Un3
-            Un3 = Un4
-
-            norm = np.sqrt(Un4[0] ** 2 + Un4[1] ** 2)
-            if norm < tol:
-                is_stable = True
-                break
-            elif norm > 1.0 / tol:
-                is_unstable = True
-                break
-
-        end_time = perf_counter()
+        # Processar ponto
+        real_z, img_z, is_stable, is_unstable = process_single_point_numba(
+            h, k, xl, xr, yb, yt, incle, T, tol
+        )
 
         # Armazenar resultados
         all_real_z[idx] = real_z
         all_img_z[idx] = img_z
         all_stable[idx] = is_stable
         all_unstable[idx] = is_unstable
-        all_processing_times[idx] = end_time - start_time
-        all_thread_ids[idx] = idx % 8  # Simular ID da thread para visualização
 
-    return all_real_z, all_img_z, all_stable, all_unstable, all_processing_times, all_thread_ids
+    return all_real_z, all_img_z, all_stable, all_unstable
 
 
 # Função para gerar cores das threads
@@ -194,77 +192,45 @@ def generate_thread_colors(n_threads):
 
 
 # Função para salvar estatísticas
-def save_statistics(thread_ids, processing_times, n_threads, execution_time, tipo):
-    stats = []
-    for thread_id in range(n_threads):
-        mask = thread_ids == thread_id
-        if np.any(mask):
-            total_time = np.sum(processing_times[mask])
-            avg_time = np.mean(processing_times[mask])
-            points_count = np.sum(mask)
-            stats.append((thread_id, points_count, total_time, avg_time))
-
+def save_statistics(execution_time, total_points, n_threads, tipo):
+    """Salva estatísticas simplificadas"""
     with open(f'output/{tipo}_{n_threads}threads_stats.txt', 'w') as f:
-        f.write(f"ESTATÍSTICAS DE BALANCEAMENTO - {n_threads} THREADS\n")
+        f.write(f"ESTATÍSTICAS DE PARALELIZAÇÃO - {n_threads} THREADS\n")
         f.write("=" * 50 + "\n")
-        f.write(f"{'Thread':<8} {'Pontos':<8} {'Tempo Total':<12} {'Tempo Médio':<12} {'% Carga':<8}\n")
-        f.write("-" * 50 + "\n")
-
-        total_processing_time = np.sum(processing_times)
-        for thread_id, count, total_time, avg_time in stats:
-            load_percentage = (total_time / total_processing_time) * 100
-            f.write(
-                f"{thread_id:<8} {count:<8} {total_time:.4f}s     {avg_time * 1000:.2f}ms      {load_percentage:.1f}%\n")
-
-        if stats:
-            total_times = [stat[2] for stat in stats]
-            imbalance_ratio = max(total_times) / min(total_times)
-            efficiency = min(total_times) / max(total_times) * 100
-            f.write("-" * 50 + "\n")
-            f.write(f"Taxa de desbalanceamento: {imbalance_ratio:.2f}\n")
-            f.write(f"Eficiência: {efficiency:.1f}%\n")
-            f.write(f"Tempo total de execução: {execution_time:.2f}s\n")
+        f.write(f"Total de pontos: {total_points}\n")
+        f.write(f"Tempo total de execução: {execution_time:.2f}s\n")
+        f.write(f"Tempo médio por ponto: {execution_time / total_points * 1000:.4f}ms\n")
+        f.write(f"Threads utilizadas: {n_threads}\n")
+        f.write(f"Método: {tipo}\n")
+        f.write(f"Tolerância: {tol}\n")
+        f.write(f"Iterações máximas: {T}\n")
 
 
 # Função para visualizar resultados
-def visualize_balance_results(real_coords, imag_coords, stable_flags, processing_times, thread_ids, n_threads,
-                              execution_time, tipo):
-    thread_colors = generate_thread_colors(n_threads)
+def visualize_results(real_coords, imag_coords, stable_flags, n_threads, execution_time, tipo):
+    """Visualiza resultados sem informações de timing por thread"""
 
-    # 1. Mapa de Cores por Thread
-    plt.figure(figsize=(10, 8))
-    for thread_id in range(n_threads):
-        mask = thread_ids == thread_id
-        if np.any(mask):
-            plt.scatter(real_coords[mask], imag_coords[mask],
-                        color=thread_colors[thread_id], s=2, alpha=0.7,
-                        label=f'Thread {thread_id}')
+    # 1. Região de Estabilidade
+    plt.figure(figsize=(8, 8))
+    plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
+    plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
+    plt.xlim(xl, xr)
+    plt.ylim(yb, yt)
 
-    plt.title(f'Distribuição por Thread - {tipo} - {n_threads} threads')
+    plt.scatter(real_coords[stable_flags], imag_coords[stable_flags],
+                color='blue', s=1, alpha=0.7, label='Estável')
+    plt.scatter(real_coords[~stable_flags], imag_coords[~stable_flags],
+                color='red', s=1, alpha=0.7, label='Instável')
+
     plt.xlabel('Re(z)')
     plt.ylabel('Im(z)')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.grid(True, alpha=0.3)
-    plt.savefig(f'output/thread_distribution_{tipo}_{n_threads}threads.png', dpi=300, bbox_inches='tight')
+    plt.title(f'Região de Estabilidade - {tipo} - {n_threads} threads\nTempo: {execution_time:.2f}s')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.savefig(f'output/{tipo}_{n_threads}threads.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-    # 2. Tempo de Processamento
-    plt.figure(figsize=(10, 8))
-    sizes = np.clip(processing_times * 5000, 1, 20)
-    for thread_id in range(n_threads):
-        mask = thread_ids == thread_id
-        if np.any(mask):
-            plt.scatter(real_coords[mask], imag_coords[mask],
-                        color=thread_colors[thread_id], s=sizes[mask], alpha=0.7)
-
-    plt.title(f'Tempo de Processamento - {tipo} - {n_threads} threads')
-    plt.xlabel('Re(z)')
-    plt.ylabel('Im(z)')
-    plt.grid(True, alpha=0.3)
-    plt.savefig(f'output/processing_time_{tipo}_{n_threads}threads.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    # 3. Ordem de Processamento
+    # 2. Ordem de Processamento (simulada)
     plt.figure(figsize=(10, 8))
     scatter = plt.scatter(real_coords, imag_coords,
                           c=np.arange(len(real_coords)), cmap='viridis', s=2, alpha=0.7)
@@ -276,38 +242,15 @@ def visualize_balance_results(real_coords, imag_coords, stable_flags, processing
     plt.savefig(f'output/processing_order_{tipo}_{n_threads}threads.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-    # 4. Região de Estabilidade
-    plt.figure(figsize=(8, 8))
-    plt.axhline(y=0, color='k', linestyle='-', alpha=0.5)
-    plt.axvline(x=0, color='k', linestyle='-', alpha=0.5)
-    plt.xlim(xl, xr)
-    plt.ylim(yb, yt)
-
-    stable_mask = stable_flags
-    unstable_mask = ~stable_flags & (processing_times > 0)  # Evitar pontos não processados
-
-    plt.scatter(real_coords[stable_mask], imag_coords[stable_mask],
-                color='blue', s=1, alpha=0.7, label='Estável')
-    plt.scatter(real_coords[unstable_mask], imag_coords[unstable_mask],
-                color='red', s=1, alpha=0.7, label='Instável')
-
-    plt.xlabel('Re(z)')
-    plt.ylabel('Im(z)')
-    plt.title(f'Região de Estabilidade - {tipo} - {n_threads} threads')
-    plt.legend()
-    plt.grid(True, linestyle='--', alpha=0.7)
-    plt.savefig(f'output/{tipo}_{n_threads}threads.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
     # Salvar estatísticas
-    save_statistics(thread_ids, processing_times, n_threads, execution_time, tipo)
+    save_statistics(execution_time, len(real_coords), n_threads, tipo)
 
 
 # Função principal com paralelização Numba
 def run_with_numba_prange(num_threads):
     """Executa o processamento com paralelização Numba + prange"""
     print(f"\n=== Testando com {num_threads} thread(s) ===")
-    print("Usando paralelização Numba + prange (MUITO MAIS EFICIENTE)")
+    print("Usando paralelização Numba + prange (ALTAMENTE EFICIENTE)")
 
     # Configurar número de threads para Numba
     os.environ['OMP_NUM_THREADS'] = str(num_threads)
@@ -315,29 +258,32 @@ def run_with_numba_prange(num_threads):
     start_time_total = perf_counter()
 
     # Processar TODOS os pontos em paralelo (chamada única)
-    real_coords, imag_coords, stable_flags, unstable_flags, processing_times, thread_ids = \
+    real_coords, imag_coords, stable_flags, unstable_flags = \
         process_all_points_parallel(xl, xr, yb, yt, incle, T, tol)
 
     end_time_total = perf_counter()
     total_execution_time = end_time_total - start_time_total
 
     # Gerar visualizações
-    visualize_balance_results(real_coords, imag_coords, stable_flags, processing_times,
-                              thread_ids, num_threads, total_execution_time, tipo)
+    visualize_results(real_coords, imag_coords, stable_flags,
+                      num_threads, total_execution_time, tipo)
 
     print(f"Tempo com {num_threads} threads: {total_execution_time:.2f}s")
+    print(f"Pontos estáveis: {np.sum(stable_flags)}")
+    print(f"Pontos instáveis: {np.sum(unstable_flags)}")
+
     return total_execution_time
 
 
 # Execução principal
 if __name__ == "__main__":
-    threads_to_test = [1, 2, 4, 8]
+    threads_to_test = [1, 2, 3, 4, 5, 6, 7, 8]
     execution_times = {}
 
     print("Iniciando processamento da região de estabilidade...")
     print(f"Total de pontos: {total_points}")
     print(f"Tipo de método: {tipo}")
-    print("USANDO PARALELIZAÇÃO NUMBA + PRANGE (ÓTIMA EFICIÊNCIA)")
+    print("USANDO PARALELIZAÇÃO NUMBA + PRANGE (MÁXIMA EFICIÊNCIA)")
 
     # Executar para diferentes números de threads
     for n_threads in threads_to_test:
@@ -362,4 +308,26 @@ if __name__ == "__main__":
 
         plt.subplot(1, 2, 2)
         base_time = execution_times[1]
-        speedup = [base_time / t]
+        speedup = [base_time / t for t in times_list]
+        plt.plot(threads_list, speedup, 'ro-', linewidth=2, markersize=8)
+        plt.plot(threads_list, threads_list, 'k--', alpha=0.5, label='Ideal')
+        plt.xlabel('Número de Threads')
+        plt.ylabel('Speedup')
+        plt.title('Speedup vs Threads')
+        plt.legend()
+        plt.grid(True)
+
+        plt.tight_layout()
+        plt.savefig('output/performance_comparison.png', dpi=300, bbox_inches='tight')
+        plt.show()
+
+        # Mostrar resumo final
+        print("\n=== RESUMO FINAL ===")
+        print(f"{'Threads':<8} {'Tempo (s)':<10} {'Speedup':<8} {'Eficiência':<10}")
+        print("-" * 40)
+
+        base_time = execution_times[1]
+        for threads, time_taken in execution_times.items():
+            speedup_val = base_time / time_taken
+            efficiency = (speedup_val / threads) * 100
+            print(f"{threads:<8} {time_taken:<10.2f} {speedup_val:<8.2f} {efficiency:<10.1f}%")
