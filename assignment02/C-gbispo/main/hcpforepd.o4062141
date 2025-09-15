@@ -1,0 +1,560 @@
+##########################################
+Número de threads=1
+tempo euler610000
+tempo range kutta 2º960000
+tempo range kutta 3º1100000
+tempo range kutta 4º1280000
+tempo euler implicito1420000
+tempo trapézio4640000
+tempo bdf 1250000
+tempo bdf3 1110000
+tempo ab4 920000
+tempo am2 8990000
+tempo am3 6620000
+tempo am4 4150000
+##########################################
+Número de threads=2
+tempo euler1040000
+tempo range kutta 2º1000000
+tempo range kutta 3º1210000
+tempo range kutta 4º1440000
+tempo euler implicito1460000
+tempo trapézio4860000
+tempo bdf 1240000
+tempo bdf3 1470000
+tempo ab4 1140000
+tempo am2 8900000
+tempo am3 6660000
+tempo am4 4350000
+##########################################
+Número de threads=3
+tempo euler1000000
+tempo range kutta 2º1100000
+tempo range kutta 3º1270000
+tempo range kutta 4º1590000
+tempo euler implicito1610000
+tempo trapézio5010000
+tempo bdf 1320000
+tempo bdf3 1340000
+tempo ab4 1240000
+tempo am2 9150000
+tempo am3 6860000
+tempo am4 4480000
+##########################################
+Número de threads=4
+tempo euler1340000
+tempo range kutta 2º1410000
+tempo range kutta 3º1420000
+tempo range kutta 4º1630000
+tempo euler implicito1620000
+tempo trapézio5140000
+tempo bdf 1410000
+tempo bdf3 1430000
+tempo ab4 1340000
+tempo am2 9120000
+tempo am3 7140000
+tempo am4 4650000
+##########################################
+Número de threads=5
+tempo euler1300000
+tempo range kutta 2º1340000
+tempo range kutta 3º1420000
+tempo range kutta 4º1630000
+tempo euler implicito1690000
+tempo trapézio5430000
+tempo bdf 1550000
+tempo bdf3 1620000
+tempo ab4 1550000
+tempo am2 9410000
+tempo am3 7040000
+tempo am4 4830000
+##########################################
+Número de threads=6
+tempo euler1530000
+tempo range kutta 2º1520000
+tempo range kutta 3º1550000
+tempo range kutta 4º1800000
+tempo euler implicito1870000
+tempo trapézio5490000
+tempo bdf 1650000
+tempo bdf3 1810000
+tempo ab4 1640000
+tempo am2 9920000
+tempo am3 7280000
+tempo am4 4320000
+##########################################
+Número de threads=7
+tempo euler1570000
+tempo range kutta 2º1700000
+tempo range kutta 3º1740000
+tempo range kutta 4º1770000
+tempo euler implicito1970000
+tempo trapézio5670000
+tempo bdf 1980000
+tempo bdf3 1720000
+tempo ab4 1770000
+tempo am2 9040000
+tempo am3 6570000
+tempo am4 4290000
+##########################################
+Número de threads=8
+tempo euler1770000
+tempo range kutta 2º1970000
+tempo range kutta 3º1930000
+tempo range kutta 4º1910000
+tempo euler implicito2170000
+tempo trapézio5300000
+tempo bdf 2110000
+tempo bdf3 2150000
+tempo ab4 2100000
+tempo am2 9470000
+tempo am3 7200000
+tempo am4 4930000
+##########################################
+Número de threads=9
+tempo euler1980000
+tempo range kutta 2º2160000
+tempo range kutta 3º2130000
+tempo range kutta 4º2070000
+tempo euler implicito2360000
+tempo trapézio5400000
+tempo bdf 2320000
+tempo bdf3 2320000
+tempo ab4 2290000
+tempo am2 9580000
+tempo am3 7630000
+tempo am4 5010000
+##########################################
+Número de threads=10
+tempo euler2220000
+tempo range kutta 2º2360000
+tempo range kutta 3º2380000
+tempo range kutta 4º2340000
+tempo euler implicito2870000
+tempo trapézio5660000
+tempo bdf 2500000
+tempo bdf3 2550000
+tempo ab4 2570000
+tempo am2 9690000
+tempo am3 6660000
+tempo am4 4580000
+##########################################
+Número de threads=11
+tempo euler2190000
+tempo range kutta 2º2490000
+tempo range kutta 3º2520000
+tempo range kutta 4º2470000
+tempo euler implicito2750000
+tempo trapézio5460000
+tempo bdf 2710000
+tempo bdf3 2730000
+tempo ab4 2690000
+tempo am2 9680000
+tempo am3 7360000
+tempo am4 4850000
+##########################################
+Número de threads=12
+tempo euler2450000
+tempo range kutta 2º2680000
+tempo range kutta 3º2720000
+tempo range kutta 4º2740000
+tempo euler implicito3010000
+tempo trapézio5940000
+tempo bdf 2980000
+tempo bdf3 3220000
+tempo ab4 2950000
+tempo am2 9980000
+tempo am3 7440000
+tempo am4 4950000
+##########################################
+Número de threads=13
+tempo euler2840000
+tempo range kutta 2º2870000
+tempo range kutta 3º2790000
+tempo range kutta 4º2620000
+tempo euler implicito3040000
+tempo trapézio5650000
+tempo bdf 2970000
+tempo bdf3 3010000
+tempo ab4 3000000
+tempo am2 9770000
+tempo am3 8030000
+tempo am4 4900000
+##########################################
+Número de threads=14
+tempo euler2720000
+tempo range kutta 2º2930000
+tempo range kutta 3º2880000
+tempo range kutta 4º2960000
+tempo euler implicito3210000
+tempo trapézio5330000
+tempo bdf 3150000
+tempo bdf3 3150000
+tempo ab4 3170000
+tempo am2 9880000
+tempo am3 8010000
+tempo am4 5750000
+##########################################
+Número de threads=15
+tempo euler2840000
+tempo range kutta 2º3080000
+tempo range kutta 3º3130000
+tempo range kutta 4º3050000
+tempo euler implicito3340000
+tempo trapézio6080000
+tempo bdf 3540000
+tempo bdf3 3340000
+tempo ab4 3290000
+tempo am2 10220000
+tempo am3 6980000
+tempo am4 4380000
+##########################################
+Número de threads=16
+tempo euler2950000
+tempo range kutta 2º3250000
+tempo range kutta 3º3350000
+tempo range kutta 4º3270000
+tempo euler implicito3460000
+tempo trapézio6330000
+tempo bdf 3630000
+tempo bdf3 3700000
+tempo ab4 3680000
+tempo am2 9950000
+tempo am3 7680000
+tempo am4 5360000
+##########################################
+Número de threads=17
+tempo euler3240000
+tempo range kutta 2º3520000
+tempo range kutta 3º3520000
+tempo range kutta 4º3480000
+tempo euler implicito3810000
+tempo trapézio5850000
+tempo bdf 3780000
+tempo bdf3 3810000
+tempo ab4 3320000
+tempo am2 10080000
+tempo am3 7200000
+tempo am4 4640000
+##########################################
+Número de threads=18
+tempo euler2970000
+tempo range kutta 2º3290000
+tempo range kutta 3º3230000
+tempo range kutta 4º3240000
+tempo euler implicito3610000
+tempo trapézio5530000
+tempo bdf 3630000
+tempo bdf3 3630000
+tempo ab4 3600000
+tempo am2 9510000
+tempo am3 6860000
+tempo am4 4730000
+##########################################
+Número de threads=19
+tempo euler3080000
+tempo range kutta 2º3360000
+tempo range kutta 3º3370000
+tempo range kutta 4º3320000
+tempo euler implicito3760000
+tempo trapézio5610000
+tempo bdf 3700000
+tempo bdf3 3680000
+tempo ab4 3490000
+tempo am2 9180000
+tempo am3 6840000
+tempo am4 4380000
+##########################################
+Número de threads=20
+tempo euler3230000
+tempo range kutta 2º3390000
+tempo range kutta 3º3410000
+tempo range kutta 4º3430000
+tempo euler implicito3960000
+tempo trapézio5680000
+tempo bdf 3860000
+tempo bdf3 3880000
+tempo ab4 4070000
+tempo am2 9720000
+tempo am3 7480000
+tempo am4 4840000
+##########################################
+Número de threads=21
+tempo euler3370000
+tempo range kutta 2º3660000
+tempo range kutta 3º3780000
+tempo range kutta 4º3700000
+tempo euler implicito3950000
+tempo trapézio5750000
+tempo bdf 4060000
+tempo bdf3 3910000
+tempo ab4 4060000
+tempo am2 10170000
+tempo am3 7700000
+tempo am4 5010000
+##########################################
+Número de threads=22
+tempo euler3430000
+tempo range kutta 2º3730000
+tempo range kutta 3º3810000
+tempo range kutta 4º3710000
+tempo euler implicito4160000
+tempo trapézio5860000
+tempo bdf 4190000
+tempo bdf3 4090000
+tempo ab4 4100000
+tempo am2 10190000
+tempo am3 7530000
+tempo am4 5110000
+##########################################
+Número de threads=23
+tempo euler3430000
+tempo range kutta 2º3690000
+tempo range kutta 3º3630000
+tempo range kutta 4º3570000
+tempo euler implicito3960000
+tempo trapézio5660000
+tempo bdf 3920000
+tempo bdf3 3940000
+tempo ab4 3920000
+tempo am2 9930000
+tempo am3 7570000
+tempo am4 5120000
+##########################################
+Número de threads=24
+tempo euler3310000
+tempo range kutta 2º3580000
+tempo range kutta 3º3590000
+tempo range kutta 4º3810000
+tempo euler implicito3970000
+tempo trapézio5770000
+tempo bdf 3970000
+tempo bdf3 3950000
+tempo ab4 3970000
+tempo am2 10230000
+tempo am3 7970000
+tempo am4 5000000
+##########################################
+Número de threads=25
+tempo euler3350000
+tempo range kutta 2º3940000
+tempo range kutta 3º3900000
+tempo range kutta 4º3830000
+tempo euler implicito4240000
+tempo trapézio5900000
+tempo bdf 4030000
+tempo bdf3 4010000
+tempo ab4 4010000
+tempo am2 10700000
+tempo am3 8230000
+tempo am4 5170000
+##########################################
+Número de threads=26
+tempo euler4030000
+tempo range kutta 2º3970000
+tempo range kutta 3º4200000
+tempo range kutta 4º3960000
+tempo euler implicito4490000
+tempo trapézio6310000
+tempo bdf 4340000
+tempo bdf3 4350000
+tempo ab4 4330000
+tempo am2 11560000
+tempo am3 8940000
+tempo am4 5740000
+##########################################
+Número de threads=27
+tempo euler3720000
+tempo range kutta 2º4010000
+tempo range kutta 3º3960000
+tempo range kutta 4º4070000
+tempo euler implicito4500000
+tempo trapézio6520000
+tempo bdf 4400000
+tempo bdf3 4390000
+tempo ab4 4370000
+tempo am2 11830000
+tempo am3 8990000
+tempo am4 5860000
+##########################################
+Número de threads=28
+tempo euler3770000
+tempo range kutta 2º4150000
+tempo range kutta 3º3990000
+tempo range kutta 4º3840000
+tempo euler implicito4320000
+tempo trapézio6160000
+tempo bdf 4140000
+tempo bdf3 4170000
+tempo ab4 4150000
+tempo am2 10910000
+tempo am3 8780000
+tempo am4 5600000
+##########################################
+Número de threads=29
+tempo euler3560000
+tempo range kutta 2º4010000
+tempo range kutta 3º4220000
+tempo range kutta 4º4020000
+tempo euler implicito4430000
+tempo trapézio6250000
+tempo bdf 4180000
+tempo bdf3 4180000
+tempo ab4 4190000
+tempo am2 11670000
+tempo am3 8780000
+tempo am4 5790000
+##########################################
+Número de threads=30
+tempo euler3590000
+tempo range kutta 2º3860000
+tempo range kutta 3º4140000
+tempo range kutta 4º3940000
+tempo euler implicito4350000
+tempo trapézio6370000
+tempo bdf 4210000
+tempo bdf3 4230000
+tempo ab4 4220000
+tempo am2 11880000
+tempo am3 9370000
+tempo am4 5810000
+##########################################
+Número de threads=31
+tempo euler3650000
+tempo range kutta 2º3880000
+tempo range kutta 3º3930000
+tempo range kutta 4º3970000
+tempo euler implicito4410000
+tempo trapézio6470000
+tempo bdf 4280000
+tempo bdf3 4270000
+tempo ab4 4260000
+tempo am2 11780000
+tempo am3 9420000
+tempo am4 5950000
+##########################################
+Número de threads=32
+tempo euler3670000
+tempo range kutta 2º5010000
+tempo range kutta 3º4910000
+tempo range kutta 4º4970000
+tempo euler implicito5760000
+tempo trapézio7840000
+tempo bdf 5450000
+tempo bdf3 5230000
+tempo ab4 5260000
+tempo am2 13070000
+tempo am3 10920000
+tempo am4 7100000
+##########################################
+Número de threads=33
+tempo euler4630000
+tempo range kutta 2º4950000
+tempo range kutta 3º5000000
+tempo range kutta 4º5240000
+tempo euler implicito5690000
+tempo trapézio8030000
+tempo bdf 5460000
+tempo bdf3 5320000
+tempo ab4 4600000
+tempo am2 13170000
+tempo am3 10780000
+tempo am4 6350000
+##########################################
+Número de threads=34
+tempo euler4060000
+tempo range kutta 2º5020000
+tempo range kutta 3º5060000
+tempo range kutta 4º5010000
+tempo euler implicito4830000
+tempo trapézio7040000
+tempo bdf 4670000
+tempo bdf3 4660000
+tempo ab4 4670000
+tempo am2 12790000
+tempo am3 10950000
+tempo am4 7500000
+##########################################
+Número de threads=35
+tempo euler4790000
+tempo range kutta 2º5120000
+tempo range kutta 3º5160000
+tempo range kutta 4º5220000
+tempo euler implicito5640000
+tempo trapézio7930000
+tempo bdf 5480000
+tempo bdf3 5470000
+tempo ab4 5500000
+tempo am2 13290000
+tempo am3 11060000
+tempo am4 6450000
+##########################################
+Número de threads=36
+tempo euler3840000
+tempo range kutta 2º4070000
+tempo range kutta 3º4110000
+tempo range kutta 4º4170000
+tempo euler implicito4630000
+tempo trapézio6940000
+tempo bdf 4430000
+tempo bdf3 4420000
+tempo ab4 4460000
+tempo am2 13100000
+tempo am3 10090000
+tempo am4 7570000
+##########################################
+Número de threads=37
+tempo euler4760000
+tempo range kutta 2º4700000
+tempo range kutta 3º5270000
+tempo range kutta 4º5330000
+tempo euler implicito5750000
+tempo trapézio8070000
+tempo bdf 5570000
+tempo bdf3 5570000
+tempo ab4 5580000
+tempo am2 14460000
+tempo am3 10400000
+tempo am4 7030000
+##########################################
+Número de threads=38
+tempo euler3910000
+tempo range kutta 2º5140000
+tempo range kutta 3º5310000
+tempo range kutta 4º5370000
+tempo euler implicito5800000
+tempo trapézio8160000
+tempo bdf 5630000
+tempo bdf3 5600000
+tempo ab4 5360000
+tempo am2 14960000
+tempo am3 10440000
+tempo am4 6970000
+##########################################
+Número de threads=39
+tempo euler3940000
+tempo range kutta 2º5190000
+tempo range kutta 3º5320000
+tempo range kutta 4º5420000
+tempo euler implicito5860000
+tempo trapézio8780000
+tempo bdf 4660000
+tempo bdf3 4740000
+tempo ab4 4530000
+tempo am2 13560000
+tempo am3 10630000
+tempo am4 7780000
+##########################################
+Número de threads=40
+tempo euler4230000
+tempo range kutta 2º5320000
+tempo range kutta 3º5400000
+tempo range kutta 4º5460000
+tempo euler implicito5940000
+tempo trapézio8300000
+tempo bdf 5890000
+tempo bdf3 5690000
+tempo ab4 5720000
+tempo am2 15220000
+tempo am3 11360000
+tempo am4 8060000
