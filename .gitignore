@@ -32,3 +32,4 @@ Thumbs.db
 clone_/
 # Pasta 
 pyomp/
+__pycache__/
