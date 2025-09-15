@@ -12,8 +12,8 @@ from joblib import Parallel, delayed
 tol = 1e-08
 
 T = 3000
-tipo = "PC-AB3-AM3"
-incle = 1000
+tipo = "PC-AB4-AM4"
+incle = 500
 
 
 #dimensoes leveque:
@@ -43,12 +43,12 @@ yt = 4
 """
 
 #BDF
-
+"""
 xl = -10
 xr = 30
 yb = -20
 yt = 20
-
+"""
 
 #trapezio/ponto medio
 """
@@ -68,12 +68,12 @@ yt = 4
 
 #PECE
 
-"""
+
 xl = -3
 xr = 3
 yb = -3
 yt = 3
-"""
+
 
 
 

@@ -1,6 +1,6 @@
 Método: PC-AB2-AM2
-Tempo total de execução: 28.31 segundos
-Tempo total de execução: 0.47 minutos
+Tempo total de execução: 157.10 segundos
+Tempo total de execução: 2.62 minutos
 Total de pontos processados: 251001
-Tempo médio por ponto: 0.1128 milissegundos
-Parâmetros: T=3000, incle=500, tol=1e-08
+Tempo médio por ponto: 0.6259 milissegundos
+Parâmetros: T=1000, incle=500, tol=1e-08
