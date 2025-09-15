@@ -1,5 +1,7 @@
 import numpy as np
 from numba import njit, prange
+import matplotlib.pyplot as plt
+from time import perf_counter
 
 
 
@@ -63,4 +65,11 @@ def complex_sub(a, b):
 def complex_norm(a):
     """Norma de número complexo representado como [real, imag]"""
     return np.sqrt(a[0] * a[0] + a[1] * a[1])
+
+
+############################# VISUALIZAÇÕES ##############################
+
+
+
+
 
