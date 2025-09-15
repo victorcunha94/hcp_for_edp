@@ -3,7 +3,8 @@
 *.o
 *.out
 *.png
-
+*.nbi
+*.nbc
 # Pastas de output
 output/
 build/
