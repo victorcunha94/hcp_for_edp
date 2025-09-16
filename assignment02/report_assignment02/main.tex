@@ -19,10 +19,12 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{geometry}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{titlesec}  % For title formatting
-\geometry{margin=1in}
+\geometry{margin=0.8in}
 \setstretch{1.5}
 \usepackage{amssymb}
 \usepackage{enumitem}
@@ -96,7 +98,7 @@
 % Header and Footer
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{Assignment 5}
+\fancyhead[L]{Regiões de Estabilidade e Computação Paralela}
 \fancyhead[R]{\thepage}
 
 % Title Formatting
@@ -107,13 +109,16 @@
     \vspace{2cm} % Adjust vertical space
     \includegraphics[width=0.55\textwidth]{Figuras/logo_icmc.png} \\ % Add your logo here (change "logo.png" to the actual filename)
     \vspace{1cm} % Adjust vertical space after the logo
-    \textbf{\Huge Assignment 5} \\
+    \textbf{\Huge Assignment 2} \\
     \vspace{1cm} % Adjust vertical space
-    \large Introdução a Mecânica dos Fluidos Computacional \\
-    \vspace{0.5cm} % Adjust vertical space
+    \large Regiões de Estabilidade de Métodos Numéricos para Equações Diferenciais com computação paralela \\
+    \vspace{0.5cm}\thanks{Este trabalho foi realizado com auxílio de recurso computacional do cluster Euler\\Todos os códigos utilizados na elaboração deste trabalho estão disponíveis no GitHub: \url{https://github.com/victorcunha94/hcp_for_edp}}
     
 }
-\author{Mateus Mitsuo Goto Dakuzaku (17027280)\\ Victor Matheus da Cunha Santos (13279534) }
+\author{Bruno Dalcantoni Cozac \\
+        Gabriel de Oliveira Bispo \\
+        Deyvisson Nascimento Garcês (17415244) \\
+        Victor Matheus da Cunha Santos (13279534) }
 
 \date{\today}
 
@@ -129,27 +134,332 @@
 \tableofcontents
 \newpage
 
-\section{Assignment 5}
+\section{Equações Diferenciais}
+
+\begin{equation*}
+    \left\{
+\begin{array}{cc}
+     \mathbf{u}'(t) = & \mathbf{f}(u(t),t)\\
+     \mathbf{u}(0) = & \eta(t) 
+\end{array}
+    \right.
+\end{equation*}
+
+\subsection{Métodos baseados em expansões de Série de Taylor}
+
+
 
 \subsection{Exercício 01}
+Considere o problema particular, 
 
-\subsection{Exercício 02}
+\begin{equation*}\label{eq:caso1}
+    u'(t) = -\lambda u(t), \quad u(0) = 1
+\end{equation*}
+com $\lambda > 0$, cuja solução é $u(t) = e^{-\lambda t} $. Note que
+\begin{equation*}
+    \lim_{t\to\infty} u(t) = 0.
+\end{equation*}
+Quando aplicamos o método de progressivo na equação \eqref{eq:caso1}, obtemos
+\begin{align*}
+    U^{n + 1} = & ~ U^{n} + h f(U^{n},t_{n}) \\
+    U^{n + 1} = & ~ U^{n} - h \lambda U^{n} 
+\end{align*}
+Podemos perceber que quando o passo temporal $n$ avança, tem-se uma fórmula obtida por recorrência
+\begin{align*}
+      U^{n + 1}  = & ~ (1 - h\lambda)^{n+1} ~ U^{0}.
+\end{align*}
 
-\subsection{Exercício 03}
 
-\subsection{Exercício 04}
+Para a solução aproximada, temos
 
-\subsection{Exercício 05}
+\begin{equation*}
+    \lim_{n \to \infty} U^{n} = 0 \quad \Longleftrightarrow \quad |1 - h\lambda| < 1.
+\end{equation*}
+
+Podemos perceber que não é possível escolher um $h$ arbitrário, para que a solução numérica convirja é preciso levar em consideração que o método impõe uma restrição sobre a escolha de $h$, 
+
+\begin{align}
+    |1 - h\lambda| < 1  & = |h\lambda - 1| < 1\\
+     0 < h\lambda  \qquad \mbox{e} & \qquad 1 + h\lambda < 1
+\end{align}
+
+\section{Validação do código}
+\begin{figure}[H]
+\centering
+\subfigure[Um filhote. \label{fig:euler_python}]{
+\includegraphics[width=.38\textwidth]{Figuras/PYTHON/stability_basic_1threads.png}
+} % end subfigure
+\quad % dá um espaço entre as duas figuras.
+\subfigure[Vários filhotes. \label{fig:euler_leveque}]{
+\includegraphics[width=.4\textwidth]{Figuras/PYTHON/euler_leveque.png}
+} % end subfigure
+\caption{Comparação para validação do código}
+\label{fig:euler_implicito}
+\end{figure}
 
 
 
+\section{Análise do algoritmo em Python: Sequencial vs Paralelo}
 
+Nesta sessão discutimos a implementação do código em paralelo e a estratégia adotada. Utilizamos o compilador \textit{\href{https://numba.pydata.org/}{Numba}} e a estratégia por "blocos".
+
+\subsection{Algoritmo}
+
+\begin{algorithm}
+\caption{Verificação de Estabilidade para um ponto \( z \)}
+\label{alg:stability}
+\begin{algorithmic}[1]
+\STATE $U_n \gets [1, 0]$ \COMMENT{Inicialização $u_0 = 1 + 0i$}
+\FOR{$n = 0$ to $T-1$}
+    \STATE $U_{n+1} \gets \text{method\_one\_step}(U_n, z)$ \COMMENT{Iteração do método numérico}
+    \STATE $U_n \gets U_{n+1}$
+    \IF{$\|U_n\|_2 < \epsilon$}
+        \RETURN 1 \COMMENT{Ponto Estável}
+    \ELSIF{$\|U_n\|_2 > 1/\epsilon$}
+        \RETURN 0 \COMMENT{Ponto Instável}
+    \ENDIF
+\ENDFOR
+\RETURN 0.5 \COMMENT{Ponto Indeterminado}
+\end{algorithmic}
+\end{algorithm}
+
+O algoritmo para determinar a estabilidade de um ponto \( z \) no plano complexo segue a lógica descrita no Algoritmo~\ref{alg:stability}. Inicializa-se a sequência \( u_0 = 1 \). Para cada iteração \( n \) (até um máximo de \( T \) iterações), calcula-se \( u_{n+1} \) aplicando-se uma iteração do método numérico (Euler Implícito) sob o parâmetro \( z \). A norma (módulo) de \( u_n \) é verificada a cada passo. Se a norma cair abaixo de uma tolerância \( \epsilon \), o ponto é considerado \textbf{estável} (convergente para zero). Se a norma exceder \( 1/\epsilon \), o ponto é considerado \textbf{instável} (divergente para infinito). Caso nenhum desses critérios seja atingido após \( T \) iterações, o ponto é classificado como \textbf{indeterminado} (representado pelo valor \( 0.5 \) no pseudocódigo).
+
+
+\subsection{Numba}
+O \textbf{Numba} é um compilador \textit{just-in-time} (JIT) para Python que acelera significativamente funções que utilizam operações numéricas, loops e bibliotecas como NumPy através de decoradores.
+
+\subsection{Estratégia por blocos}
+
+\textbf{Limitações da Abordagem Paralela} \\
+
+A estratégia de paralelização adotada utiliza divisão estática do domínio por faixas de linhas, o que pode resultar em desbalanceamento de carga entre as threads. Isso ocorre porque a região de estabilidade não é uniformemente distribuída no plano complexo - áreas próximas às fronteiras requerem mais iterações para classificação, enquanto regiões homogêneas convergem rapidamente.
+
+Como trabalho futuro, sugere-se a implementação de esquemas de balanceamento dinâmico, como divisão cíclica ou uso de filas de tarefas, para melhor distribuição da carga computacional entre os núcleos disponíveis.
+
+\subsection{Paralilzação no Python}
+
+A função \texttt{process\_all\_points\_compiled} é responsável pelo processamento paralelo de todos os pontos do domínio complexo. Utilizando o decorador \texttt{@njit(parallel=True)} do Numba, a função é compilada para execução concorrente, onde o loop principal com \texttt{prange(total\_points)} divide automaticamente a iteração sobre todos os pontos entre as \texttt{num\_threads} disponíveis. Cada thread processa independentemente um conjunto de índices, calculando as coordenadas do ponto (\texttt{h}, \texttt{k}), determinando sua estabilidade através da função \texttt{process\_single\_point\_numba}, e armazenando os resultados nos arrays de saída. O Numba gerencia automaticamente o balanceamento de carga e a segurança das threads, enquanto o \texttt{prange} possibilita a abstração da complexidade da programação paralela, mantendo a simplicidade de um loop sequencial mas com execução distribuída. A estratégia de atribuição \texttt{tid = h // linhas\_por\_thread} simula o mapeamento de threads para blocos de linhas, permitindo posterior análise de distribuição de trabalho.
+
+\begin{lstlisting}[language=Python]
+@njit(parallel=True, cache=True)
+def process_all_points_compiled(xl_val, xr_val, yb_val, yt_val, incle_val, T_val, tol_val, num_threads):
+    n = incle_val + 1
+    total_points = n * n
+    real_z, img_z = np.zeros(total_points), np.zeros(total_points)
+    stable, unstable = np.zeros(total_points, dtype=np.bool_), np.zeros(total_points, dtype=np.bool_)
+    thread_ids = np.zeros(total_points, dtype=np.int32)
+    
+    linhas_por_thread = max(n // num_threads, 1)
+
+    for idx in prange(total_points):
+        h, k = idx // n, idx % n
+        real_z[idx], img_z[idx], stable[idx], unstable[idx] = process_single_point_numba(
+            h, k, xl_val, xr_val, yb_val, yt_val, incle_val, T_val, tol_val)
+        thread_ids[idx] = min(h // linhas_por_thread, num_threads - 1)
+
+    return real_z, img_z, stable, unstable, thread_ids
+\end{lstlisting}
+
+\subsection{Ambiente Computacional}
+Os experimentos preliminares foram executados em um notebook Acer Aspire A515-45 equipado com processador AMD Ryzen 7 5700U (8 núcleos, 16 threads) à 1,8 GHz, 8 GB de RAM DDR4 e sistema operacional Windows 11. A paralelização foi implementada utilizando Numba com OpenMP, aproveitando a arquitetura multicore do processador. Os resultados podem ser vistos em \ref{fig:speed_threads}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1.0\linewidth]{Figuras/PYTHON/performance_comparison.png}
+   \caption{Speedup e Tempo de execução}
+   \label{fig:speed_threads}
+\end{figure}
+
+Podemos verificar através do gráfico que houve ganho de performance com o aumento dos threads, porém, próximo do número de núcleos físicos, que são 8, o speedup não aumenta; um indício de de que o hyper-thread não ajuda no problema em que estamos resolvendo. 
+
+Abaixo, podemos ver a distribuição das faixas por threads. 
+\begin{figure}[H]
+\centering
+\subfigure[Euler implícito com 4 threads \label{fig:euler_python}]{
+\includegraphics[width=.4\textwidth]{Figuras/PYTHON/stability_by_thread_4threads.png}
+} % end subfigure
+\quad % dá um espaço entre as duas figuras.
+\subfigure[Euler implícito com 16 threads. \label{fig:euler_leveque}]{
+\includegraphics[width=.4\textwidth]{Figuras/PYTHON/stability_by_thread_16threads.png}
+} % end subfigure
+\caption{Distribuição de pontos por thraeds}
+\label{fig:euler_implicito}
+\end{figure}
+
+\subsection{Método Preditor Corretor \textbf{Adams-Bashforth-Moulton})}
+
+O método \textbf{Preditor-Corretor Adams-Bashforth-Moulton de 4ª ordem (ABM4)} combina esquemas explícitos e implícitos em um processo iterativo, oferecendo precisão de alta ordem com melhor estabilidade numérica.
+
+\subsection{Formulação Matemática}
+
+\textbf{Fase Preditora (Adams-Bashforth 4ª ordem - AB4)}
+
+\[
+U^{n+4}_{\text{pred}} = U^{n+3} + \frac{h}{24}\left[55f(U^{n+3}) - 59f(U^{n+2}) + 37f(U^{n+1}) - 9f(U^n)\right]
+\]
+
+Para o problema modelo $f(U) = zU$, tem-se:
+
+\[
+U^{n+4}_{\text{pred}} = U^{n+3} + \frac{h}{24}\left[55zU^{n+3} - 59zU^{n+2} + 37zU^{n+1} - 9zU^n\right]
+\]
+
+\subsubsection{Fase Corretora (Adams-Moulton 4ª ordem - AM4)}
+
+\[
+U^{n+4}_{\text{corr}} = U^{n+3} + \frac{h}{24}\left[9f(U^{n+4}) + 19f(U^{n+3}) - 5f(U^{n+2}) + f(U^{n+1})\right]
+\]
+
+Para $f(U) = zU$:
+
+\[
+U^{n+4}_{\text{corr}} = U^{n+3} + \frac{h}{24}\left[9zU^{n+4} + 19zU^{n+3} - 5zU^{n+2} + zU^{n+1}\right]
+\]
+
+\subsection{Esquema P-E-C-E Iterativo}
+
+O algoritmo segue o fluxo iterativo:
+
+\begin{enumerate}
+    \item \textbf{Preditor (P)}: 
+        \[ U^{(0)}_{n+4} = \text{AB4}(U_n, U_{n+1}, U_{n+2}, U_{n+3}) \]
+    
+    \item \textbf{Estimador (E)}: 
+        \[ f^{(0)}_{n+4} = z \cdot U^{(0)}_{n+4} \]
+    
+    \item \textbf{Corretor (C)} (iterado $k$ vezes):
+        \[ U^{(k+1)}_{n+4} = U_{n+3} + \frac{h}{24}\left[9f^{(k)}_{n+4} + 19zU_{n+3} - 5zU_{n+2} + zU_{n+1}\right] \]
+    
+    \item \textbf{Re-estimador (E)}:
+        \[ f^{(k+1)}_{n+4} = z \cdot U^{(k+1)}_{n+4} \]
+\end{enumerate}
+
+\subsection{Vantagens do Esquema PC}
+
+\begin{itemize}
+    \item \textbf{Estabilidade melhorada}: AM4 possui região de estabilidade ampliada comparada à AB4
+    \item \textbf{Precisão de 4ª ordem}: Erro local de truncamento $O(h^5)$
+    \item \textbf{Controle de erro}: A diferença $|U_{\text{pred}} - U_{\text{corr}}|$ fornece estimativa do erro
+    \item \textbf{Flexibilidade}: Número de iterações de correção ajustável conforme a precisão requerida
+\end{itemize}
+
+\subsection{Aplicação à Análise de Estabilidade}
+
+Para a equação teste $U' = zU$, o método PC-ABM4 produz um operador de avanço:
+
+\[
+U_{n+4} = R(z)U_n
+\]
+
+onde $R(z)$ é o \textbf{polinômio de estabilidade}, cujas raízes determinam a região de estabilidade no plano complexo. Um ponto $z$ é considerado estável se $|R(z)| < 1$ após $T$ iterações.
+
+Este esquema combina a eficiência computacional do método explícito (preditor) com a estabilidade superior do método implícito (corretor), sendo particularmente adequado para problemas de estabilidade numérica onde se requer alto grau de precisão.
+
+\begin{figure}[H]
+\centering
+\subfigure[Euler implícito com 1 threads \label{fig:euler_python}]{
+\includegraphics[width=.4\textwidth]{Figuras/PYTHON/PC/stability_basic_1threads.png}
+} % end subfigure
+\quad % dá um espaço entre as duas figuras.
+\subfigure[Euler implícito com 16 threads. \label{fig:euler_leveque}]{
+\includegraphics[width=.4\textwidth]{Figuras/PYTHON/PC/stability_by_thread_16threads.png}
+} % end subfigure
+\caption{Distribuição de pontos por thraeds}
+\label{fig:euler_implicito}
+\end{figure}
+
+Podemos enchergar o mesmo comportamento de \textit{speedup}. Mesmo com o tempo caindo conforme o número de threads aumenta, o \textit{speedup} não aumenta, o que deve ser pelo desbalanceamento de carga que a estratégia de paralelização escolhida implica. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1.0\linewidth]{Figuras/PYTHON/PC/performance_comparisonadams-basforth-moulton.png}
+   \caption{Speedup e Tempo de execução no método Preditor-Corretor}
+   \label{fig:speed_threads}
+\end{figure}
+
+
+%################  C   #######################
+\section{Implementação do código paralelo para delimitar região de estabilidade}
+Sendo a convergência em cada ponto no plano complexo avaliado de forma independente, o programa terá grande beneficio em desempenho sendo executado em múltiplos núcleos.
+Para execução de todos os métodos, o domínio foi restrito a um quadrado com lados de medida 10 centrado na origem, sendo discretizado uniformemente com malha de densidade h=0,01. 
+Todas as variáveis foram definidas com double point precision  
+\subsection{Implementação em linguagem C com uso da biblioteca openMP}
+\subsubsection{Otimização de cache hit}
+Sabendo que a linguagem C é \textit{row-major}, visando tirar proveito do \textit{cache hit}, cada \textit{thread} recebeu linhas contínuas do domínio para execução.
+\subsubsection{Schedule}
+Sem ter um número estimado de iterações disponível na literatura, a rotação de \textit{thread} proporcionada pela \textit{dynamic schedule} foi escolhida para evitar que núcleos ficassem ociosos.
+\subsubsection{Speedup}
+Para aquisição dos tempos de execução, primeiramente foram excluídas todas as funções irrelevantes para a solução da região de estabilidade (como, por exemplo, a plotagem da região), para então cronometrar o tempo de execução de cada método, variando o número utilizado de \textit{threads} de 1 até 40.\\
+
+
+\subsection{Implementação em linguagem python com uso da biblioteca Numba}
+
+\subsubsection{otimização}
+
+\subsubsection{Speedup}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Validação de Código}
+
+
+%\begin{figure} [H]
+%   \centering
+%   \includegraphics[width=0.65\linewidth]{name.png}
+%   \caption{caption}
+%   \label{fig:}
+%\end{figure}
+
+\section{Resultados}
+
+Nesta seção, são apresentados os resultados obtidos pelos códigos.
+
+\subsection{Código em \textit{C}}
+
+As Figuras~\ref{fig:rk4} e~\ref{fig:abam4} são,
+respectivamente,
+as regiões de estabilidade dos métodos de Runge-Kutta de quarta ordem e do Preditor-Corretor. utilizando Adams-Bashforth de quarta ordem como preditor e Adams-Moulton de quarta ordem como corretor. 
+A região de estabilidade foi colorida segundo a \textit{thread} disparada. Assim, as Figuras ilustram didaticamente a estratégia de paralelização adotada.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Figuras/rk4.png}
+    \caption{Região de estabilidade do método Runge-Kutta 4 colorida por \textit{thread} disparada.}
+    \label{fig:rk4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Figuras/ab4am4grad.png}
+    \caption{Região de estabilidade do método Preditor-Corretor (Adams-Bashforth 4 - Adams-Moulton 4) 4 colorida por \textit{thread} disparada.}
+    \label{fig:abam4}
+\end{figure}
+
+Os testes de \textit{speedup} demonstraram que ainda há
+um problema de balanceamento de carga na implementação em C, apesar de se ter utilizado a diretiva \textit{schedule(dynamic)}. Na Figura~\ref{fig:speedupc},
+vê-se que os métodos com maiores regiões de estabilidade
+obtiveram melhores resultados. 
+Isso indica que muito poder computacional ainda é gasto para determinar a instabilidade dos pontos durante a execução do programa, prejudicando sua paralelização.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7
+    \linewidth]{Figuras/speedupc.jpeg}
+    \caption{\textit{Speedup} por método}
+    \label{fig:speedupc}
+\end{figure}
+
+
 
 \newpage
 \bibliographystyle{plain}
 \bibliography{references.bib}  % Add a .bib file if you have references
 \nocite{FABRICIO_ROBERTO_2025_MEC_FLU}
+
+
+
+
 
 \end{document}
 

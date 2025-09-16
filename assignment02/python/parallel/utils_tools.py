@@ -67,6 +67,42 @@ def complex_norm(a):
     return np.sqrt(a[0] * a[0] + a[1] * a[1])
 
 
+
+# Funções básicas de números complexos
+@njit
+def complex_add(a, b):
+    return np.array([a[0] + b[0], a[1] + b[1]])
+
+
+@njit
+def complex_sub(a, b):
+    return np.array([a[0] - b[0], a[1] - b[1]])
+
+
+@njit
+def complex_prod(a, b):
+    real = a[0] * b[0] - a[1] * b[1]
+    imag = a[0] * b[1] + a[1] * b[0]
+    return np.array([real, imag])
+
+
+
+@njit
+def complex_div(a, b):
+    denom = b[0] ** 2 + b[1] ** 2
+    if denom == 0.0:
+        return np.array([np.inf, np.inf])  # Instável
+    real = (a[0] * b[0] + a[1] * b[1]) / denom
+    imag = (a[1] * b[0] - a[0] * b[1]) / denom
+    return np.array([real, imag])
+
+
+
+@njit
+def complex_scale(a, scalar):
+    return np.array([a[0] * scalar, a[1] * scalar])
+
+
 ############################# VISUALIZAÇÕES ##############################
 
 
