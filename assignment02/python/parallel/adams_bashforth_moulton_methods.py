@@ -15,6 +15,25 @@ def euler_implict(Un, z):
   return Un1
 
 
+@njit
+def euler_implict_numba(Un, z):
+    one = np.array([1.0, 0.0])
+    denominator = complex_sub(one, z)
+    factor = complex_div(one, denominator)   # 1 / (1 - z)
+    Un1 = complex_prod(Un, factor)
+    return Un1         # Un * (1 / (1 - z))
+
+
+
+# @njit
+# def euler_implict_numba(Un, z):
+#     one_zero = np.array([1.0, 0.0])
+#     den = complex_sub(one_zero, z)
+#     Un1 = complex_div(Un, den)
+#     return Un1
+
+
+
 def trapezio(Un, z):
   num = [1,0] + z/2
   den = [1,0] - z/2
@@ -22,32 +41,43 @@ def trapezio(Un, z):
   return Un1
 
 
+# @njit
+# def AB1(Un, z):
+#   Un1 = Un + complex_prod(z,Un)
+#   return  np.array(Un1)
+
+@njit
 def AB1(Un, z):
-  Un1 = Un + prod(z,Un)
-  return Un1
+    result = Un + complex_prod(z, Un)
+    return np.array([result[0], result[1]])  # Retorna sempre array
 
 
+# @njit
 # def AB2(Un1, Un, z):
-#   den = [2, 0]
-#   num1 = [2, 0] + 3*z
-#   parcela1 = div(num1, den)
-#   parcela2 = div(z, den)
-#   Un2 = prod(parcela1, Un1) - prod(parcela2, Un)
-#
-#   return Un2
+#     den = [2, 0]
+#     p = complex_prod([3,0], z)
+#     num1 = [2 + p[0], 0 + p[1]]
+#     parcela1 = complex_div(num1, den)
+#     parcela2 = complex_div(z, den)
+#     Un2 = complex_prod(parcela1, Un1)
+#     Un2 = [Un2[0] - complex_prod(parcela2, Un)[0], Un2[1] - complex_prod(parcela2, Un)[1]]
+#     return np.array(Un2)
 
+@njit
 def AB2(Un1, Un, z):
-    den = [2, 0]
-    p = prod([3,0], z)
-    num1 = [2 + p[0], 0 + p[1]]
-    parcela1 = div(num1, den)
-    parcela2 = div(z, den)
-    Un2 = prod(parcela1, Un1)
-    Un2 = [Un2[0] - prod(parcela2, Un)[0], Un2[1] - prod(parcela2, Un)[1]]
-    return Un2
+    den = np.array([2.0, 0.0])
+    p = complex_prod(np.array([3.0, 0.0]), z)
+    num1 = np.array([2.0 + p[0], 0.0 + p[1]])
+    parcela1 = complex_div(num1, den)
+    parcela2 = complex_div(z, den)
+    Un2 = complex_prod(parcela1, Un1)
+    result = np.array([Un2[0] - complex_prod(parcela2, Un)[0],
+                       Un2[1] - complex_prod(parcela2, Un)[1]])
+    return result
 
 
 
+@njit
 def AB3(Un2, Un1, Un, z):
     """
     Adams-Bashforth de 3ª ordem
@@ -55,60 +85,57 @@ def AB3(Un2, Un1, Un, z):
     Para f(U) = z*U
     """
     h = 1.0  # passo fixo para análise de estabilidade
-    den = [12, 0]  # denominador 12
+    den = np.array([12.0, 0.0])  # denominador 12
 
     # Termos do numerador
-    term1 = prod([23 * h, 0], z)  # 23h*z
-    term2 = prod([-16 * h, 0], z)  # -16h*z
-    term3 = prod([5 * h, 0], z)  # 5h*z
+    term1 = complex_prod(np.array([23.0 * h, 0.0]), z)  # 23h*z
+    term2 = complex_prod(np.array([-16.0 * h, 0.0]), z)  # -16h*z
+    term3 = complex_prod(np.array([5.0 * h, 0.0]), z)  # 5h*z
 
     # Coeficientes para cada U
-    coef_Un2 = [1, 0]  # coeficiente de U^{n+2}
-    coef_Un2 = [coef_Un2[0] + div(term1, den)[0], coef_Un2[1] + div(term1, den)[1]]
+    coef_Un2 = np.array([1.0, 0.0])  # coeficiente de U^{n+2}
+    coef_Un2 = coef_Un2 + complex_div(term1, den)
 
-    coef_Un1 = div(term2, den)  # coeficiente de U^{n+1}
-    coef_Un = div(term3, den)  # coeficiente de U^n
+    coef_Un1 = complex_div(term2, den)  # coeficiente de U^{n+1}
+    coef_Un = complex_div(term3, den)  # coeficiente de U^n
 
     # Calcular U^{n+3}
-    Un3 = prod(coef_Un2, Un2)
-    Un3 = [Un3[0] + prod(coef_Un1, Un1)[0], Un3[1] + prod(coef_Un1, Un1)[1]]
-    Un3 = [Un3[0] + prod(coef_Un, Un)[0], Un3[1] + prod(coef_Un, Un)[1]]
+    Un3 = complex_prod(coef_Un2, Un2)
+    Un3 = Un3 + complex_prod(coef_Un1, Un1)
+    Un3 = Un3 + complex_prod(coef_Un, Un)
 
     return Un3
 
 
-@njit(cache=True)
+@njit
 def AB4(Un3, Un2, Un1, Un, z):
     """
     Adams-Bashforth de 4ª ordem
-    Fórmula: U^{n+4} = U^{n+3} + h/24 [55f(U^{n+3}) - 59f(U^{n+2}) + 37f(U^{n+1}) - 9f(U^n)]
+    U^{n+4} = U^{n+3} + h/24 [55f(U^{n+3}) - 59f(U^{n+2}) + 37f(U^{n+1}) - 9f(U^n)]
     Para f(U) = z*U
     """
-    h = 1.0  # passo fixo
-    den = [24, 0]  # denominador 24
+    h = 1.0
+    denom = 24.0
 
-    # Termos do numerador
-    term1 = prod([55 * h, 0], z)  # 55h*z
-    term2 = prod([-59 * h, 0], z)  # -59h*z
-    term3 = prod([37 * h, 0], z)  # 37h*z
-    term4 = prod([-9 * h, 0], z)  # -9h*z
+    # Coeficientes
+    c1 = 55.0 * h / denom
+    c2 = -59.0 * h / denom
+    c3 = 37.0 * h / denom
+    c4 = -9.0 * h / denom
 
-    # Coeficientes para cada U
-    coef_Un3 = [1, 0]  # coeficiente de U^{n+3}
-    coef_Un3 = [coef_Un3[0] + div(term1, den)[0], coef_Un3[1] + div(term1, den)[1]]
+    # Calcular termos
+    term1 = complex_prod(np.array([1.0 + c1, 0.0]), z)
+    term2 = complex_prod(np.array([c2, 0.0]), z)
+    term3 = complex_prod(np.array([c3, 0.0]), z)
+    term4 = complex_prod(np.array([c4, 0.0]), z)
 
-    coef_Un2 = div(term2, den)  # coeficiente de U^{n+2}
-    coef_Un1 = div(term3, den)  # coeficiente de U^{n+1}
-    coef_Un = div(term4, den)  # coeficiente de U^n
-
-    # Calcular U^{n+4}
-    Un4 = prod(coef_Un3, Un3)
-    Un4 = [Un4[0] + prod(coef_Un2, Un2)[0], Un4[1] + prod(coef_Un2, Un2)[1]]
-    Un4 = [Un4[0] + prod(coef_Un1, Un1)[0], Un4[1] + prod(coef_Un1, Un1)[1]]
-    Un4 = [Un4[0] + prod(coef_Un, Un)[0], Un4[1] + prod(coef_Un, Un)[1]]
+    # Combinar termos
+    Un4 = complex_prod(term1, Un3)
+    Un4 = Un4 + complex_prod(term2, Un2)
+    Un4 = Un4 + complex_prod(term3, Un1)
+    Un4 = Un4 + complex_prod(term4, Un)
 
     return Un4
-
 
 
 #####################################################################
@@ -212,7 +239,6 @@ def AM3(Un2, Un1, Un, z):
     Un3 = [Un3[0] + prod(term3, Un)[0], Un3[1] + prod(term3, Un)[1]]
 
     return Un3
-
 @njit(cache=True)
 def AM4(Un3, Un2, Un1, Un, z):
     """
@@ -222,54 +248,40 @@ def AM4(Un3, Un2, Un1, Un, z):
     """
     h = 1.0
 
-    # A equação original:
-    # U^{n+4} = U^{n+3} + (h/720)[-19*z*U^n + 106*z*U^{n+1} - 264*z*U^{n+2} + 646*z*U^{n+3} + 251*z*U^{n+4}]
-
-    # Rearranjando todos os termos com U^{n+4} do lado esquerdo:
-    # U^{n+4} - (251*h*z/720)U^{n+4} = U^{n+3} + (h*z/720)[-19U^n + 106U^{n+1} - 264U^{n+2} + 646U^{n+3}]
-
     # Coeficiente do lado esquerdo: [1 - (251*h*z)/720]
-    coef_left = [1, 0]  # 1
-    term_left = prod([-251 * h / 720, 0], z)  # -251*h*z/720
-    coef_left = [coef_left[0] + term_left[0], coef_left[1] + term_left[1]]
+    coef_left = np.array([1.0, 0.0])  # 1
+    term_left = complex_prod(np.array([-251.0 * h / 720.0, 0.0]), z)  # -251*h*z/720
+    coef_left = coef_left + term_left
 
     # Termos do lado direito:
     # Termo 1: U^{n+3}
-    term1 = [1, 0]  # coeficiente 1 para U^{n+3}
+    term1 = np.array([1.0, 0.0])  # coeficiente 1 para U^{n+3}
 
     # Termo 2: (646*h*z/720)U^{n+3}
-    term2 = prod([646 * h / 720, 0], z)  # 646*h*z/720
+    term2 = complex_prod(np.array([646.0 * h / 720.0, 0.0]), z)  # 646*h*z/720
 
     # Termo 3: (-264*h*z/720)U^{n+2}
-    term3 = prod([-264 * h / 720, 0], z)  # -264*h*z/720
+    term3 = complex_prod(np.array([-264.0 * h / 720.0, 0.0]), z)  # -264*h*z/720
 
     # Termo 4: (106*h*z/720)U^{n+1}
-    term4 = prod([106 * h / 720, 0], z)  # 106*h*z/720
+    term4 = complex_prod(np.array([106.0 * h / 720.0, 0.0]), z)  # 106*h*z/720
 
     # Termo 5: (-19*h*z/720)U^n
-    term5 = prod([-19 * h / 720, 0], z)  # -19*h*z/720
+    term5 = complex_prod(np.array([-19.0 * h / 720.0, 0.0]), z)  # -19*h*z/720
 
-    # Agora, cada U é multiplicado pelo seu coeficiente e dividido por coef_left
-    # U^{n+4} = [term1 + term2]/coef_left * U^{n+3} + [term3]/coef_left * U^{n+2} + [term4]/coef_left * U^{n+1} + [term5]/coef_left * U^n
+    # Combinar termos
+    coef_Un3 = term1 + term2
+    coef_Un3 = complex_div(coef_Un3, coef_left)
 
-    # Coeficiente para U^{n+3}
-    coef_Un3 = [term1[0] + term2[0], term1[1] + term2[1]]
-    coef_Un3 = div(coef_Un3, coef_left)
-
-    # Coeficiente para U^{n+2}
-    coef_Un2 = div(term3, coef_left)
-
-    # Coeficiente para U^{n+1}
-    coef_Un1 = div(term4, coef_left)
-
-    # Coeficiente para U^n
-    coef_Un = div(term5, coef_left)
+    coef_Un2 = complex_div(term3, coef_left)
+    coef_Un1 = complex_div(term4, coef_left)
+    coef_Un = complex_div(term5, coef_left)
 
     # Calcular U^{n+4}
-    Un4 = prod(coef_Un3, Un3)
-    Un4 = [Un4[0] + prod(coef_Un2, Un2)[0], Un4[1] + prod(coef_Un2, Un2)[1]]
-    Un4 = [Un4[0] + prod(coef_Un1, Un1)[0], Un4[1] + prod(coef_Un1, Un1)[1]]
-    Un4 = [Un4[0] + prod(coef_Un, Un)[0], Un4[1] + prod(coef_Un, Un)[1]]
+    Un4 = complex_prod(coef_Un3, Un3)
+    Un4 = Un4 + complex_prod(coef_Un2, Un2)
+    Un4 = Un4 + complex_prod(coef_Un1, Un1)
+    Un4 = Un4 + complex_prod(coef_Un, Un)
 
     return Un4
 
