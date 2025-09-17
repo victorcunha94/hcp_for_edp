@@ -270,8 +270,8 @@ def run_with_numba_prange(num_threads):
 
 # Execução principal
 if __name__ == "__main__":
-    threads_to_test = [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16]
-    #threads_to_test = [1,2]
+    #threads_to_test = [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16]
+    threads_to_test = [1,2,4]
 
     print("=== WARM-UP (Compilação Inicial) ===")
     os.environ['OMP_NUM_THREADS'] = '1'
@@ -296,17 +296,21 @@ if __name__ == "__main__":
             all_thread_ids[n_threads] = thread_ids
 
             # # === CHAMAR OS PLOTS ===
-            plot_stability_region_basic(
-                real_coords, imag_coords, stable_flags, unstable_flags,
-                f"output_PC4/stability_basic_{n_threads}threads.png",
-                xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
+
             #
             #
-            plot_stability_region_by_thread(
-                real_coords, imag_coords, stable_flags, unstable_flags, thread_ids,
-                n_threads,
-                f"output_PC4/stability_by_thread_{n_threads}threads.png",
-                xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
+            if n_threads % 2 == 0:
+                plot_stability_region_by_thread(
+                    real_coords, imag_coords, stable_flags, unstable_flags, thread_ids,
+                    n_threads,
+                    f"output_PC4/stability_by_thread_{n_threads}threads.png",
+                    xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
+
+            if n_threads == 0:
+                plot_stability_region_basic(
+                    real_coords, imag_coords, stable_flags, unstable_flags,
+                    f"output_PC4/stability_basic_{n_threads}threads.png",
+                    xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
 
 
 

@@ -34,3 +34,38 @@ clone_/
 pyomp/
 __pycache__/
 
+# Ficheiros de compilação do LaTeX
+*.aux
+*.log
+*.toc
+*.lot
+*.lof
+*.out
+*.nav
+*.snm
+*.vrb
+*.upa
+*.fls
+*.fdb_latexmk
+
+# Ficheiros temporários e de impressão
+*.dvi
+*.ps
+*.eps
+*.pdf
+*.synctex.gz
+
+# Pacote minted
+_minted/
+
+# Ficheiros de backup e de configuração
+*.bak
+*.swp
+
+# Ficheiros de imagem
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+
