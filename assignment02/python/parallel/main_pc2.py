@@ -19,10 +19,10 @@ incle = 150
 xl, xr, yb, yt = -3.0, 1.0, -2.0, 2.0
 
 
-method = 'adams-basforth-moulton'
+method = 'ABM2'
 
 # Criar pasta de output
-os.makedirs('output_PC4', exist_ok=True)
+os.makedirs(f'{method}', exist_ok=True)
 
 
 
@@ -51,76 +51,84 @@ def AB3_predict(u_n, u_nm1, u_nm2, z):
     num1 = 23.0*f_n[1] - 16.0*f_nm1[1] + 5.0*f_nm2[1]
     return np.array([u_n[0] + num0/12.0, u_n[1] + num1/12.0])
 
+
 @njit(cache=True)
-def ABM4_step(u_n, u_nm1, u_nm2, u_nm3, z, n_corr=1):
+def ABM2_step(u_n, u_nm1, z, n_corr=1):
     """
-    Conveção: u_n = U^n (mais recente), u_nm1 = U^{n-1}, ...
-    Retorna (Ypre, Ycor) seguindo P - E - (C - E)^n com AB4/AM4.
+    Adams-Bashforth-Moulton de ordem 2 (ABM2)
+
+    Convenção:
+    u_n = U^n (mais recente), u_nm1 = U^{n-1}
+
+    Esquema P(EC)ᴺ:
+    Preditor: Adams-Bashforth ordem 2
+    Corretor: Adams-Moulton ordem 2
+
+    Parameters:
+    u_n: array [real, imag] - solução no tempo n
+    u_nm1: array [real, imag] - solução no tempo n-1
+    z: array [real, imag] - parâmetro complexo
+    n_corr: int - número de iterações corretor
+
+    Returns:
+    Ypre: array - preditor (Adams-Bashforth ordem 2)
+    Ycor: array - corretor (Adams-Moulton ordem 2)
     """
-    # --- Preditor AB4: Ypre = u_n + (1/24)*(55 f_n - 59 f_{n-1} + 37 f_{n-2} - 9 f_{n-3})
-    f_n   = prod(z, u_n)
-    f_nm1 = prod(z, u_nm1)
-    f_nm2 = prod(z, u_nm2)
-    f_nm3 = prod(z, u_nm3)
+    # Calcula f(u) para os pontos históricos
+    f_n = complex_prod(z, u_n)  # f(u_n)
+    f_nm1 = complex_prod(z, u_nm1)  # f(u_{n-1})
 
-    num0 = 55.0*f_n[0] - 59.0*f_nm1[0] + 37.0*f_nm2[0] - 9.0*f_nm3[0]
-    num1 = 55.0*f_n[1] - 59.0*f_nm1[1] + 37.0*f_nm2[1] - 9.0*f_nm3[1]
-    Ypre = np.array([u_n[0] + num0/24.0, u_n[1] + num1/24.0])
+    # --- Preditor AB2: Ypre = u_n + (3/2)*f_n - (1/2)*f_{n-1} ---
+    term1 = complex_scale(f_n, 3.0 / 2.0)
+    term2 = complex_scale(f_nm1, -1.0 / 2.0)
+    Ypre = complex_add(u_n, complex_add(term1, term2))
 
-    # --- Estimativa inicial E
-    f_est = prod(z, Ypre)
+    # --- Estimativa inicial E ---
+    f_est = complex_prod(z, Ypre)
 
-    # --- Corretor iterativo AM4: Ycor = u_n + (1/24)*(9 f_est + 19 f_n - 5 f_{n-1} + 1 f_{n-2})
+    # --- Corretor iterativo AM2 ---
     Ycor = Ypre.copy()
     for _ in range(n_corr):
-        term0 = (9.0/24.0)*f_est[0] + (19.0/24.0)*f_n[0] - (5.0/24.0)*f_nm1[0] + (1.0/24.0)*f_nm2[0]
-        term1 = (9.0/24.0)*f_est[1] + (19.0/24.0)*f_n[1] - (5.0/24.0)*f_nm1[1] + (1.0/24.0)*f_nm2[1]
-        Ycor = np.array([u_n[0] + term0, u_n[1] + term1])
+        # Adams-Moulton ordem 2: Ycor = u_n + (1/2)*f_est + (1/2)*f_n
+        term1 = complex_scale(f_est, 1.0 / 2.0)
+        term2 = complex_scale(f_n, 1.0 / 2.0)
+        Ycor = complex_add(u_n, complex_add(term1, term2))
+
         # re-avaliação E após correção
-        f_est = prod(z, Ycor)
+        f_est = complex_prod(z, Ycor)
 
     return Ypre, Ycor
+
 
 @njit(cache=True)
 def process_single_point_numba(ix, iy, xl, xr, yb, yt, incle, T, tol, n_corr):
     """
-    ix, iy: índices inteiros na malha (0..incle)
-    xl,xr,yb,yt: limites da região (reais)
-    incle: número de subdivisões (int)
-    T: número máximo de iterações temporais
-    tol: tolerância para decidir estabilidade
-    n_corr: número de correções (C-E)^n
-    Retorna: (real_z, img_z, is_stable, is_unstable)
+    Processa um ponto com ABM1 (Adams-Bashforth-Moulton ordem 1)
+
+    ABM1 precisa de 2 pontos no histórico: u_n e u_{n-1}
     """
     real_z = xl + (ix * (xr - xl) / incle)
-    img_z  = yb + (iy * (yt - yb) / incle)
+    img_z = yb + (iy * (yt - yb) / incle)
     z = np.array([real_z, img_z])
 
-    # bootstrap dos quatro primeiros valores (histórico), convensão: u_n é mais recente
-    u0 = np.array([1.0, 0.0])                 # U^0 (mais antigo)
-    u1 = AB1_predict(u0, z)                 # U^1
-    u2 = AB2_predict(u1, u0, z)              # U^2
-    u3 = AB3_predict(u2, u1, u0, z)   # U^3
-
-    # reorganizar para convenção (u_n = mais recente)
-    u_nm3 = u0   # U^{n-3}
-    u_nm2 = u1   # U^{n-2}
-    u_nm1 = u2   # U^{n-1}
-    u_n   = u3   # U^{n}
+    # --- BOOTSTRAP INICIAL (2 pontos) ---
+    # Precisamos de u_{n-1} e u_n para o ABM1
+    u0 = np.array([1.0, 0.0])  # u_{n-1} = u⁰
+    u1 = euler_implict_numba(u0, z)  # u_n = u¹ (Euler implícito)
 
     is_stable = False
     is_unstable = False
 
-    for _ in range(T):
-        Ypre, Ycor = ABM4_step(u_n, u_nm1, u_nm2, u_nm3, z, n_corr)
+    # --- ITERAÇÃO TEMPORAL ---
+    for n_step in range(2, T):  # Começa do passo 2 (já temos u⁰ e u¹)
+        # ABM1 precisa de: u_n (mais recente) e u_{n-1} (anterior)
+        Ypre, Ycor = ABM2_step(u1, u0, z, n_corr)  # u1 = u_n, u0 = u_{n-1}
 
-        # shift: U^{n+1} torna-se o novo u_n
-        u_nm3 = u_nm2
-        u_nm2 = u_nm1
-        u_nm1 = u_n
-        u_n   = Ycor
+        # --- ATUALIZA HISTÓRICO ---
+        u0 = u1  # u_{n-1} = u_n antigo
+        u1 = Ycor  # u_n = novo valor
 
-        norm = complex_norm(u_n)
+        norm = complex_norm(u1)
         if norm < tol:
             is_stable = True
             break
@@ -303,13 +311,13 @@ if __name__ == "__main__":
                 plot_stability_region_by_thread(
                     real_coords, imag_coords, stable_flags, unstable_flags, thread_ids,
                     n_threads,
-                    f"output_PC4/stability_by_thread_{n_threads}threads.png",
+                    f"{method}/stability_by_thread_{n_threads}threads.png",
                     xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
 
             if n_threads == 0:
                 plot_stability_region_basic(
                     real_coords, imag_coords, stable_flags, unstable_flags,
-                    f"output_PC4/stability_basic_{n_threads}threads.png",
+                    f"{method}/stability_basic_{n_threads}threads.png",
                     xl=-3.0, xr=1.0, yb=-2.0, yt=2.0)
 
 
@@ -337,7 +345,7 @@ if __name__ == "__main__":
         plt.grid(True)
 
         plt.tight_layout()
-        plt.savefig(f'output_PC4/performance_comparison{method}.png', dpi=300)
+        plt.savefig(f'{method}/performance_comparison{method}.png', dpi=300)
         plt.show()
 
 

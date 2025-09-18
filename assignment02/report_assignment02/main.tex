@@ -28,7 +28,8 @@
 \setstretch{1.5}
 \usepackage{amssymb}
 \usepackage{enumitem}
-\usepackage{subcaption}
+
+
 
 
 \newcommand{\bigO}{\mathcal{O}}
@@ -276,15 +277,15 @@ Podemos verificar através do gráfico que houve ganho de performance com o aume
 Abaixo, podemos ver a distribuição das faixas por threads. 
 \begin{figure}[H]
 \centering
-\subfigure[Euler implícito com 4 threads \label{fig:euler_python}]{
+\subfigure[Euler implícito com 4 threads \label{fig:euler_python_parallel}]{
 \includegraphics[width=.4\textwidth]{Figuras/PYTHON/stability_by_thread_4threads.png}
 } % end subfigure
 \quad % dá um espaço entre as duas figuras.
-\subfigure[Euler implícito com 16 threads. \label{fig:euler_leveque}]{
+\subfigure[Euler implícito com 16 threads. \label{fig:euler_leveque_parallel}]{
 \includegraphics[width=.4\textwidth]{Figuras/PYTHON/stability_by_thread_16threads.png}
 } % end subfigure
 \caption{Distribuição de pontos por thraeds}
-\label{fig:euler_implicito}
+\label{fig:euler_implicito_parallel}
 \end{figure}
 
 \subsection{Método Preditor Corretor \textbf{Adams-Bashforth-Moulton})}
@@ -356,35 +357,137 @@ onde $R(z)$ é o \textbf{polinômio de estabilidade}, cujas raízes determinam a
 
 Este esquema combina a eficiência computacional do método explícito (preditor) com a estabilidade superior do método implícito (corretor), sendo particularmente adequado para problemas de estabilidade numérica onde se requer alto grau de precisão.
 
-\begin{figure}[H]
-\centering
-\subfigure[Euler implícito com 1 threads \label{fig:euler_python}]{
-\includegraphics[width=.4\textwidth]{Figuras/PYTHON/PC/stability_basic_1threads.png}
-} % end subfigure
-\quad % dá um espaço entre as duas figuras.
-\subfigure[Euler implícito com 16 threads. \label{fig:euler_leveque}]{
-\includegraphics[width=.4\textwidth]{Figuras/PYTHON/PC/stability_by_thread_16threads.png}
-} % end subfigure
-\caption{Distribuição de pontos por thraeds}
-\label{fig:euler_implicito}
-\end{figure}
 
-Podemos enchergar o mesmo comportamento de \textit{speedup}. Mesmo com o tempo caindo conforme o número de threads aumenta, o \textit{speedup} não aumenta, o que deve ser pelo desbalanceamento de carga que a estratégia de paralelização escolhida implica. 
+%%%%%%%%%%%%%%%%%%%% COLOCAR AQUI AS IMGS DOS PC1, 2, 3, e 4 
+\begin{figure}[H]
+	\centering
+	
+	\subfigure[Preditor Corretor ABM1 \label{fig:pre-cor1}]{
+		\includegraphics[width=0.35\textwidth]{Figuras/PYTHON/PC/abm1.png}
+	}
+	%\hfill
+	\subfigure[Preditor Corretor ABM2 \label{fig:pre-cor2}]{
+		\includegraphics[width=0.35\textwidth]{Figuras/PYTHON/PC/abm2.png}
+	}
+	
+	\vspace{0.5cm}
+	
+	\subfigure[Preditor Corretor ABM3\label{fig:pre-cor333}]{
+		\includegraphics[width=0.35\textwidth]{Figuras/PYTHON/PC/abm3.png}
+	}
+	%\hfill
+	\subfigure[Preditor Corretor ABM4 \label{fig:pre-cor444}]{
+		\includegraphics[width=0.35\textwidth]{Figuras/PYTHON/PC/abm4.png}
+	}
+	
+	\caption{Região de Estabilidade do Preditor Corretor Adams-Basforth-Moulton}
+	\label{fig:pre-cor-all}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Podemos enxergar o mesmo comportamento de \textit{speedup}. Mesmo com o tempo caindo conforme o número de threads aumenta, o \textit{speedup} não aumenta, o que deve ser pelo desbalanceamento de carga que a estratégia de paralelização escolhida implica 
 
 \begin{figure}[H]
    \centering
    \includegraphics[width=1.0\linewidth]{Figuras/PYTHON/PC/performance_comparisonadams-basforth-moulton.png}
    \caption{Speedup e Tempo de execução no método Preditor-Corretor}
-   \label{fig:speed_threads}
+   \label{fig:speed_threads_PC4}
 \end{figure}
 
+\subsection{Preditor-Corretor ABM4 na máquina Lmaac37}
+
+Os testes computacionais foram executados em uma estação do laboratório do ICMC-LMAAC, a máquina, equipada com processador Intel Core i7-12700 de 12ª geração (12 núcleos físicos, 20 threads virtuais) operando à 2,1 GHz com tecnologia Turbo Boost de até 4,9 GHz, dotada de 25 MB de cache L3 inteligente e sistema operacional Linux. A implementação paralela foi desenvolvida para explorar toda a capacidade de processamento multicore, utilizando as 20 threads disponíveis através de técnicas de programação concorrente. Os resultados de desempenho e distribuição de threads são apresentados na \ref{fig:pre-cor3-4}.
+
+\begin{figure}[H]
+	\centering
+	\subfigure[Preditor-Corretor ABM4 com 10 threads \label{fig:pre-cor3}]{
+		\includegraphics[width=.3\textwidth]{Figuras/PYTHON/PC/stability_by_thread_10threads_lmaac37.png}
+	} % end subfigure
+	\quad % dá um espaço entre as duas figuras.
+	\subfigure[Preditor-Corretor ABM4 com 18 threads. \label{fig:pre-cor4}]{
+		\includegraphics[width=.3\textwidth]{Figuras/PYTHON/PC/stability_by_thread_18threads_lmaac37.png}
+	} % end subfigure
+	\caption{Distribuição de pontos por thraeds}
+	\label{fig:pre-cor3-4}
+\end{figure}
+
+\textbf{Speedup por Threads}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{Figuras/PYTHON/performance_comparisonadams-basforth-moulton.png}
+	\caption{Speedup e Tempo de execução no método Preditor-Corretor}
+	\label{fig:speed_threads_PC4_lmacc}
+\end{figure}
+
+
+\subsection{Preditor-Corretor ABM4 no Cluster Euler}
+
+O experimento foi conduzido no Cluster Euler utilizando até 56 \textit{threads} para executar o algoritmo de cálculo da região de estabilidade do método  Preditor-Corretor de Adams-Basforth-Moulton. Foram coletados tempos de execução para cada configuração de paralelismo, permitindo a análise de \textit{speedup} e eficiência do código.
+
+Os resultados demonstram uma redução não-linear no tempo de execução à medida que se aumenta o número de \textit{threads}. O tempo inicial de 1,72 segundos com uma \textit{thread} reduz-se para 0,27 segundos utilizando 56 \textit{threads}, representando uma redução de 84,3\% no tempo de computação.
+
+\subsubsection*{Análise de Speedup}
+O \textit{speedup} obtido segue uma curva típica de aplicações paralelas, com ganhos significativos nas primeiras \textit{threads} e diminuição progressiva dos retornos:
+
+\begin{itemize}
+	\item \textbf{Região de Boa Escalabilidade (1-8 threads)}: Speedup de 1,0× para 2,32×, com eficiência decaindo gradualmente de 100\% para 29\%
+	\item \textbf{Região de Diminuição de Retornos (9-32 threads)}: Speedup aumenta para 4,65×, porém com eficiência reduzida para aproximadamente 14,5\%
+	\item \textbf{Região de Saturação (33-56 threads)}: Speedup atinge 6,37× com apenas 11,4\% de eficiência, indicando saturação do sistema
+\end{itemize}
+
+\subsubsection*{Lei de Amdahl e Overheads de Paralelismo}
+O speedup máximo teórico é limitado pela Lei de Amdahl, que considera a fração sequencial do código. Os resultados sugerem que:
+
+\begin{equation}
+	S_{\text{máximo}} = \frac{1}{(1 - p) + \frac{p}{N}}
+\end{equation}
+
+Onde $p$ representa a fração paralelizável do código. O speedup observado de 6,37× em 56 \textit{threads} indica que aproximadamente 90\% do código é paralelizável, mas os \textit{overheads} de comunicação e sincronização limitam os ganhos práticos.
+
+\subsubsection*{Fatores Limitantes}
+O desempenho ser limitado, acreditamos que possa ser devido aos seguintes fatores:
+
+\begin{itemize}
+	\item \textbf{Overhead de comunicação}: Tempo gasto na sincronização entre \textit{threads}
+	\item \textbf{Contention por recursos}: Acesso concorrente à memória compartilhada e outros recursos do sistema
+	\item \textbf{Balanceamento de carga}: Distribuição não-uniforme do trabalho entre \textit{threads}
+\end{itemize}
+
+\subsubsection*{Conclusões e Recomendações}
+O algoritmo apresenta paralelização eficaz com benefícios significativos até 16 \textit{threads}. Acima deste limite, os ganhos tornam-se marginais. Para otimizações futuras, recomenda-se:
+
+\begin{itemize}
+	\item Utilizar entre 8-16 \textit{threads} para o melhor compromisso entre desempenho e eficiência
+	\item Implementar técnicas de \textit{load balancing} mais sofisticadas
+	\item Reduzir a dependência de memória compartilhada
+	\item Explorar otimizações no nível de acesso à memória e padrões de cache
+\end{itemize}
+
+Os resultados obtidos são representativos para aplicações numéricas intensivas que envolvem cálculos com números complexos e acesso frequente à memória, demonstrando os desafios e benefícios da computação paralela em larga escala.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Figuras/PYTHON/euler_tempo.png}
+	\caption{Speedup e Tempo de execução no método Preditor-Corretor}
+	\label{fig:speed_threads_PC4_euler}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Figuras/PYTHON/euler_speedup.png}
+	\caption{Speedup e Tempo de execução no método Preditor-Corretor}
+	\label{fig:speedup_threads_PC4_euler}
+\end{figure}
 
 %################  C   #######################
 \section{Implementação do código paralelo para delimitar região de estabilidade}
 Sendo a convergência em cada ponto no plano complexo avaliado de forma independente, o programa terá grande beneficio em desempenho sendo executado em múltiplos núcleos.
 Para execução de todos os métodos, o domínio foi restrito a um quadrado com lados de medida 10 centrado na origem, sendo discretizado uniformemente com malha de densidade h=0,01. 
 Todas as variáveis foram definidas com double point precision  
-\subsection{Implementação em linguagem C com uso da biblioteca openMP}
+%\subsection{Implementação em linguagem C com uso da biblioteca openMP}
 \subsubsection{Otimização de cache hit}
 Sabendo que a linguagem C é \textit{row-major}, visando tirar proveito do \textit{cache hit}, cada \textit{thread} recebeu linhas contínuas do domínio para execução.
 \subsubsection{Schedule}
@@ -393,15 +496,15 @@ Sem ter um número estimado de iterações disponível na literatura, a rotaçã
 Para aquisição dos tempos de execução, primeiramente foram excluídas todas as funções irrelevantes para a solução da região de estabilidade (como, por exemplo, a plotagem da região), para então cronometrar o tempo de execução de cada método, variando o número utilizado de \textit{threads} de 1 até 40.\\
 
 
-\subsection{Implementação em linguagem python com uso da biblioteca Numba}
+%\subsection{Implementação em linguagem python com uso da biblioteca Numba}
 
-\subsubsection{otimização}
+%\subsubsection{otimização}
 
-\subsubsection{Speedup}
+%\subsubsection{Speedup}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Validação de Código}
+%\section{Validação de Código}
 
 
 %\begin{figure} [H]
@@ -411,9 +514,9 @@ Para aquisição dos tempos de execução, primeiramente foram excluídas todas 
 %   \label{fig:}
 %\end{figure}
 
-\section{Resultados}
+%\section{Resultados}
 
-Nesta seção, são apresentados os resultados obtidos pelos códigos.
+%Nesta seção, são apresentados os resultados obtidos pelos códigos.
 
 \subsection{Código em \textit{C}}
 
@@ -436,8 +539,7 @@ A região de estabilidade foi colorida segundo a \textit{thread} disparada. Assi
     \label{fig:abam4}
 \end{figure}
 
-Os testes de \textit{speedup} demonstraram que ainda há
-um problema de balanceamento de carga na implementação em C, apesar de se ter utilizado a diretiva \textit{schedule(dynamic)}. Na Figura~\ref{fig:speedupc},
+Os testes de \textit{speedup} demonstraram que ainda há um problema de balanceamento de carga na implementação em C, apesar de se ter utilizado a diretiva \textit{schedule(dynamic)}. Na Figura~\ref{fig:speedupc},
 vê-se que os métodos com maiores regiões de estabilidade
 obtiveram melhores resultados. 
 Isso indica que muito poder computacional ainda é gasto para determinar a instabilidade dos pontos durante a execução do programa, prejudicando sua paralelização.
@@ -455,7 +557,7 @@ Isso indica que muito poder computacional ainda é gasto para determinar a insta
 \newpage
 \bibliographystyle{plain}
 \bibliography{references.bib}  % Add a .bib file if you have references
-\nocite{FABRICIO_ROBERTO_2025_MEC_FLU}
+%\nocite{FABRICIO_ROBERTO_2025_MEC_FLU}
 
 
 
