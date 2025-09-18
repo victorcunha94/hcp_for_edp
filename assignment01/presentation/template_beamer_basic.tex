@@ -158,12 +158,71 @@
 	\end{figure}
 \end{frame}
 
-<<<<<<< HEAD
+\begin{frame}{}
+		
+		Considere um problema escalar linear da forma
+		
+		\[
+		u'(t) = \lambda u(t), \quad u(0) = \eta, \quad \lambda \in \mathbb{C}
+		\]
+		
+		Note que a solução desse problema é
+		
+		\[
+		u(t) = \eta e^{\lambda t} = \eta e^{(\Re(\lambda) + i\Im(\lambda))t} \implies |u(t)| = \eta e^{\Re(\lambda)t}
+		\]
+		
+		de forma que
+		
+		\begin{itemize}
+			\item Se \(\Re(\lambda) > 0\) então \(|u(t)|\) cresce exponencialmente com \(t\) (instável)
+			\item Se \(\Re(\lambda) = 0\) então \(|u(t)| = \eta\) e a solução oscila
+			\item Se \(\Re(\lambda) < 0\) então \(|u(t)|\) decai exponencialmente com \(t\) (estável)
+		\end{itemize}
+		
+		Gostaríamos de analisar a estabilidade do método numérico para este último caso.
+	
+\end{frame}
+
+\begin{frame}{Definições de Estabilidade}
+	\framesubtitle{Métodos Numéricos para EDOs}
+	
+	\begin{block}{Definição 1: Estabilidade Absoluta}
+		Um método geral de um passo é dito \textbf{absolutamente estável} se, quando aplicado ao problema linear
+		\[
+		u'(t) = \lambda u(t), \quad u(0) = \eta, \quad \lambda \in \mathbb{C}, \quad \Re(\lambda) < 0
+		\]
+		a solução é tal que
+		\[
+		\lim_{n \to \infty} U^n = 0
+		\]
+		qualquer que seja a escolha de $h$. Caso haja uma condição sobre $h$ para que o limite seja zero, o método é dito \textbf{condicionalmente estável}.
+	\end{block}
+	
+	\vspace{0.5cm}
+	
+	
+\end{frame}
+
+
+\begin{frame}{Definição 2: Região de Estabilidade Absoluta}
+		\begin{block}{Definição 2: Região de Estabilidade Absoluta}
+		A região de estabilidade absoluta associada a um método numérico utilizado para aproximar o PVI
+		\[
+		u'(t) = \lambda u(t), \quad u(0) = \eta, \quad \lambda \in \mathbb{C}, \quad \Re(\lambda) < 0
+		\]
+		é o conjunto $S \subset \mathbb{C}$ dado por
+		\[
+		S = \left\{ z = \lambda h, \, h \in \mathbb{R}_+ : \lim_{n \to \infty} U^n = 0 \right\}
+		\]
+	\end{block}
+\end{frame}
+
 \begin{frame}{Links}
 	HCP for EDP - \href[]{https://github.com/victorcunha94/hcp_for_edp}{\Mundus Repositório} 
 \end{frame}
 
 \end{document}
-=======
+
 \end{document}
->>>>>>> a5da4ccb17e9a8ae8f4a70a769155e779f6d1536
+
