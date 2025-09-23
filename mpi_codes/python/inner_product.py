@@ -1,5 +1,9 @@
 import numpy as np
 from mpi4py import MPI
+import random as rd
+import time
+
+
 
 def dot_product(A, B):
     """Calcula produto interno entre dois vetores"""
@@ -7,30 +11,63 @@ def dot_product(A, B):
     for i in range(len(A)):
         result += A[i] * B[i]
     return result
+    
+  
+    
+
+def gerar_vetores(tamanho):
+    """Gera vetores de teste com dados realistas"""
+    # Vetores com padrão mais realista que 1,2,3...
+    A = np.random.rand(tamanho).astype(np.float64) * 1000  # 0-1000
+    B = np.random.rand(tamanho).astype(np.float64) * 1000  # 0-1000
+    return A, B
+
+
+
+def gerar_vetores_verificavel(tamanho):
+    """Gera vetores onde podemos verificar o resultado"""
+    A = np.arange(1, tamanho + 1, dtype=np.float64)
+    B = np.arange(tamanho, 0, -1, dtype=np.float64) * 10  # Padrão reverso
+    return A, B
+
+    
 
 def main():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
     
+
+    inicio_total = None
+    fim_total    = None
+
+
+    #inicio_total = time.time()
+
     if rank == 0:
         # Vetores de entrada
-        A = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
-        B = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], dtype=np.float64)
+        tamanho = 1000000  # Começar com 1 milhão
+        A, B = gerar_vetores(tamanho)
+        
+        inicio_total = time.time()
         
         print(f"Vetor A: {A}")
         print(f"Vetor B: {B}")
         
         if size == 1:
-            # Modo sequencial
+            # Modo sequencial39
             result = dot_product(A, B)
+            fim_total = time.time()
             print(f"Produto interno: {result}")
+            print(f"Tempo total: {fim_total - inicio_total:.4f}s")
+            print(f"Tamanho: {tamanho}, Processos: {size}")
+
             return
         
         # Dividir trabalho
         num_workers = size - 1
-        chunk_size = len(A) // num_workers
-        remainder = len(A) % num_workers
+        chunk_size = tamanho // num_workers
+        remainder = tamanho % num_workers
 
         start = 0
         for i in range(1, size):
@@ -52,7 +89,9 @@ def main():
             partial_result = comm.recv(source=i, tag=2)
             total_result += partial_result
             print(f"Mestre recebeu do worker {i}: {partial_result}")
-            
+        
+        fim_total = time.time()
+
         print(f"Produto interno final: {total_result}") 
 
     else:
@@ -68,6 +107,11 @@ def main():
             comm.send(result, dest=0, tag=2)
         else:
             print(f"Worker {rank}: Operação desconhecida")
+            
+            
+    fim_total = time.time()
+    print(f"Tempo total: {fim_total - inicio_total:.4f}s")
+    print(f"Tamanho: {tamanho}, Processos: {size}")
 
 if __name__ == "__main__":
     main()
