@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
                     for (int j=1; j<N-1; j++) {
                         u[i*N+j] = 0.25 * ( uold[(i-1)*N+j] + uold[(i+1)*N+j] +
                                              uold[i*N+(j-1)] + uold[i*N+(j+1)]
-                                             + h2 * f[i*N+j] );
+                                             - h2 * f[i*N+j] );
                     }
                 }
                 break;
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
                     for (int j=1; j<N-1; j++) {
                         double complex u_jacobi_update = 0.25 * ( uold[(i-1)*N+j] + uold[(i+1)*N+j] +
                                                                    uold[i*N+(j-1)] + uold[i*N+(j+1)]
-                                                                   + h2 * f[i*N+j] );
+                                                                   - h2 * f[i*N+j] );
                         u[i*N+j] = omega*u_jacobi_update + (1.0-omega)*uold[i*N+j];
                     }
                 }
