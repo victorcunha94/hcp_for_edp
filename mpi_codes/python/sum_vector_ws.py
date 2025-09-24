@@ -58,6 +58,51 @@ def run_scatter_gather(comm, A, B, tamanho):
     else:
         return None, tempo
 
+
+
+
+def run_experiment(tamanho, repeticoes):
+    """Executa o cálculo de soma paralela com Scatterv/Gatherv"""
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
+    # Divisão do vetor
+    chunk_size = tamanho // size
+    remainder = tamanho % size
+    counts = [chunk_size + 1 if i < remainder else chunk_size for i in range(size)]
+    displs = np.cumsum([0] + counts[:-1])
+
+    # Vetor no rank 0
+    if rank == 0:
+        A = np.ones(tamanho, dtype=np.float64)
+        B = np.ones(tamanho, dtype=np.float64)
+    else:
+        A = None
+        B = None
+
+    # Buffers locais
+    local_A = np.zeros(counts[rank], dtype=np.float64)
+    local_B = np.zeros(counts[rank], dtype=np.float64)
+
+    # Scatterv
+    comm.Scatterv([A, counts, displs, MPI.DOUBLE], local_A, root=0)
+    comm.Scatterv([B, counts, displs, MPI.DOUBLE], local_B, root=0)
+
+    # Cálculo local
+    local_C = local_A + local_B
+
+    # Gatherv
+    if rank == 0:
+        C = np.empty(tamanho, dtype=np.float64)
+    else:
+        C = None
+    comm.Gatherv(local_C, [C, counts, displs, MPI.DOUBLE], root=0)
+
+    return C
+    
+    
+    
 def run_serial(A, B):
     inicio = time.time()
     resultado = vector_sum(A, B)
@@ -74,95 +119,59 @@ def main():
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-    # Lê argumento de modo (default = strong)
-    mode = "strong"
-    if len(sys.argv) > 1:
-        mode = sys.argv[1].lower()
-    if mode not in ("strong", "weak"):
+    if len(sys.argv) < 2 or sys.argv[1] != "weak":
         if rank == 0:
-            print("Uso: python3 sum_vector_mn.py [strong|weak]")
-        sys.exit(0)
+            print("Uso: python3 sum_vector_ws.py weak")
+        return
 
     repeticoes = 5
-    base_size = 1_000_000  # tamanho base por processo para Weak Scaling
+    base_size = 10**6   # tamanho base para 1 processo
+    tamanho = base_size * size
+
+    # =============================
+    # Rodar baseline com np=1
+    # =============================
+    if rank == 0:
+        # Simula baseline (np=1) localmente
+        A = np.ones(base_size, dtype=np.float64)
+        B = np.ones(base_size, dtype=np.float64)
+        tempos = []
+        for _ in range(repeticoes):
+            t0 = time.time()
+            C = A + B
+            tempos.append(time.time() - t0)
+        baseline_time = np.mean(tempos)
+
+        print("="*70)
+        print("SOMA DE VETORES - SCATTERV/GATHERV vs SERIAL (WEAK SCALING)")
+        print("="*70)
+        print(f"Processos: {size}, Repetições: {repeticoes}")
+        print("="*70)
+        print(f"{'Nprocs':<8}{'Tamanho':<12}{'MPI (s)':<12}{'Eficiência Weak':<18}{'Status':<10}")
+        print("-"*70)
+    else:
+        baseline_time = None
+
+    # Broadcast para todos conhecerem baseline_time
+    baseline_time = comm.bcast(baseline_time, root=0)
+
+    # =============================
+    # Executar experimento paralelo
+    # =============================
+    tempos = []
+    for _ in range(repeticoes):
+        t0 = time.time()
+        C = run_experiment(tamanho, repeticoes)
+        tf = time.time() - t0
+        tempos.append(tf)
+
+    avg_mpi = np.mean(tempos)
+    status = "OK" if C is not None and np.allclose(C, 2.0) else "ERRO"
+    eficiencia_weak = (baseline_time / avg_mpi) * 100 if avg_mpi > 0 else 0
 
     if rank == 0:
-        print("=" * 70)
-        print(f"SOMA DE VETORES - SCATTERV/GATHERV vs SERIAL ({mode.upper()} SCALING)")
-        print("=" * 70)
-        print(f"Processos: {size}, Repetições: {repeticoes}")
-        print("=" * 70)
-        if mode == "strong":
-            print(f"{'Tamanho':<12} {'Serial (s)':<12} {'MPI (s)':<12} "
-                  f"{'Speedup':<12} {'Eficiência':<12} {'Status':<10}")
-        else:  # weak
-            print(f"{'Nprocs':<8} {'Tamanho':<12} {'MPI (s)':<12} "
-                  f"{'Eficiência Weak':<16} {'Status':<10}")
-        print("-" * 70)
+        print(f"{size:<8}{tamanho:<12}{avg_mpi:<12.6f}{eficiencia_weak:<18.2f}{status:<10}")
 
-    # Para Weak Scaling precisamos medir T(1) como baseline
-    baseline_time = None
-    if mode == "weak" and size == 1:
-        # rank 0 roda serial p/ baseline
-        A, B = gerar_vetores(base_size)
-        resultado_serial, t_serial = run_serial(A, B)
-        baseline_time = t_serial
-
-    if mode == "strong":
-        tamanhos = [1_000_000, 5_000_000, 10_000_000, 50_000_000]
-    else:  # weak
-        tamanhos = [base_size * size]  # só o tamanho proporcional ao nº de processos
-
-    for tamanho in tamanhos:
-        if rank == 0:
-            A, B = gerar_vetores(tamanho)
-        else:
-            A, B = None, None
-
-        comm.Barrier()
-        tempos_serial, tempos_mpi = [], []
-        resultados_corretos = True
-
-        for _ in range(repeticoes):
-            if rank == 0:
-                A, B = gerar_vetores(tamanho)
-
-            comm.Barrier()
-
-            tempo_serial = 0.0
-            if mode == "strong" and rank == 0:
-                resultado_serial, tempo_serial = run_serial(A, B)
-                tempos_serial.append(tempo_serial)
-
-            resultado_mpi, tempo_mpi = run_scatter_gather(comm, A, B, tamanho)
-            if rank == 0:
-                tempos_mpi.append(tempo_mpi)
-                correto, diff = verify_result(A, B, resultado_mpi)
-                if not correto:
-                    resultados_corretos = False
-                    print(f"  ⚠️ Diferença detectada: {diff:.2e}")
-
-        if rank == 0:
-            avg_mpi = np.mean(tempos_mpi)
-
-            if mode == "strong":
-                avg_serial = np.mean(tempos_serial)
-                speedup = avg_serial / avg_mpi if avg_mpi > 0 else 0
-                eficiencia = (speedup / size) * 100 if speedup > 0 else 0
-                status = "OK" if resultados_corretos else "ERRO"
-                print(f"{tamanho:<12,} {avg_serial:<12.4f} {avg_mpi:<12.4f} "
-                      f"{speedup:<12.2f} {eficiencia:<12.1f}% {status:<10}")
-
-            else:  # weak scaling
-                if baseline_time is None:
-                    # broadcast T(1) para todos os ranks
-                    baseline_time = comm.bcast(avg_mpi if size == 1 else None, root=0)
-
-                eficiencia_weak = (baseline_time / avg_mpi) * 100 if avg_mpi > 0 else 0
-                status = "OK" if resultados_corretos else "ERRO"
-                print(f"{size:<8} {tamanho:<12,} {avg_mpi:<12.4f} "
-                      f"{eficiencia_weak:<16.1f}% {status:<10}")
 
 if __name__ == "__main__":
     main()
-
