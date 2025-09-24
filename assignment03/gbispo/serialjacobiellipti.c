@@ -21,7 +21,7 @@ inline static double complex uborder(double x, double y) {
 int main(int argc, char **argv) {
     if (argc < 7) {
         fprintf(stderr, "Usage: %s <N> <maxit> <m> <n> <omega> <method> <tol>\n", argv[0]);
-        fprintf(stderr, "Methods: 'j' for Jacobi, 's' for SOR\n");
+        fprintf(stderr, "Methods: 'j' for Jacobi, 'jj' for modified Jacobi, 's' for SOR\n");
         return 1;
     }
 
@@ -68,6 +68,15 @@ int main(int argc, char **argv) {
                     }
                 }
                 break;
+            case 'jj': // Jacobi sem o uold. Talvez seja o Gauss-Seidel
+                for (int i=1; i<N-1; i++) {
+                    for (int j=1; j<N-1; j++) {
+                        u[i*N+j] = 0.25 * ( u[(i-1)*N+j] + u[(i+1)*N+j] +
+                                             u[i*N+(j-1)] + u[i*N+(j+1)]
+                                             + h2 * f[i*N+j] );
+                    }
+                }
+                break;
             case 's': // SOR
                 for (int i=1; i<N-1; i++) {
                     for (int j=1; j<N-1; j++) {
@@ -79,7 +88,10 @@ int main(int argc, char **argv) {
                 }
                 break;
             default:
-                fprintf(stderr, "Metodo invalido. Use 'j' para Jacobi ou 's' para SOR.\n");
+                fprintf(stderr, "Metodo invalido.\n");
+                    free(u);
+                    free(uold);
+                    free(f);
                 return 1;
         }
 
