@@ -80,6 +80,9 @@ int main(int argc, char **argv) {
                 break;
             default:
                 fprintf(stderr, "Metodo invalido. Use 'j' para Jacobi ou 's' para SOR.\n");
+                free(u);
+                free(uold);
+                free(f);
                 return 1;
         }
 
