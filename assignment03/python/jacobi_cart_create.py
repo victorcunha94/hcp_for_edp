@@ -1,0 +1,204 @@
+#!/usr/bin/env python3
+"""
+Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
+"""
+
+from mpi4py import MPI
+import numpy as np
+import time
+import argparse
+import math
+import pandas as pd
+
+
+def _compute_grid_dims(size):
+    for px in range(int(math.sqrt(size)), 0, -1):
+        if size % px == 0:
+            return [px, size // px]
+    return [1, size]
+
+
+def _partition_1d(n_interior, n_procs_dim, coord):
+    base = n_interior // n_procs_dim
+    rem = n_interior % n_procs_dim
+    if coord < rem:
+        local = base + 1
+        start = 1 + coord * local
+    else:
+        local = base
+        start = 1 + rem * (base + 1) + (coord - rem) * base
+    end = start + local
+    return start, end, local
+
+
+def jacobi_mpi_cart(N, max_iter=10000, tol=1e-8, L=1.0):
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
+    dims = _compute_grid_dims(size)
+    cart = comm.Create_cart(dims, periods=[False, False], reorder=True)
+    coords = cart.Get_coords(rank)
+    left, right = cart.Shift(0, 1)
+    down, up = cart.Shift(1, 1)
+
+    dx = L / (N - 1)
+    pts_x = N - 2
+    pts_y = N - 2
+
+    start_x, end_x, local_nx = _partition_1d(pts_x, dims[0], coords[0])
+    start_y, end_y, local_ny = _partition_1d(pts_y, dims[1], coords[1])
+
+    if local_nx == 0 or local_ny == 0:
+        return np.empty((0, 0)), 0, 0.0, 0.0, start_x, end_x, start_y, end_y, []
+
+    U = np.zeros((local_nx + 2, local_ny + 2))
+    Unew = np.zeros_like(U)
+    f_local = np.zeros_like(U)
+
+    def f_global(i, j):
+        x = i * dx
+        y = j * dx
+        return -2.0 * np.pi**2 * np.sin(np.pi * x) * np.sin(np.pi * y)
+
+    for i in range(1, local_nx + 1):
+        i_global = start_x + (i - 1)
+        for j in range(1, local_ny + 1):
+            j_global = start_y + (j - 1)
+            f_local[i, j] = f_global(i_global, j_global)
+
+    comm.Barrier()
+    t0 = time.perf_counter()
+    final_error = None
+    comm_log = []  # logs locais
+
+    for iteration in range(1, max_iter + 1):
+        max_err_loc = 0.0
+
+        # comunicação topo
+        if up != MPI.PROC_NULL:
+            buf = U[1:-1, local_ny].copy()
+            recv_buf = np.empty(local_nx, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=up, recvbuf=recv_buf, source=up)
+            dt = time.perf_counter() - t1
+            U[1:-1, local_ny + 1] = recv_buf
+            comm_log.append([iteration, rank, up, "up", buf.size, dt])
+        else:
+            U[1:-1, local_ny + 1] = 0.0
+
+        # comunicação baixo
+        if down != MPI.PROC_NULL:
+            buf = U[1:-1, 1].copy()
+            recv_buf = np.empty(local_nx, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=down, recvbuf=recv_buf, source=down)
+            dt = time.perf_counter() - t1
+            U[1:-1, 0] = recv_buf
+            comm_log.append([iteration, rank, down, "down", buf.size, dt])
+        else:
+            U[1:-1, 0] = 0.0
+
+        # comunicação direita
+        if right != MPI.PROC_NULL:
+            buf = U[local_nx, 1:-1].copy()
+            recv_buf = np.empty(local_ny, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=right, recvbuf=recv_buf, source=right)
+            dt = time.perf_counter() - t1
+            U[local_nx + 1, 1:-1] = recv_buf
+            comm_log.append([iteration, rank, right, "right", buf.size, dt])
+        else:
+            U[local_nx + 1, 1:-1] = 0.0
+
+        # comunicação esquerda
+        if left != MPI.PROC_NULL:
+            buf = U[1, 1:-1].copy()
+            recv_buf = np.empty(local_ny, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=left, recvbuf=recv_buf, source=left)
+            dt = time.perf_counter() - t1
+            U[0, 1:-1] = recv_buf
+            comm_log.append([iteration, rank, left, "left", buf.size, dt])
+        else:
+            U[0, 1:-1] = 0.0
+
+        # atualização Jacobi
+        for i in range(1, local_nx + 1):
+            i_global = start_x + (i - 1)
+            for j in range(1, local_ny + 1):
+                j_global = start_y + (j - 1)
+                if i_global in (0, N - 1) or j_global in (0, N - 1):
+                    Unew[i, j] = U[i, j]
+                else:
+                    Unew[i, j] = 0.25 * (
+                        U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
+                        - (dx*dx) * f_local[i, j]
+                    )
+                    max_err_loc = max(max_err_loc, abs(Unew[i, j] - U[i, j]))
+
+        U, Unew = Unew, U
+
+        max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
+        if max_err_glob < tol:
+            final_error = max_err_glob
+            break
+
+    if final_error is None:
+        final_error = comm.allreduce(max_err_loc, op=MPI.MAX)
+
+    exec_time = time.perf_counter() - t0
+    comm_time_total = sum([c[-1] for c in comm_log])
+    overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
+
+    meta = dict(
+        rank=rank,
+        start_x=start_x, end_x=end_x,
+        start_y=start_y, end_y=end_y,
+        local_nx=local_nx, local_ny=local_ny,
+        iterations=iteration,
+        exec_time=exec_time,
+        comm_time=comm_time_total,
+        overhead=overhead,
+        final_error=final_error
+    )
+    return meta, comm_log
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--N", type=int, default=50)
+    parser.add_argument("--max_iter", type=int, default=20000)
+    parser.add_argument("--tol", type=float, default=1e-8)
+    args = parser.parse_args()
+
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+
+    meta, comm_log = jacobi_mpi_cart(args.N, max_iter=args.max_iter, tol=args.tol)
+
+    # junta metadados e logs em rank 0
+    all_meta = comm.gather(meta, root=0)
+    all_logs = comm.gather(comm_log, root=0)
+
+    if rank == 0:
+        rows = []
+        for m, logs in zip(all_meta, all_logs):
+            rows.append(m)
+            for entry in logs:
+                rows.append(dict(
+                    rank=entry[1],
+                    iteration=entry[0],
+                    neighbor=entry[2],
+                    direction=entry[3],
+                    n_points=entry[4],
+                    comm_time=entry[5]
+                ))
+        df = pd.DataFrame(rows)
+        df.to_csv("results.csv", index=False)
+        print("[rank 0] Arquivo results.csv salvo.")
+
+
+if __name__ == "__main__":
+    main()
+
