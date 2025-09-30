@@ -662,3 +662,63 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1286 (try_compile)"
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1330 (_MPI_try_staged_settings)"
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1653 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:6 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-68SII5"
+      binary: "/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-68SII5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: ""
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: '/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-68SII5'
+        
+        Run Build Command(s): /home/bruno/Downloads/clion-2025.2.2/bin/ninja/linux/x64/ninja -v cmTC_2bc15
+        [1/2] /usr/bin/cc  -isystem /usr/lib/x86_64-linux-gnu/openmpi/include -isystem /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -std=gnu11 -o CMakeFiles/cmTC_2bc15.dir/test_mpi.c.o -c /home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-68SII5/test_mpi.c
+        [2/2] : && /usr/bin/cc   CMakeFiles/cmTC_2bc15.dir/test_mpi.c.o -o cmTC_2bc15  -Wl,-rpath,/usr/lib/x86_64-linux-gnu/openmpi/lib  /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so && :
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1286 (try_compile)"
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1330 (_MPI_try_staged_settings)"
+      - "/home/bruno/Downloads/clion-2025.2.2/bin/cmake/linux/x64/share/cmake-4.0/Modules/FindMPI.cmake:1653 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:6 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-jpe8vE"
+      binary: "/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-jpe8vE"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: ""
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: '/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-jpe8vE'
+        
+        Run Build Command(s): /home/bruno/Downloads/clion-2025.2.2/bin/ninja/linux/x64/ninja -v cmTC_40c0f
+        [1/2] /usr/bin/cc  -isystem /usr/lib/x86_64-linux-gnu/openmpi/include -isystem /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -std=gnu11 -fdiagnostics-color=always -o CMakeFiles/cmTC_40c0f.dir/test_mpi.c.o -c /home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-jpe8vE/test_mpi.c
+        [2/2] : && /usr/bin/cc   CMakeFiles/cmTC_40c0f.dir/test_mpi.c.o -o cmTC_40c0f  -Wl,-rpath,/usr/lib/x86_64-linux-gnu/openmpi/lib  /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so && :
+        
+      exitCode: 0
+...

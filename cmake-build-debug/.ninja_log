@@ -1,4 +1,16 @@
 # ninja log v6
-0	100	1759250505359865752	build.ninja	31f9154950bddaa
-46	66	1757769580410870615	hcp_for_edp	c112c1e5a4db6a9
+1	115	1759251047895682023	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
 1	83	1759250577167853536	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/serialjacobiellipti.c.o	b5089a1124850353
+0	62	1759251089011993972	hcp_for_edp	6b0a434f862f7fef
+1	156	1759251503959834295	build.ninja	6933c05a49c87473
+1	156	1759251503955834287	/home/bruno/CLionProjects/hcp_for_edp/cmake-build-debug/cmake_install.cmake	6933c05a49c87473
+1	103	1759256867483463615	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
+103	165	1759256867583465073	hcp_for_edp	6b0a434f862f7fef
+1	91	1759257277937078146	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
+91	143	1759257278025079289	hcp_for_edp	6b0a434f862f7fef
+1	158	1759257749466987137	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
+158	262	1759257749626989089	hcp_for_edp	6b0a434f862f7fef
+1	237	1759260287974411845	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
+237	365	1759260288210414854	hcp_for_edp	6b0a434f862f7fef
+1	103	1759260370063313240	CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o	b54f743984df7e39
+104	152	1759260370167314304	hcp_for_edp	6b0a434f862f7fef

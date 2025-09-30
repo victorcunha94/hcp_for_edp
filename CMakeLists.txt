@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD 11)
 find_package(MPI REQUIRED)
 
 add_executable(hcp_for_edp
-        assignment03/gbispo/paralleljacobiellipti.c
-        assignment03/gbispo/serialjacobiellipti.c)
+        assignment03/gbispo/paralleljacobiellipti.c)
 
 target_link_libraries(hcp_for_edp PRIVATE m MPI::MPI_C)

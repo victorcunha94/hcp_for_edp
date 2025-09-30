@@ -57,14 +57,6 @@ build CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o: 
   OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
   OBJECT_FILE_DIR = CMakeFiles/hcp_for_edp.dir/assignment03/gbispo
 
-build CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/serialjacobiellipti.c.o: C_COMPILER__hcp_for_edp_unscanned_Debug /home/bruno/CLionProjects/hcp_for_edp/assignment03/gbispo/serialjacobiellipti.c || cmake_object_order_depends_target_hcp_for_edp
-  CONFIG = Debug
-  DEP_FILE = CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/serialjacobiellipti.c.o.d
-  FLAGS = -std=gnu11 -fdiagnostics-color=always
-  INCLUDES = -isystem /usr/lib/x86_64-linux-gnu/openmpi/include -isystem /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi
-  OBJECT_DIR = CMakeFiles/hcp_for_edp.dir
-  OBJECT_FILE_DIR = CMakeFiles/hcp_for_edp.dir/assignment03/gbispo
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target hcp_for_edp
@@ -73,7 +65,7 @@ build CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/serialjacobiellipti.c.o: C_
 #############################################
 # Link the executable hcp_for_edp
 
-build hcp_for_edp: C_EXECUTABLE_LINKER__hcp_for_edp_Debug CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/serialjacobiellipti.c.o | /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so
+build hcp_for_edp: C_EXECUTABLE_LINKER__hcp_for_edp_Debug CMakeFiles/hcp_for_edp.dir/assignment03/gbispo/paralleljacobiellipti.c.o | /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so
   CONFIG = Debug
   LINK_LIBRARIES = -Wl,-rpath,/usr/lib/x86_64-linux-gnu/openmpi/lib  -lm  /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so
   OBJECT_DIR = CMakeFiles/hcp_for_edp.dir

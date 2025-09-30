@@ -22,9 +22,8 @@ inline static double complex uborder(double x, double y) {
 int main(int argc, char **argv) {
     
     if (argc < 8) {
-        fprintf(stderr, "Usage: %s <N> <maxit> <m> <n> <omega> <method> <tol> <comm_freq>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <grid size> <maxit> <m> <n> <omega> <method> <tol> <comm_freq>\n", argv[0]);
         fprintf(stderr, "Methods: 'j' for Jacobi, 'g' for modified Jacobi, 's' for SOR\n");
-        MPI_Finalize();
         return 1;
     }
     
@@ -42,7 +41,7 @@ int main(int argc, char **argv) {
 
     double complex *u = (double complex*) calloc(N*N, sizeof(double complex));
     double complex *uold = (double complex*) calloc(N*N, sizeof(double complex));
-    double complex *f = (double complex*) malloc(N*N*sizeof(double complex));
+    double complex *f = (double complex*) calloc(N*N,sizeof(double complex));
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
@@ -53,13 +52,14 @@ int main(int argc, char **argv) {
                 u[i*N+j] = uborder(x,y);
             }
         }
-    
+    double inicio_comunicação,fim_comunicação,total_comunicação=0,inicio_execução,fim_execução,total_execução=0;
     MPI_Init(&argc, &argv);
     
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-
+    int convergencia_local=0;
+    int convergencia_global=0;
 
     MPI_Status status;
         
@@ -80,11 +80,7 @@ int main(int argc, char **argv) {
     if (coords[1] < N % dims[1]) local_Nx++;
     if (coords[0] < N % dims[0]) local_Ny++;
     local_Nx += 2; // Para os halos
-    local_Ny += 2; 
-
-    u
-
-    MPI_Scatter);
+    local_Ny += 2;
     
     // Loop principal de iteracoes
     int it;
@@ -146,15 +142,6 @@ int main(int argc, char **argv) {
                     }
                 }
                 break;
-            case 'g': // Jacobi sem Old. Talvez seja o Gauss-Seidel
-                for (int i=1; i<N-1; i++) {
-                    for (int j=1; j<N-1; j++) {
-                        u[i*N+j] = 0.25 * ( u[(i-1)*N+j] + u[(i+1)*N+j] +
-                                             u[i*N+(j-1)] + u[i*N+(j+1)]
-                                             - h2 * f[i*N+j] );
-                    }
-                }
-                break;
             case 's': // SOR
                 for (int i=1; i<N-1; i++) {
                     for (int j=1; j<N-1; j++) {
@@ -168,6 +155,9 @@ int main(int argc, char **argv) {
             default:
                 fprintf(stderr, "Metodo invalido.\n");
                 MPI_Finalize();
+                free (u);
+                free (uold);
+                free (f);
                 return 1;
         }
 
@@ -183,8 +173,12 @@ int main(int argc, char **argv) {
         }
         double res_norm = sqrt(res_norm_sq);
 
-        if (res_norm < tol) {
+        if (res_norm < tol && !convergencia_local) {
+            convergencia_local=1;
             printf("Convergencia atingida em %d iteracoes. Residuo = %.6e\n", it+1, res_norm);
+        }
+        MPI_Allreduce(&convergencia_local, &convergencia_global, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
+        if (convergencia_global) {
             break;
         }
     }
@@ -194,47 +188,51 @@ int main(int argc, char **argv) {
     }
 
     // Erro em relacao a solucao exata
-    double err2 = 0.0, norm2 = 0.0;
-    for (int i=0; i<N; i++) {
-        for (int j=0; j<N; j++) {
-            double x = j*h;
-            double y = i*h;
-            double complex ue = uexact(x,y,m,n);
-            double complex diff = u[i*N+j] - ue;
-            err2  += creal(diff*conj(diff));
-            norm2 += creal(ue*conj(ue));
+
+    if (rank==0) {
+
+        double err2 = 0.0, norm2 = 0.0;
+        for (int i=0; i<N; i++) {
+            for (int j=0; j<N; j++) {
+                double x = j*h;
+                double y = i*h;
+                double complex ue = uexact(x,y,m,n);
+                double complex diff = u[i*N+j] - ue;
+                err2  += creal(diff*conj(diff));
+                norm2 += creal(ue*conj(ue));
+            }
         }
-    }
 
-    printf("Erro relativo = %.6e\n", sqrt(err2/norm2));
- // --- Salvando os dados para plotagem com Gnuplot ---
-    FILE *fp = fopen("solucao_parallel.dat", "w");
-    if (fp == NULL) {
-        fprintf(stderr, "Erro ao abrir o arquivo para escrita.\n");
-        // Lembre-se de liberar a memória antes de sair em caso de erro.
-        free(u);
-        free(uold);
-        free(f);
-        return 1;
-    }
-
-    //'u' é o array com a solução final
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            double x = j * h;
-            double y = i * h;
-            // Para complexos, use 'creal' para a parte real.
-            // Para a parte imaginária, use 'cimag'.
-            fprintf(fp, "%f %f %f\n", x, y, creal(u[i * N + j]));
+        printf("Erro relativo = %.6e\n", sqrt(err2/norm2));
+        // --- Salvando os dados para plotagem com Gnuplot ---
+        FILE *fp = fopen("solucao_parallel.dat", "w");
+        if (fp == NULL) {
+            fprintf(stderr, "Erro ao abrir o arquivo para escrita.\n");
+            free(u);
+            free(uold);
+            free(f);
+            return 1;
         }
-        fprintf(fp, "\n"); // Linha em branco para Gnuplot (separador de 'linhas' do grid)
-    }
 
-    fclose(fp);
-    printf("Solucao salva em 'solucao_parallel.dat'\n");
+        //'u' é o array com a solução final
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                double x = j * h;
+                double y = i * h;
+                // Para complexos, use 'creal' para a parte real.
+                // Para a parte imaginária, use 'cimag'.
+                fprintf(fp, "%f %f %f\n", x, y, creal(u[i * N + j]));
+            }
+            fprintf(fp, "\n"); // Linha em branco para Gnuplot (separador de 'linhas' do grid)
+        }
+
+        fclose(fp);
+        printf("Solucao salva em 'solucao_parallel.dat'\n");
+    }
     free(u);
     free(uold);
     free(f);
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
 
     return 0;
