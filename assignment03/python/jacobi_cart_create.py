@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
+
+Exemplo para rodar:
+mpirun -np 4 pyhton3 jacobi_cart_create.py --N 50 --nx 2 --ny 2 
+
 """
 
 from mpi4py import MPI
