@@ -10,9 +10,13 @@ import argparse
 import math
 import pandas as pd
 
+def grid_dims(nx, ny, size):
+    if nx * ny != size:
+        raise ValueError(f"Erro: nx * ny = {nx} * {ny} = {nx * ny} != {size} (total de processos)")
+    return [nx, ny]
 
 def _compute_grid_dims(size):
-    for px in range(int(math.sqrt(size)), 0, -1):
+    for px in range(int(math.sqrt(size)), 0, -1): #
         if size % px == 0:
             return [px, size // px]
     return [1, size]
@@ -31,10 +35,28 @@ def _partition_1d(n_interior, n_procs_dim, coord):
     return start, end, local
 
 
-def jacobi_mpi_cart(N, max_iter=10000, tol=1e-8, L=1.0):
+def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
+    
+    if rank == 0:
+        try:
+            dims = grid_dims(nx, ny, size)
+        except ValueError as e:
+            print(f"ERRO: {e}")
+            # Comunica o erro para todos os processos
+            error_flag = True
+        else:
+            error_flag = False
+    else:
+        error_flag = None
+        dims = None
+        
+    # Broadcast do status de erro
+    error_flag = comm.bcast(error_flag, root=0)
+    if error_flag:
+        comm.Abort(1)
 
     dims = _compute_grid_dims(size)
     cart = comm.Create_cart(dims, periods=[False, False], reorder=True)
@@ -168,6 +190,8 @@ def jacobi_mpi_cart(N, max_iter=10000, tol=1e-8, L=1.0):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--N", type=int, default=50)
+    parser.add_argument("--nx", type=int, required=True, help="Número de processos na dimensão X")
+    parser.add_argument("--ny", type=int, required=True, help="Número de processos na dimensão Y")
     parser.add_argument("--max_iter", type=int, default=20000)
     parser.add_argument("--tol", type=float, default=1e-8)
     args = parser.parse_args()
@@ -175,7 +199,7 @@ def main():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
-    meta, comm_log = jacobi_mpi_cart(args.N, max_iter=args.max_iter, tol=args.tol)
+    meta, comm_log = jacobi_mpi_cart(args.N,args.nx, args.ny,  max_iter=args.max_iter, tol=args.tol)
 
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
