@@ -131,43 +131,31 @@ int main(int argc, char **argv) {
 
         if (it % comm_freq == 0) {
             inicio_comunicação=MPI_Wtime();
-            MPI_Request requests[8];
+        MPI_Request requests[8]={MPI_REQUEST_NULL};
 
             if (north != MPI_PROC_NULL) {
                 MPI_Irecv(&u_local[1], local_Nx-2, MPI_C_DOUBLE_COMPLEX,
                      north, 0, comm_cart, &requests[0]);
                 MPI_Isend(&u_local[1*local_Nx+1], local_Nx-2, MPI_C_DOUBLE_COMPLEX,
                      north, 1, comm_cart, &requests[1]);
-            } else {
-                requests[0] = MPI_REQUEST_NULL;
-                requests[1] = MPI_REQUEST_NULL;
             }
             if (south != MPI_PROC_NULL) {
                 MPI_Irecv(&u_local[(local_Ny-1)*local_Nx+1], local_Nx-2, MPI_C_DOUBLE_COMPLEX,
                      south, 1, comm_cart, &requests[2]);
                 MPI_Isend(&u_local[(local_Ny-2)*local_Nx+1], local_Nx  -2, MPI_C_DOUBLE_COMPLEX,
                      south, 0, comm_cart, &requests[3]);
-            } else {
-                requests[2] = MPI_REQUEST_NULL;
-                requests[3] = MPI_REQUEST_NULL;
             }
             if (west != MPI_PROC_NULL) {
                 MPI_Irecv(&u_local[local_Nx], 1, coluna,
                      west, 2, comm_cart, &requests[4]);
                 MPI_Isend(&u_local[local_Nx+1], 1, coluna,
                      west, 3, comm_cart, &requests[5]);
-            } else {        
-                requests[4] = MPI_REQUEST_NULL;
-                requests[5] = MPI_REQUEST_NULL;
             }
             if (east != MPI_PROC_NULL) {
                 MPI_Irecv(&u_local[local_Nx+(local_Nx-1)], 1, coluna,
                      east, 3, comm_cart, &requests[6]);
                 MPI_Isend(&u_local[local_Nx+(local_Nx-2)], 1, coluna,
                      east, 2, comm_cart, &requests[7]);
-            } else {    
-                requests[6] = MPI_REQUEST_NULL;
-                requests[7] = MPI_REQUEST_NULL;
             }
             MPI_Waitall(8, requests, MPI_STATUSES_IGNORE);
             total_comunicação+=MPI_Wtime()-inicio_comunicação;
