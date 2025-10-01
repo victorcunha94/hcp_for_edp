@@ -4,7 +4,6 @@
 #include <math.h>
 #include <complex.h>
 #include <string.h>
-#include <time.h>
 #include <mpi.h>
 
 inline static double complex ftest(double x, double y, int m, int n) {
@@ -52,9 +51,10 @@ int main(int argc, char **argv) {
                 u[i*N+j] = uborder(x,y);
             }
         }
-    double inicio_comunicação,fim_comunicação,total_comunicação=0,inicio_execução,fim_execução,total_execução=0;
+    double inicio_comunicação,total_comunicação=0,inicio_execução,total_execução=0;
+
     MPI_Init(&argc, &argv);
-    
+    inicio_comunicação=MPI_Wtime();
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -81,12 +81,14 @@ int main(int argc, char **argv) {
     if (coords[0] < N % dims[0]) local_Ny++;
     local_Nx += 2; // Para os halos
     local_Ny += 2;
-    
+    total_comunicação+=MPI_Wtime()-inicio_comunicação;
     // Loop principal de iteracoes
     int it;
     for (it=0; it<maxit; it++) {
         // Comunica os halos a cada comm_freq iteracoes
+
         if (it % comm_freq == 0) {
+            inicio_comunicação=MPI_Wtime();
             MPI_Request requests[8];
             if (north != MPI_PROC_NULL) {
                 MPI_Irecv(&u[0*N], local_Nx-2, MPI_C_DOUBLE_COMPLEX,
@@ -125,8 +127,10 @@ int main(int argc, char **argv) {
                 requests[7] = MPI_REQUEST_NULL;
             }
             MPI_Waitall(8, requests, MPI_STATUSES_IGNORE);
+            total_comunicação+=MPI_Wtime()-inicio_comunicação;
         }
 
+        inicio_execução=MPI_Wtime();
 
         // Copia a solucao atual para uold
         memcpy(uold, u, N*N*sizeof(double complex));
@@ -177,6 +181,7 @@ int main(int argc, char **argv) {
             convergencia_local=1;
             printf("Convergencia atingida em %d iteracoes. Residuo = %.6e\n", it+1, res_norm);
         }
+        total_execução+=MPI_Wtime()-inicio_execução;
         MPI_Allreduce(&convergencia_local, &convergencia_global, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
         if (convergencia_global) {
             break;
@@ -190,7 +195,7 @@ int main(int argc, char **argv) {
     // Erro em relacao a solucao exata
 
     if (rank==0) {
-
+        printf("tempo de execução: %lf\n tempo de comunicação: %lf ",total_execução,total_comunicação);
         double err2 = 0.0, norm2 = 0.0;
         for (int i=0; i<N; i++) {
             for (int j=0; j<N; j++) {
