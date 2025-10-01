@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     char method = argv[6][0];
     double tol = atof(argv[7]);
     int comm_freq = atoi(argv[8]);
-    
+
     double h = 1.0/(N-1);
     double h2 = h*h;
 
@@ -211,6 +211,7 @@ int main(int argc, char **argv) {
         //  Criterio de parada
 
         double res_norm_sq = 0.0;
+        double res_norm_sq_global;
         for (int i=1; i<local_Ny-1; i++) {
             for (int j=1; j<local_Nx-1; j++) {
                 double complex r = f_local[i*local_Nx+j] - (u_local[(i-1)*local_Nx+j] + u_local[(i+1)*local_Nx+j] +
@@ -218,8 +219,8 @@ int main(int argc, char **argv) {
                 res_norm_sq += creal(r*conj(r));
             }
         }
-        double res_norm = sqrt(res_norm_sq);
-
+        MPI_Allreduce(&res_norm_sq,&res_norm_sq_global,1,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
+        double res_norm = sqrt(res_norm_sq_global);
         if (res_norm < tol && !convergencia_local) {
             convergencia_local=1;
             printf("Convergencia atingida em %d iteracoes. Residuo = %.6e\n", it+1, res_norm);
