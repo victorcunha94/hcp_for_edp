@@ -189,8 +189,15 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0):
         overhead=overhead,
         final_error=final_error
     )
+<<<<<<< HEAD
     return meta, comm_log
 80 
+=======
+    #Tirando as bordas
+    U_local = U[1:-1, 1:-1].copy()  
+    return meta, comm_log, (start_x, end_x, start_y, end_y, U_local)
+
+>>>>>>> a968621b53e083aabb62aa131a301fafeea75b84
 
 def main():
     parser = argparse.ArgumentParser()
@@ -203,12 +210,16 @@ def main():
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
+    
+    meta, comm_log, sol_local = jacobi_mpi_cart(
+        args.N, args.nx, args.ny,
+        max_iter=args.max_iter, tol=args.tol
+    )
 
-    meta, comm_log = jacobi_mpi_cart(args.N,args.nx, args.ny,  max_iter=args.max_iter, tol=args.tol)
-
-    # junta metadados e logs em rank 0
+    # junta os dados
     all_meta = comm.gather(meta, root=0)
     all_logs = comm.gather(comm_log, root=0)
+    all_solutions = comm.gather(sol_local, root=0)
 
     if rank == 0:
         rows = []
@@ -227,6 +238,13 @@ def main():
         df.to_csv(f"results_{nx}x{ny}.csv", index=False)
         print(f"[rank 0] Arquivo results_{nx}x{ny}.csv salvo.")
 
+        # solução global
+        U_global = np.zeros((args.N, args.N))
+        for (start_x, end_x, start_y, end_y, U_local) in all_solutions:
+            U_global[start_x:end_x, start_y:end_y] = U_local
+
+        # Salva em formato NumPy
+        np.save("solution.npy", U_global)
 
 if __name__ == "__main__":
     main()
