@@ -12,6 +12,8 @@ import time
 import argparse
 import math
 import pandas as pd
+import os
+
 
 def grid_dims(nx, ny, size):
     if nx * ny != size:
@@ -82,7 +84,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        return -2.0 * np.pi**2 * np.sin(np.pi * x) * np.sin(np.pi * y)
+        return 2.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
 
     # Inicializar f_local
     for i in range(1, local_nx + 1):
@@ -196,10 +198,11 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         exec_time=exec_time,
         comm_time=comm_time_total,
         overhead=overhead,
-        final_error=final_error
+        final_error=final_error,
+        U = U,
     )
     
-    return meta, comm_log
+    return meta, comm_log, U
 
 def main():
     parser = argparse.ArgumentParser()
@@ -216,7 +219,7 @@ def main():
     rank = comm.Get_rank()
 
     # CORRIGIDO: local_iters -> block_size
-    meta, comm_log = jacobi_mpi_cart(
+    meta, comm_log, U = jacobi_mpi_cart(
         args.N, args.nx, args.ny, 
         max_iter=args.max_iter, 
         tol=args.tol, 
@@ -241,8 +244,8 @@ def main():
                     comm_time=entry[5]
                 ))
         df = pd.DataFrame(rows)
-        # CORRIGIDO: args.nx e args.ny
-        df.to_csv(f"results_{args.nx}x{args.ny}.csv", index=False)
+        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
+        df.to_csv(caminho_csv, index=False)
         print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
 
 if __name__ == "__main__":
