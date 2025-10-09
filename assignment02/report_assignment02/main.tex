@@ -26,6 +26,7 @@
 \usepackage{titlesec}  % For title formatting
 \geometry{margin=0.8in}
 \setstretch{1.5}
+\setlength{\parindent}{1.25cm}
 \usepackage{amssymb}
 \usepackage{enumitem}
 
@@ -110,7 +111,7 @@
     \vspace{2cm} % Adjust vertical space
     \includegraphics[width=0.55\textwidth]{Figuras/logo_icmc.png} \\ % Add your logo here (change "logo.png" to the actual filename)
     \vspace{1cm} % Adjust vertical space after the logo
-    \textbf{\Huge Assignment 2} \\
+    \textbf{\Huge Regiões de Estabilidade e Computação Paralela} \\
     \vspace{1cm} % Adjust vertical space
     \large Regiões de Estabilidade de Métodos Numéricos para Equações Diferenciais com computação paralela \\
     \vspace{0.5cm}\thanks{Este trabalho foi realizado com auxílio de recurso computacional do cluster Euler\\Todos os códigos utilizados na elaboração deste trabalho estão disponíveis no GitHub: \url{https://github.com/victorcunha94/hcp_for_edp}}
@@ -135,7 +136,7 @@
 \tableofcontents
 \newpage
 
-\section{Equações Diferenciais}
+\section{Problema de Valor Inicial}
 
 \begin{equation*}
     \left\{
@@ -146,11 +147,10 @@
     \right.
 \end{equation*}
 
-\subsection{Métodos baseados em expansões de Série de Taylor}
+%\subsection{Métodos baseados em expansões de Série de Taylor}
 
 
-
-\subsection{Exercício 01}
+\subsection{O problema teste}
 Considere o problema particular, 
 
 \begin{equation*}\label{eq:caso1}
@@ -185,13 +185,16 @@ Podemos perceber que não é possível escolher um $h$ arbitrário, para que a s
 \end{align}
 
 \section{Validação do código}
+
+Para validação do código utilizamos a região de estabilidade do método de Euler implícito do Livro \cite{leveque2007finite}
+
 \begin{figure}[H]
 \centering
-\subfigure[Um filhote. \label{fig:euler_python}]{
+\subfigure[Euler Implícito pelo código.  \label{fig:euler_python}]{
 \includegraphics[width=.38\textwidth]{Figuras/PYTHON/stability_basic_1threads.png}
 } % end subfigure
 \quad % dá um espaço entre as duas figuras.
-\subfigure[Vários filhotes. \label{fig:euler_leveque}]{
+\subfigure[Euler Implícito na literatura. \label{fig:euler_leveque}]{
 \includegraphics[width=.4\textwidth]{Figuras/PYTHON/euler_leveque.png}
 } % end subfigure
 \caption{Comparação para validação do código}
@@ -202,11 +205,11 @@ Podemos perceber que não é possível escolher um $h$ arbitrário, para que a s
 
 \section{Análise do algoritmo em Python: Sequencial vs Paralelo}
 
-Nesta sessão discutimos a implementação do código em paralelo e a estratégia adotada. Utilizamos o compilador \textit{\href{https://numba.pydata.org/}{Numba}} e a estratégia por "blocos".
+Nesta sessão discutiremos a implementação do código em paralelo e a estratégia adotada. Utilizamos o compilador \textit{\href{https://numba.pydata.org/}{Numba}} e a estratégia por "blocos".
 
 \subsection{Algoritmo}
 
-\begin{algorithm}
+\begin{algorithm}[H]
 \caption{Verificação de Estabilidade para um ponto \( z \)}
 \label{alg:stability}
 \begin{algorithmic}[1]
@@ -228,7 +231,7 @@ O algoritmo para determinar a estabilidade de um ponto \( z \) no plano complexo
 
 
 \subsection{Numba}
-O \textbf{Numba} é um compilador \textit{just-in-time} (JIT) para Python que acelera significativamente funções que utilizam operações numéricas, loops e bibliotecas como NumPy através de decoradores.
+O \textbf{Numba} é um compilador \textit{just-in-time} (JIT) para Python que acelera significativamente funções que utilizam operações numéricas, loops e bibliotecas como NumPy através de decoradores. \cite{lam2015numba}
 
 \subsection{Estratégia por blocos}
 
@@ -263,7 +266,7 @@ def process_all_points_compiled(xl_val, xr_val, yb_val, yt_val, incle_val, T_val
 \end{lstlisting}
 
 \subsection{Ambiente Computacional}
-Os experimentos preliminares foram executados em um notebook Acer Aspire A515-45 equipado com processador AMD Ryzen 7 5700U (8 núcleos, 16 threads) à 1,8 GHz, 8 GB de RAM DDR4 e sistema operacional Windows 11. A paralelização foi implementada utilizando Numba com OpenMP, aproveitando a arquitetura multicore do processador. Os resultados podem ser vistos em \ref{fig:speed_threads}
+ Os experimentos preliminares foram executados em um notebook Acer Aspire A515-45 equipado com processador AMD Ryzen 7 5700U (8 núcleos, 16 threads) à 1,8 GHz, 8 GB de RAM DDR4 e sistema operacional Windows 11. A paralelização foi implementada utilizando Numba com OpenMP, aproveitando a arquitetura multicore do processador. Os resultados podem ser vistos em \ref{fig:speed_threads}.
 
 \begin{figure}[H]
    \centering
@@ -272,7 +275,7 @@ Os experimentos preliminares foram executados em um notebook Acer Aspire A515-45
    \label{fig:speed_threads}
 \end{figure}
 
-Podemos verificar através do gráfico que houve ganho de performance com o aumento dos threads, porém, próximo do número de núcleos físicos, que são 8, o speedup não aumenta; um indício de de que o hyper-thread não ajuda no problema em que estamos resolvendo. 
+Podemos verificar através do gráfico que houve ganho de performance com o aumento dos threads, porém, próximo do número de núcleos físicos, que são 8, o speedup não aumenta; um indício de de que o hyper-threading não ajuda no problema em que estamos resolvendo. 
 
 Abaixo, podemos ver a distribuição das faixas por threads. 
 \begin{figure}[H]
@@ -320,7 +323,7 @@ U^{n+4}_{\text{corr}} = U^{n+3} + \frac{h}{24}\left[9zU^{n+4} + 19zU^{n+3} - 5zU
 
 \subsection{Esquema P-E-C-E Iterativo}
 
-O algoritmo segue o fluxo iterativo:
+	O algoritmo segue o fluxo iterativo:
 
 \begin{enumerate}
     \item \textbf{Preditor (P)}: 
@@ -347,7 +350,7 @@ O algoritmo segue o fluxo iterativo:
 
 \subsection{Aplicação à Análise de Estabilidade}
 
-Para a equação teste $U' = zU$, o método PC-ABM4 produz um operador de avanço:
+ Para a equação teste $U' = zU$, o método PC-ABM4 produz um operador de avanço:
 
 \[
 U_{n+4} = R(z)U_n
@@ -355,7 +358,7 @@ U_{n+4} = R(z)U_n
 
 onde $R(z)$ é o \textbf{polinômio de estabilidade}, cujas raízes determinam a região de estabilidade no plano complexo. Um ponto $z$ é considerado estável se $|R(z)| < 1$ após $T$ iterações.
 
-Este esquema combina a eficiência computacional do método explícito (preditor) com a estabilidade superior do método implícito (corretor), sendo particularmente adequado para problemas de estabilidade numérica onde se requer alto grau de precisão.
+ Este esquema combina a eficiência computacional do método explícito (preditor) com a estabilidade superior do método implícito (corretor), sendo particularmente adequado para problemas de estabilidade numérica onde se requer alto grau de precisão. Podemos verificar abaixo as regiões de estabilidade dos Métodos \textit{Adamns Basforth Moulton}, os mesmos resultados podem ser vistos em \cite{math10122015}. 
 
 
 %%%%%%%%%%%%%%%%%%%% COLOCAR AQUI AS IMGS DOS PC1, 2, 3, e 4 

@@ -13,7 +13,7 @@ os.environ['OMP_NUM_THREADS'] = '1'
 # Parâmetros do problema
 tol = 1e-10
 T = 1000  # Reduzido para animação mais rápida
-incle = 100  # Reduzido para animação mais rápida
+incle = 200  # Reduzido para animação mais rápida
 xl, xr, yb, yt = -3.0, 1.0, -3.0, 3.0
 
 # Criar pasta de output
@@ -132,7 +132,7 @@ def create_stability_plot(real_coords, imag_coords, stable_flags, unstable_flags
     plt.gca().set_aspect('equal')
 
     filename = f'animation/frame_{frame_number:03d}.png'
-    plt.savefig(filename, dpi=150, bbox_inches='tight')
+    plt.savefig(filename, dpi=200, bbox_inches='tight')
     plt.close()
     return filename
 
@@ -141,7 +141,7 @@ def create_animation():
     print("=== INICIANDO CRIAÇÃO DA ANIMAÇÃO ===")
 
     # Números de correções para testar (de 1 a 20 para ser mais rápido)
-    n_corrections = list(range(1, 51))
+    n_corrections = list(range(1, 201))
     filenames = []
 
     for frame_num, n_corr in enumerate(n_corrections):
