@@ -14,7 +14,7 @@ os.environ['OMP_NUM_THREADS'] = '1'
 # Parâmetros do problema
 tol = 1e-10
 T = 1000
-incle = 100
+incle = 200
 xl, xr, yb, yt = -3.0, 1.0, -3.0, 3.0
 
 # Criar pasta de output
@@ -207,7 +207,7 @@ def create_animation_ffmpeg_direct():
         ax.set_aspect('equal')
 
         plt.tight_layout()
-        plt.savefig(f'animation/frame_{frame_num:03d}.png', dpi=150, bbox_inches='tight')
+        plt.savefig(f'animation/frame_{frame_num:03d}.png', dpi=200, bbox_inches='tight')
         plt.close()
 
     # Converter para MP4 usando FFmpeg

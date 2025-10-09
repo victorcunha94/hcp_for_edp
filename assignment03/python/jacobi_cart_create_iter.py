@@ -103,85 +103,84 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=5):
     global_iteration = 0
     
     while global_iteration < max_iter:
-		global_iteration += 1
+        global_iteration += 1
+
+        #for iteration in range(1, max_iter + 1):
+        max_err_loc = 0.0
+        local_max_error = 0.0
 		
-		#for iteration in range(1, max_iter + 1):
-		max_err_loc = 0.0	
-		local_max_error = 0.0
-		
-		for local_iter in range(block_size):
+        for local_iter in range(block_size):
         # atualização Jacobi
             for i in range(1, local_nx + 1):
-				i_global = start_x + (i - 1)
+                i_global = start_x + (i - 1)
 				
-				for j in range(1, local_ny + 1):
-					j_global = start_y + (j - 1)
+                for j in range(1, local_ny + 1):
+                    j_global = start_y + (j - 1)
 					
-					if i_global in (0, N - 1) or j_global in (0, N - 1):
-						Unew[i, j] = U[i, j]
-					else:
-						Unew[i, j] = 0.25 * (
+                    if i_global in (0, N - 1) or j_global in (0, N - 1):
+                        Unew[i, j] = U[i, j]
+                    else:
+                        Unew[i, j] = 0.25 * (
 							U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
 							- (dx*dx) * f_local[i, j]
 							)
-							error = abs(Unew[i, j] - U[i, j])
-							max_err_loc = max(max_err_loc, abs(Unew[i, j] - U[i, j]))
+                            max_err_loc = max(max_err_loc, abs(Unew[i, j] - U[i, j]))
 
-			U, Unew = Unew, U
+                U, Unew = Unew, U
 				
-			# comunicação topo
-			if up != MPI.PROC_NULL:
-				buf = U[1:-1, local_ny].copy()
-				recv_buf = np.empty(local_nx, dtype=np.float64)
-				t1 = time.perf_counter()
-				cart.Sendrecv(buf, dest=up, recvbuf=recv_buf,  source=up)
-				dt = time.perf_counter() - t1
-				U[1:-1, local_ny + 1] = recv_buf #Onde guardo os dados recebidos
-				comm_log.append([iteration, rank, up, "up", buf.size, dt])
-			else:
-				U[1:-1, local_ny + 1] = 0.0
+        # comunicação topo
+        if up != MPI.PROC_NULL:
+            buf = U[1:-1, local_ny].copy()
+            recv_buf = np.empty(local_nx, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=up, recvbuf=recv_buf,  source=up)
+            dt = time.perf_counter() - t1
+            U[1:-1, local_ny + 1] = recv_buf #Onde guardo os dados recebidos
+            comm_log.append([iteration, rank, up, "up", buf.size, dt])
+        else:
+            U[1:-1, local_ny + 1] = 0.0
 
-			# comunicação baixo
-			if down != MPI.PROC_NULL:
-				buf = U[1:-1, 1].copy()
-				recv_buf = np.empty(local_nx, dtype=np.float64)
-				t1 = time.perf_counter()
-				cart.Sendrecv(buf, dest=down, recvbuf=recv_buf, source=down)
-				dt = time.perf_counter() - t1
-				U[1:-1, 0] = recv_buf
-				comm_log.append([iteration, rank, down, "down", buf.size, dt])
-			else:
-				U[1:-1, 0] = 0.0
+        # comunicação baixo
+        if down != MPI.PROC_NULL:
+            buf = U[1:-1, 1].copy()
+            recv_buf = np.empty(local_nx, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=down, recvbuf=recv_buf, source=down)
+            dt = time.perf_counter() - t1
+            U[1:-1, 0] = recv_buf
+            comm_log.append([iteration, rank, down, "down", buf.size, dt])
+        else:
+            U[1:-1, 0] = 0.0
 
-			# comunicação direita
-			if right != MPI.PROC_NULL:
-				buf = U[local_nx, 1:-1].copy()
-				recv_buf = np.empty(local_ny, dtype=np.float64)
-				t1 = time.perf_counter()
-				cart.Sendrecv(buf, dest=right, recvbuf=recv_buf, source=right)
-				dt = time.perf_counter() - t1
-				U[local_nx + 1, 1:-1] = recv_buf
-				comm_log.append([iteration, rank, right, "right", buf.size, dt])
-			else:
-				U[local_nx + 1, 1:-1] = 0.0
+        # comunicação direita
+        if right != MPI.PROC_NULL:
+            buf = U[local_nx, 1:-1].copy()
+            recv_buf = np.empty(local_ny, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=right, recvbuf=recv_buf, source=right)
+            dt = time.perf_counter() - t1
+            U[local_nx + 1, 1:-1] = recv_buf
+            comm_log.append([iteration, rank, right, "right", buf.size, dt])
+        else:
+            U[local_nx + 1, 1:-1] = 0.0
 
-			# comunicação esquerda
-			if left != MPI.PROC_NULL:
-				buf = U[1, 1:-1].copy()
-				recv_buf = np.empty(local_ny, dtype=np.float64)
-				t1 = time.perf_counter()
-				cart.Sendrecv(buf, dest=left, recvbuf=recv_buf, source=left)
-				dt = time.perf_counter() - t1
-				U[0, 1:-1] = recv_buf
-				comm_log.append([iteration, rank, left, "left", buf.size, dt])
-			else:
-				U[0, 1:-1] = 0.0
+        # comunicação esquerda
+        if left != MPI.PROC_NULL:
+            buf = U[1, 1:-1].copy()
+            recv_buf = np.empty(local_ny, dtype=np.float64)
+            t1 = time.perf_counter()
+            cart.Sendrecv(buf, dest=left, recvbuf=recv_buf, source=left)
+            dt = time.perf_counter() - t1
+            U[0, 1:-1] = recv_buf
+            comm_log.append([iteration, rank, left, "left", buf.size, dt])
+        else:
+            U[0, 1:-1] = 0.0
 
 
-			max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
-			if max_err_glob < tol:
-				final_error = max_err_glob
-				break
+        max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
+        if max_err_glob < tol:
+            final_error = max_err_glob
+            break
 
     if final_error is None:
         final_error = comm.allreduce(max_err_loc, op=MPI.MAX)
