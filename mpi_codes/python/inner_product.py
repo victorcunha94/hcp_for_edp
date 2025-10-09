@@ -13,11 +13,7 @@ def dot_product(A, B):
     return result
     
   
-    
-
 def gerar_vetores(tamanho):
-    """Gera vetores de teste com dados realistas"""
-    # Vetores com padrão mais realista que 1,2,3...
     A = np.random.rand(tamanho).astype(np.float64) * 1000  # 0-1000
     B = np.random.rand(tamanho).astype(np.float64) * 1000  # 0-1000
     return A, B
