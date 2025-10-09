@@ -1,0 +1,9 @@
+ESTATÍSTICAS DE PARALELIZAÇÃO - 1 THREADS
+==================================================
+Total de pontos: 251001
+Tempo total de execução: 4.11s
+Tempo médio por ponto: 0.0164ms
+Threads utilizadas: 1
+Método: PC-AB4-AM4
+Tolerância: 1e-08
+Iterações máximas: 2000

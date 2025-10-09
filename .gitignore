@@ -7,7 +7,7 @@
 *.nbc
 *.pyc
 # Pastas de output
-output/
+#output/
 build/
 
 
