@@ -1,0 +1,2 @@
+config,processes,grid_config,avg_exec_time,max_exec_time,avg_comm_time,avg_overhead,speedup,efficiency,iterations,seq_time,nx,ny,aspect_ratio
+2x2,4,2x2,1228.728894748725,1228.728895247914,0.41069879569113255,0.000334246876957375,0.9999999990828731,0.24999999977071827,20000.0,1228.7288941210136,2,2,1.0
