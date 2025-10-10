@@ -3,7 +3,7 @@
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
 
 Exemplo para rodar:
-mpirun -np 4 python3 jacobi_cart_create.py --N 50 --nx 2 --ny 2 
+mpirun -np 4 python3 jacobi_cart_create_iter2.py --N 50 --nx 2 --ny 2 
 """
 
 from mpi4py import MPI
@@ -189,6 +189,8 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     comm_time_total = sum([c[-1] for c in comm_log])
     overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
 
+    u_local_data = U[1:-1, 1:-1].flatten().tolist()
+
     meta = dict(
         rank=rank,
         start_x=start_x, end_x=end_x,
@@ -199,7 +201,8 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         comm_time=comm_time_total,
         overhead=overhead,
         final_error=final_error,
-        U = U,
+        U_data = U_local_data,
+        data_length=len(U_local_data)
     )
     
     return meta, comm_log, U
