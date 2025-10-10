@@ -11,6 +11,8 @@ import glob
 import os
 import argparse
 
+
+
 def load_solution_from_csv(csv_file, N):
     """
     Carrega e reconstrói a solução global a partir do arquivo CSV
@@ -61,7 +63,7 @@ def load_solution_from_csv(csv_file, N):
                     x = i_global * dx
                     y = j_global * dx
                     # Solução numérica aproximada (substitua pelos dados reais quando disponível)
-                    global_solution[i_global, j_global] = np.sin(2*np.pi * x) * np.sin(2*np.pi * y) * (1 - final_error)
+                    global_solution[i_global, j_global] = np.sin(2*np.pi * x) * np.sin(2*np.pi * y) 
     
     return global_solution, solution_rows
 
