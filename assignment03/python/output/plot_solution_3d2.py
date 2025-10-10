@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 Plot 3D da solução do Jacobi MPI a partir do arquivo CSV
+
+
 """
 
 import pandas as pd
@@ -67,52 +69,68 @@ def load_solution_from_csv(csv_file, N):
 
 def load_solution_with_communication_data(csv_file, N):
     """
-    Versão alternativa que tenta usar dados de comunicação para reconstruir a solução
+    Carrega a solução numérica REAL a partir do CSV
     """
     print(f"Carregando arquivo: {csv_file}")
     
     df = pd.read_csv(csv_file)
     
-    # Filtra dados de domínio
-    domain_data = df[df['start_x'].notna() & df['start_y'].notna()]
+    # Filtra dados de domínio (onde U_data está presente)
+    domain_data = df[df['start_x'].notna() & df['start_y'].notna() & df['U_data'].notna()]
     
     if domain_data.empty:
-        raise ValueError("Arquivo CSV não contém dados de domínio")
+        raise ValueError("Arquivo CSV não contém dados de solução numérica")
     
     global_solution = np.zeros((N, N))
     
-    # Agrupa por processo
-    processes = domain_data.groupby('rank')
+    # Processa cada processo
+    for _, row in domain_data.iterrows():
+        rank = int(row['rank'])
+        start_x = int(row['start_x'])
+        end_x = int(row['end_x'])
+        start_y = int(row['start_y'])
+        end_y = int(row['end_y'])
+        local_nx = int(row['local_nx'])
+        local_ny = int(row['local_ny'])
+        
+        print(f"Processo {rank}: ({start_x}:{end_x}) x ({start_y}:{end_y}), tamanho: {local_nx}x{local_ny}")
+        
+        # Converte string de U_data de volta para array numpy
+        if isinstance(row['U_data'], str):
+            # Remove colchetes e converte para lista de floats
+            u_data_str = row['U_data'].strip('[]')
+            u_values = np.fromstring(u_data_str, sep=',')
+        else:
+            u_values = np.array(row['U_data'])
+        
+        # Redimensiona para a forma local correta
+        try:
+            U_local = u_values.reshape((local_nx, local_ny))
+            
+            # Coloca na solução global
+            for i_local in range(local_nx):
+                for j_local in range(local_ny):
+                    i_global = start_x + i_local
+                    j_global = start_y + j_local
+                    
+                    if i_global < N and j_global < N:
+                        global_solution[i_global, j_global] = U_local[i_local, j_local]
+                        
+        except Exception as e:
+            print(f"Erro ao processar dados do processo {rank}: {e}")
+            print(f"Tamanho esperado: {local_nx}x{local_ny} = {local_nx * local_ny}")
+            print(f"Tamanho recebido: {len(u_values)}")
+            continue
     
-    for rank, process_data in processes:
-        # Pega a primeira linha do processo (contém informações do domínio)
-        domain_info = process_data.iloc[0]
-        
-        start_x = int(domain_info['start_x'])
-        end_x = int(domain_info['end_x'])
-        start_y = int(domain_info['start_y'])
-        end_y = int(domain_info['end_y'])
-        local_nx = int(domain_info['local_nx'])
-        local_ny = int(domain_info['local_ny'])
-        final_error = float(domain_info['final_error'])
-        
-        print(f"Processo {rank}: ({start_x}:{end_x}) x ({start_y}:{end_y}), erro: {final_error:.2e}")
-        
-        # Gera solução numérica aproximada
-        dx = 1.0 / (N - 1)
-        for i_local in range(local_nx):
-            for j_local in range(local_ny):
-                i_global = start_x + i_local
-                j_global = start_y + j_local
-                
-                if i_global < N and j_global < N:
-                    x = i_global * dx
-                    y = j_global * dx
-                    # Valor baseado na solução analítica com correção do erro
-                    analytical = np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
-                    global_solution[i_global, j_global] = analytical * (1 - final_error * 10)
+    # Aplica condições de contorno (bordas = 0)
+    global_solution[0, :] = 0.0
+    global_solution[-1, :] = 0.0
+    global_solution[:, 0] = 0.0
+    global_solution[:, -1] = 0.0
     
     return global_solution, domain_data
+
+
 
 def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     """
