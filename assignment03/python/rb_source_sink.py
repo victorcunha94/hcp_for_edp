@@ -20,6 +20,13 @@ def grid_dims(nx, ny, size):
         raise ValueError(f"Erro: nx * ny = {nx} * {ny} = {nx * ny} != {size} (total de processos)")
     return [nx, ny]
 
+def errors(new, old):
+    ea = np.max(np.abs(new - old))
+    er = np.max(np.abs(new - old) / (np.abs(new) + 1e-10))
+    return ea, er
+
+
+
 def _compute_grid_dims(size):
     for px in range(int(math.sqrt(size)), 0, -1): #
         if size % px == 0:
@@ -38,7 +45,7 @@ def _partition_1d(n_interior, n_procs_dim, coord):
     end = start + local
     return start, end, local
 
-def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
+def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
@@ -78,13 +85,24 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         return meta, []
 
     U = np.zeros((local_nx + 2, local_ny + 2))
+    Uaux = np.zeros_like(U)
     Unew = np.zeros_like(U)
     f_local = np.zeros_like(U)
 
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        return 2.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
+        A=100.0
+        r=0.05
+        # Posicao Source
+        xs, ys = 0.25, 0.5
+        # Posicao Sink
+        xk, yk = 0.75, 0.5
+
+        source = A * np.exp(-((x - xs)**2 + (y - ys)**2) / r**2)
+        sink   = A * np.exp(-((x - xk)**2 + (y - yk)**2) / r**2)
+
+        return source - sink
 
     # Inicializar f_local
     for i in range(1, local_nx + 1):
@@ -103,6 +121,8 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     while global_iteration < max_iter:
         global_iteration += 1
         max_err_loc = 0.0
+        max_eabs_loc = 0.0
+        max_erel_loc = 0.0
         
         # === FASE 1: COMUNICAÇÃO (ANTES do cálculo) ===
         # comunicação topo
@@ -155,7 +175,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
 
         # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
         for local_iter in range(block_size):
-            # atualização Jacobi
+            # Vermelho
             for i in range(1, local_nx + 1):
                 i_global = start_x + (i - 1)
                 for j in range(1, local_ny + 1):
@@ -164,22 +184,48 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
                     if i_global in (0, N - 1) or j_global in (0, N - 1):
                         Unew[i, j] = U[i, j]  # Mantém contorno
                     else:
-                        Unew[i, j] = 0.25 * (
+                        Uaux[i,j] = 0.25 * (
                             U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
                             - (dx*dx) * f_local[i, j]
                         )
-                        error = abs(Unew[i, j] - U[i, j])
-                        max_err_loc = max(max_err_loc, error)
+                        Unew[i,j] = (omega * Uaux[i,j]) + (1 - omega) * U[i, j]
+
+                        err1, err2 = errors(Unew[i,j], U[i,j])
+                        max_eabs_loc = max(err1,max_eabs_loc)
+                        max_erel_loc = max(err2,max_erel_loc)
             
+            # Preto
+            #for i in range(1, local_nx + 1):
+            #    i_global = start_x + (i - 1)
+            #    for j in range(1, local_ny + 1):
+            #        j_global = start_y + (j - 1)
+            #        
+            #        if i_global in (0, N - 1) or j_global in (0, N - 1):
+            #            Unew[i, j] = U[i, j]  # Mantém contorno
+            #        elif i_global + j_global % 2 == 1:
+            #            Uaux[i,j] = 0.25 * (
+            #                U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
+            #                - (dx*dx) * f_local[i, j]
+            #            )
+            #            Unew[i,j] = (omega * Uaux[i,j]) + (1 - omega) * U[i, j]
+
+            #            err1, err2 = errors(Unew[i,j], U[i,j])
+            #            max_eabs_loc = max(err1,max_eabs_loc)
+            #            max_erel_loc = max(err2,max_erel_loc)
             # Trocar arrays para próxima iteração
-            U, Unew = Unew, U
+            #U, Unew = Unew, U
 
         # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
-        max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
-        print(f"{max_err_glob}")
-        print(U)
-        if max_err_glob < tol:
-            final_error = max_err_glob
+        max_eabs_glob = comm.allreduce(max_eabs_loc, op=MPI.MAX)
+        max_erel_glob = comm.allreduce(max_erel_loc, op=MPI.MAX)
+        
+        print(f"{max_eabs_glob}")
+        #print(U)
+        if max_eabs_glob < tol:
+            final_error = max_eabs_glob
+            break
+        if max_erel_glob < 1e-6:
+            final_error = max_erel_glob
             break
 
     if final_error is None:
@@ -201,8 +247,10 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         final_error=final_error,
         U = U,
     )
+    U_local = U[1:-1, 1:-1].copy()  # Dados sem guard cells
+    domain_info = (start_x, end_x, start_y, end_y, U_local)
+    return meta, comm_log, domain_info
     
-    return meta, comm_log, U
 
 def main():
     parser = argparse.ArgumentParser()
@@ -213,23 +261,25 @@ def main():
     parser.add_argument("--tol", type=float, default=1e-8)
     parser.add_argument("--local_iters", type=int, default=1, 
                        help="Número de iterações locais entre comunicações")
+    parser.add_argument("--omega", type=float, default=1.0,
+                       help="Fator de relaxação (1.0 = Jacobi padrão)")
     args = parser.parse_args()
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
     # CORRIGIDO: local_iters -> block_size
-    meta, comm_log, U = jacobi_mpi_cart(
+    meta, comm_log, sol_local = jacobi_mpi_cart(args.omega,
         args.N, args.nx, args.ny, 
         max_iter=args.max_iter, 
         tol=args.tol, 
-        block_size=args.local_iters
+        block_size=args.local_iters,
     )
 
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
     all_logs = comm.gather(comm_log, root=0)
-
+    all_solutions = comm.gather(sol_local, root=0)
     if rank == 0:
         rows = []
         for m, logs in zip(all_meta, all_logs):
@@ -247,6 +297,12 @@ def main():
         caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
         df.to_csv(caminho_csv, index=False)
         print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
+        U_global = np.zeros((args.N, args.N))
+        for (start_x, end_x, start_y, end_y, U_local) in all_solutions:
+            U_global[start_x:end_x, start_y:end_y] = U_local
+
+        # Salva em formato NumPy
+        np.save("solution.npy", U_global)
 
 if __name__ == "__main__":
     main()
