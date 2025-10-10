@@ -10,6 +10,8 @@ import numpy as np
 import glob
 import os
 
+
+
 def load_and_process_results():
     """Carrega todos os arquivos results_*.csv e processa os dados"""
     

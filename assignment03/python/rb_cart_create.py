@@ -13,6 +13,8 @@ import argparse
 import math
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def grid_dims(nx, ny, size):
@@ -284,7 +286,7 @@ def main():
                     comm_time=entry[5]
                 ))
         df = pd.DataFrame(rows)
-        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
+        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}_{args.N}.csv')
         df.to_csv(caminho_csv, index=False)
         print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
         #
