@@ -13,6 +13,8 @@ import argparse
 import math
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def grid_dims(nx, ny, size):
@@ -204,6 +206,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     
     return meta, comm_log, U
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--N", type=int, default=50)
@@ -224,7 +227,8 @@ def main():
         max_iter=args.max_iter, 
         tol=args.tol, 
         block_size=args.local_iters
-    )
+    ) 
+      
 
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
@@ -244,9 +248,9 @@ def main():
                     comm_time=entry[5]
                 ))
         df = pd.DataFrame(rows)
-        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
+        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}_{args.N}.csv')
         df.to_csv(caminho_csv, index=False)
-        print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
+        print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}_{args.N}.csv salvo.")
 
 if __name__ == "__main__":
     main()
