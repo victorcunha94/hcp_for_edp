@@ -67,6 +67,7 @@ def load_solution_from_csv(csv_file, N):
     
     return global_solution, solution_rows
 
+
 def load_solution_with_communication_data(csv_file, N):
     """
     Versão alternativa que tenta usar dados de comunicação para reconstruir a solução
@@ -115,6 +116,7 @@ def load_solution_with_communication_data(csv_file, N):
                     global_solution[i_global, j_global] = analytical * (1 - final_error * 10)
     
     return global_solution, domain_data
+
 
 def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     """
