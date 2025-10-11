@@ -13,6 +13,8 @@ import glob
 import os
 import argparse
 
+
+
 def load_solution_from_csv(csv_file, N):
     """
     Carrega e reconstrói a solução global a partir do arquivo CSV
@@ -63,12 +65,14 @@ def load_solution_from_csv(csv_file, N):
                     x = i_global * dx
                     y = j_global * dx
                     # Solução numérica aproximada (substitua pelos dados reais quando disponível)
-                    global_solution[i_global, j_global] = np.sin(2*np.pi * x) * np.sin(2*np.pi * y) * (1 - final_error)
+                    global_solution[i_global, j_global] = np.sin(2*np.pi * x) * np.sin(2*np.pi * y) 
     
     return global_solution, solution_rows
 
+
 def load_solution_with_communication_data(csv_file, N):
     """
+<<<<<<< HEAD
     Carrega a solução numérica REAL a partir do CSV
     """
     print(f"Carregando arquivo: {csv_file}")
@@ -132,6 +136,65 @@ def load_solution_with_communication_data(csv_file, N):
 
 
 
+=======
+    Carrega a solução U diretamente do CSV, usando as matrizes locais salvas por cada rank.
+    Espera que o CSV tenha colunas: rank, start_x, end_x, start_y, end_y, local_nx, local_ny, e uma
+    coluna (ex: 'U' ou 'U_local' ou 'local_matrix') contendo a matriz local como string.
+    """
+    import ast
+
+<<<<<<< HEAD
+
+=======
+    print(f"Carregando arquivo: {csv_file}")
+    df = pd.read_csv(csv_file)
+
+    # Filtra as linhas de domínio (cada processo)
+    domain_data = df[df['start_x'].notna() & df['start_y'].notna()]
+    if domain_data.empty:
+        raise ValueError("Arquivo CSV não contém dados de domínio com solução local")
+
+    global_solution = np.zeros((N, N))
+
+    # Detecta o nome da coluna que contém a matriz local
+    matrix_col = None
+    for c in df.columns:
+        if any(k in c.lower() for k in ["u", "matrix", "local"]):
+            matrix_col = c
+            break
+
+    if matrix_col is None:
+        raise ValueError("Nenhuma coluna encontrada contendo a matriz local (ex: 'U_local').")
+
+    print(f"Usando coluna '{matrix_col}' para reconstruir a solução global.")
+
+    for _, row in domain_data.iterrows():
+        rank = int(row['rank'])
+        start_x = int(row['start_x'])
+        end_x = int(row['end_x'])
+        start_y = int(row['start_y'])
+        end_y = int(row['end_y'])
+        local_nx = int(row['local_nx'])
+        local_ny = int(row['local_ny'])
+
+        matrix_str = str(row[matrix_col]).strip()
+        try:
+            # Tenta interpretar como lista literal (Python-style)
+            U_local = np.array(ast.literal_eval(matrix_str), dtype=float)
+        except Exception:
+            # Fallback: tenta converter de string com separadores
+            U_local = np.fromstring(matrix_str.replace('\n', ' '), sep=' ')
+        # Garante forma correta
+        U_local = U_local.reshape((local_nx, local_ny))
+
+        # Copia para o domínio global
+        global_solution[start_x:end_x, start_y:end_y] = U_local
+
+        print(f"✅ Rank {rank}: domínio ({start_x}:{end_x}, {start_y}:{end_y}) carregado.")
+
+    return global_solution, domain_data
+>>>>>>> 664164ebf050fd4ebdb05dd7cd837323981b0541
+>>>>>>> 0f9ae95cc766e899f1ccbcee1992ac32461fe82c
 def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     """
     Plot 1: Comparação 3D entre solução numérica e analítica
