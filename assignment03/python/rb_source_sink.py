@@ -13,7 +13,40 @@ import argparse
 import math
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+def exchange_halos(cart, U, local_nx, local_ny, left, right, down, up):
+    # send/recv left-right
+    if right != MPI.PROC_NULL:
+        sendbuf = U[local_nx, 1:-1].copy()
+        recvbuf = np.empty(local_ny, dtype=np.float64)
+        cart.Sendrecv(sendbuf, dest=right, recvbuf=recvbuf, source=right)
+        U[local_nx+1, 1:-1] = recvbuf
+    else:
+        U[local_nx+1, 1:-1] = 0.0
+    if left != MPI.PROC_NULL:
+        sendbuf = U[1, 1:-1].copy()
+        recvbuf = np.empty(local_ny, dtype=np.float64)
+        cart.Sendrecv(sendbuf, dest=left, recvbuf=recvbuf, source=left)
+        U[0, 1:-1] = recvbuf
+    else:
+        U[0, 1:-1] = 0.0
+    # send/recv up-down
+    if up != MPI.PROC_NULL:
+        sendbuf = U[1:-1, local_ny].copy()
+        recvbuf = np.empty(local_nx, dtype=np.float64)
+        cart.Sendrecv(sendbuf, dest=up, recvbuf=recvbuf, source=up)
+        U[1:-1, local_ny+1] = recvbuf
+    else:
+        U[1:-1, local_ny+1] = 0.0
+    if down != MPI.PROC_NULL:
+        sendbuf = U[1:-1, 1].copy()
+        recvbuf = np.empty(local_nx, dtype=np.float64)
+        cart.Sendrecv(sendbuf, dest=down, recvbuf=recvbuf, source=down)
+        U[1:-1, 0] = recvbuf
+    else:
+        U[1:-1, 0] = 0.0
 
 def grid_dims(nx, ny, size):
     if nx * ny != size:
@@ -85,24 +118,13 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
         return meta, []
 
     U = np.zeros((local_nx + 2, local_ny + 2))
-    Uaux = np.zeros_like(U)
-    Unew = np.zeros_like(U)
+    Uold = np.zeros_like(U)
     f_local = np.zeros_like(U)
 
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        A=100.0
-        r=0.05
-        # Posicao Source
-        xs, ys = 0.25, 0.5
-        # Posicao Sink
-        xk, yk = 0.75, 0.5
-
-        source = A * np.exp(-((x - xs)**2 + (y - ys)**2) / r**2)
-        sink   = A * np.exp(-((x - xk)**2 + (y - yk)**2) / r**2)
-
-        return source - sink
+        return 2*(1-6*x*x)*y*(1-y) + 2*(1-6*y*y)*x*(1-x)
 
     # Inicializar f_local
     for i in range(1, local_nx + 1):
@@ -123,55 +145,10 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
         max_err_loc = 0.0
         max_eabs_loc = 0.0
         max_erel_loc = 0.0
+        Uold[:,:] = U[:,:]
         
         # === FASE 1: COMUNICAÇÃO (ANTES do cálculo) ===
-        # comunicação topo
-        if up != MPI.PROC_NULL:
-            buf = U[1:-1, local_ny].copy()
-            recv_buf = np.empty(local_nx, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=up, recvbuf=recv_buf, source=up)
-            dt = time.perf_counter() - t1
-            U[1:-1, local_ny + 1] = recv_buf
-            comm_log.append([global_iteration, rank, up, "up", buf.size, dt])
-        else:
-            U[1:-1, local_ny + 1] = 0.0
-
-        # comunicação baixo
-        if down != MPI.PROC_NULL:
-            buf = U[1:-1, 1].copy()
-            recv_buf = np.empty(local_nx, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=down, recvbuf=recv_buf, source=down)
-            dt = time.perf_counter() - t1
-            U[1:-1, 0] = recv_buf
-            comm_log.append([global_iteration, rank, down, "down", buf.size, dt])
-        else:
-            U[1:-1, 0] = 0.0
-
-        # comunicação direita
-        if right != MPI.PROC_NULL:
-            buf = U[local_nx, 1:-1].copy()
-            recv_buf = np.empty(local_ny, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=right, recvbuf=recv_buf, source=right)
-            dt = time.perf_counter() - t1
-            U[local_nx + 1, 1:-1] = recv_buf
-            comm_log.append([global_iteration, rank, right, "right", buf.size, dt])
-        else:
-            U[local_nx + 1, 1:-1] = 0.0
-
-        # comunicação esquerda
-        if left != MPI.PROC_NULL:
-            buf = U[1, 1:-1].copy()
-            recv_buf = np.empty(local_ny, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=left, recvbuf=recv_buf, source=left)
-            dt = time.perf_counter() - t1
-            U[0, 1:-1] = recv_buf
-            comm_log.append([global_iteration, rank, left, "left", buf.size, dt])
-        else:
-            U[0, 1:-1] = 0.0
+        exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
 
         # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
         for local_iter in range(block_size):
@@ -180,46 +157,40 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
                 i_global = start_x + (i - 1)
                 for j in range(1, local_ny + 1):
                     j_global = start_y + (j - 1)
-                    
-                    if i_global in (0, N - 1) or j_global in (0, N - 1):
-                        Unew[i, j] = U[i, j]  # Mantém contorno
-                    else:
-                        Uaux[i,j] = 0.25 * (
+                    if (i_global + j_global) % 2 == 0 and not (i_global in (0, N - 1) or j_global in (0, N - 1)):
+                        val = 0.25 * (
                             U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
                             - (dx*dx) * f_local[i, j]
                         )
-                        Unew[i,j] = (omega * Uaux[i,j]) + (1 - omega) * U[i, j]
+                        U[i,j] = (omega * val) + (1 - omega) * U[i, j]
 
-                        err1, err2 = errors(Unew[i,j], U[i,j])
+                        err1, err2 = errors(U[i,j], Uold[i,j])
                         max_eabs_loc = max(err1,max_eabs_loc)
                         max_erel_loc = max(err2,max_erel_loc)
+                    
+            exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
             
             # Preto
-            #for i in range(1, local_nx + 1):
-            #    i_global = start_x + (i - 1)
-            #    for j in range(1, local_ny + 1):
-            #        j_global = start_y + (j - 1)
-            #        
-            #        if i_global in (0, N - 1) or j_global in (0, N - 1):
-            #            Unew[i, j] = U[i, j]  # Mantém contorno
-            #        elif i_global + j_global % 2 == 1:
-            #            Uaux[i,j] = 0.25 * (
-            #                U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-            #                - (dx*dx) * f_local[i, j]
-            #            )
-            #            Unew[i,j] = (omega * Uaux[i,j]) + (1 - omega) * U[i, j]
+            for i in range(1, local_nx + 1):
+                i_global = start_x + (i - 1)
+                for j in range(1, local_ny + 1):
+                    j_global = start_y + (j - 1)
+                    if (i_global + j_global) % 2 == 1 and not (i_global in (0, N - 1) or j_global in (0, N - 1)):
+                        val = 0.25 * (
+                            U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
+                            - (dx*dx) * f_local[i, j]
+                        )
+                        U[i,j] = (omega * val) + (1 - omega) * U[i, j]
 
-            #            err1, err2 = errors(Unew[i,j], U[i,j])
-            #            max_eabs_loc = max(err1,max_eabs_loc)
-            #            max_erel_loc = max(err2,max_erel_loc)
-            # Trocar arrays para próxima iteração
-            #U, Unew = Unew, U
+                        err1, err2 = errors(U[i,j], Uold[i,j])
+                        max_eabs_loc = max(err1,max_eabs_loc)
+                        max_erel_loc = max(err2,max_erel_loc)
 
         # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
         max_eabs_glob = comm.allreduce(max_eabs_loc, op=MPI.MAX)
         max_erel_glob = comm.allreduce(max_erel_loc, op=MPI.MAX)
         
-        print(f"{max_eabs_glob}")
+        print(f"{max_eabs_glob}, {max_erel_glob}")
         #print(U)
         if max_eabs_glob < tol:
             final_error = max_eabs_glob
@@ -247,17 +218,17 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
         final_error=final_error,
         U = U,
     )
+    
     U_local = U[1:-1, 1:-1].copy()  # Dados sem guard cells
     domain_info = (start_x, end_x, start_y, end_y, U_local)
     return meta, comm_log, domain_info
-    
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--N", type=int, default=50)
     parser.add_argument("--nx", type=int, required=True, help="Número de processos na dimensão X")
     parser.add_argument("--ny", type=int, required=True, help="Número de processos na dimensão Y")
-    parser.add_argument("--max_iter", type=int, default=20000)
+    parser.add_argument("--max_iter", type=int, default=100000)
     parser.add_argument("--tol", type=float, default=1e-8)
     parser.add_argument("--local_iters", type=int, default=1, 
                        help="Número de iterações locais entre comunicações")
@@ -294,15 +265,16 @@ def main():
                     comm_time=entry[5]
                 ))
         df = pd.DataFrame(rows)
-        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
+        caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}_{args.N}.csv')
         df.to_csv(caminho_csv, index=False)
         print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
+        #
+        # solução global
         U_global = np.zeros((args.N, args.N))
         for (start_x, end_x, start_y, end_y, U_local) in all_solutions:
             U_global[start_x:end_x, start_y:end_y] = U_local
 
         # Salva em formato NumPy
         np.save("solution.npy", U_global)
-
 if __name__ == "__main__":
     main()
