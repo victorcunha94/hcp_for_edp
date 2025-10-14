@@ -124,7 +124,7 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        return 2.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
+        return 20.0 * np.pi**2 * np.sin(4*np.pi * x) * np.sin(4*np.pi * y)
 
     # Inicializar f_local
     for i in range(1, local_nx + 1):
@@ -239,6 +239,9 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
     exec_time = time.perf_counter() - t0
     comm_time_total = sum([c[-1] for c in comm_log])
     overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
+    
+
+    U_local_data = U[1:-1, 1:-1].flatten().tolist()
 
     meta = dict(
         rank=rank,
@@ -250,7 +253,8 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
         comm_time=comm_time_total,
         overhead=overhead,
         final_error=final_error,
-        U = U,
+        U_data = U_local_data,
+        data_length=len(U_local_data)
     )
     
     U_local = U[1:-1, 1:-1].copy()  # Dados sem guard cells

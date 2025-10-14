@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 Plot 3D da solução do Jacobi MPI a partir do arquivo CSV
+
+
 """
 
 import pandas as pd
@@ -70,12 +72,80 @@ def load_solution_from_csv(csv_file, N):
 
 def load_solution_with_communication_data(csv_file, N):
     """
+<<<<<<< HEAD
+    Carrega a solução numérica REAL a partir do CSV
+    """
+    print(f"Carregando arquivo: {csv_file}")
+    
+    df = pd.read_csv(csv_file)
+    
+    # Filtra dados de domínio (onde U_data está presente)
+    domain_data = df[df['start_x'].notna() & df['start_y'].notna() & df['U_data'].notna()]
+    
+    if domain_data.empty:
+        raise ValueError("Arquivo CSV não contém dados de solução numérica")
+    
+    global_solution = np.zeros((N, N))
+    
+    # Processa cada processo
+    for _, row in domain_data.iterrows():
+        rank = int(row['rank'])
+        start_x = int(row['start_x'])
+        end_x = int(row['end_x'])
+        start_y = int(row['start_y'])
+        end_y = int(row['end_y'])
+        local_nx = int(row['local_nx'])
+        local_ny = int(row['local_ny'])
+        
+        print(f"Processo {rank}: ({start_x}:{end_x}) x ({start_y}:{end_y}), tamanho: {local_nx}x{local_ny}")
+        
+        # Converte string de U_data de volta para array numpy
+        if isinstance(row['U_data'], str):
+            # Remove colchetes e converte para lista de floats
+            u_data_str = row['U_data'].strip('[]')
+            u_values = np.fromstring(u_data_str, sep=',')
+        else:
+            u_values = np.array(row['U_data'])
+        
+        # Redimensiona para a forma local correta
+        try:
+            U_local = u_values.reshape((local_nx, local_ny))
+            
+            # Coloca na solução global
+            for i_local in range(local_nx):
+                for j_local in range(local_ny):
+                    i_global = start_x + i_local
+                    j_global = start_y + j_local
+                    
+                    if i_global < N and j_global < N:
+                        global_solution[i_global, j_global] = U_local[i_local, j_local]
+                        
+        except Exception as e:
+            print(f"Erro ao processar dados do processo {rank}: {e}")
+            print(f"Tamanho esperado: {local_nx}x{local_ny} = {local_nx * local_ny}")
+            print(f"Tamanho recebido: {len(u_values)}")
+            continue
+    
+    # Aplica condições de contorno (bordas = 0)
+    global_solution[0, :] = 0.0
+    global_solution[-1, :] = 0.0
+    global_solution[:, 0] = 0.0
+    global_solution[:, -1] = 0.0
+    
+    return global_solution, domain_data
+
+
+
+=======
     Carrega a solução U diretamente do CSV, usando as matrizes locais salvas por cada rank.
     Espera que o CSV tenha colunas: rank, start_x, end_x, start_y, end_y, local_nx, local_ny, e uma
     coluna (ex: 'U' ou 'U_local' ou 'local_matrix') contendo a matriz local como string.
     """
     import ast
 
+<<<<<<< HEAD
+
+=======
     print(f"Carregando arquivo: {csv_file}")
     df = pd.read_csv(csv_file)
 
@@ -123,6 +193,8 @@ def load_solution_with_communication_data(csv_file, N):
         print(f"✅ Rank {rank}: domínio ({start_x}:{end_x}, {start_y}:{end_y}) carregado.")
 
     return global_solution, domain_data
+>>>>>>> 664164ebf050fd4ebdb05dd7cd837323981b0541
+>>>>>>> 0f9ae95cc766e899f1ccbcee1992ac32461fe82c
 def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     """
     Plot 1: Comparação 3D entre solução numérica e analítica
