@@ -3,7 +3,7 @@
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
 
 Exemplo para rodar:
-mpirun -np 4 python3 jacobi_cart_create_iter2.py --N 50 --nx 2 --ny 2 
+mpirun -np 4 python3 main_jacobi_iter.py --N 50 --nx 2 --ny 2 
 """
 
 from mpi4py import MPI
