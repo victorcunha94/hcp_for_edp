@@ -72,7 +72,6 @@ def load_solution_from_csv(csv_file, N):
 
 def load_solution_with_communication_data(csv_file, N):
     """
-<<<<<<< HEAD
     Carrega a solução numérica REAL a partir do CSV
     """
     print(f"Carregando arquivo: {csv_file}")
@@ -136,16 +135,7 @@ def load_solution_with_communication_data(csv_file, N):
 
 
 
-=======
-    Carrega a solução U diretamente do CSV, usando as matrizes locais salvas por cada rank.
-    Espera que o CSV tenha colunas: rank, start_x, end_x, start_y, end_y, local_nx, local_ny, e uma
-    coluna (ex: 'U' ou 'U_local' ou 'local_matrix') contendo a matriz local como string.
-    """
-    import ast
 
-<<<<<<< HEAD
-
-=======
     print(f"Carregando arquivo: {csv_file}")
     df = pd.read_csv(csv_file)
 
@@ -193,8 +183,8 @@ def load_solution_with_communication_data(csv_file, N):
         print(f"✅ Rank {rank}: domínio ({start_x}:{end_x}, {start_y}:{end_y}) carregado.")
 
     return global_solution, domain_data
->>>>>>> 664164ebf050fd4ebdb05dd7cd837323981b0541
->>>>>>> 0f9ae95cc766e899f1ccbcee1992ac32461fe82c
+
+
 def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     """
     Plot 1: Comparação 3D entre solução numérica e analítica
