@@ -139,13 +139,6 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
     comm_log = []
 
     global_iteration = 0
-    parity_offset = (start_x + start_y) % 2
-    red_idx   = [(i,j) for i in range(1,local_nx+1)
-        for j in range(1,local_ny+1)
-            if (i + j + parity_offset) % 2 == 0]
-    black_idx = [(i,j) for i in range(1,local_nx+1)
-        for j in range(1,local_ny+1)
-            if (i + j + parity_offset) % 2 == 1]
     
     while global_iteration < max_iter:
         global_iteration += 1
@@ -154,8 +147,6 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
         max_erel_loc = 0.0
         Uold[:,:] = U[:,:]
         
-        # === FASE 1: COMUNICAÇÃO (ANTES do cálculo) ===
-        exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
 
         # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
         for local_iter in range(block_size):
@@ -174,22 +165,7 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
                     max_eabs_loc = max(err1,max_eabs_loc)
                     max_erel_loc = max(err2,max_erel_loc)
                     
-            exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
             
-            # Preto
-            for i,j in black_idx:
-                i_global = start_x + (i - 1)
-                j_global = start_y + (j - 1)
-                if not (i_global in (0, N - 1) or j_global in (0, N - 1)):
-                    val = 0.25 * (
-                        U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                        + (dx*dx) * f_local[i, j]
-                    )
-                    U[i,j] = (omega * val) + (1 - omega) * U[i, j]
-
-                    err1, err2 = errors(U[i,j], Uold[i,j])
-                    max_eabs_loc = max(err1,max_eabs_loc)
-                    max_erel_loc = max(err2,max_erel_loc)
 
         # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
         max_eabs_glob = comm.allreduce(max_eabs_loc, op=MPI.MAX)
