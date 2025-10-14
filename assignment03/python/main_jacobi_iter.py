@@ -3,7 +3,7 @@
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
 
 Exemplo para rodar:
-mpirun -np 4 python3 jacobi_cart_create_iter2.py --N 50 --nx 2 --ny 2 
+mpirun -np 4 python3 main_jacobi_iter.py --N 50 --nx 2 --ny 2 
 """
 
 from mpi4py import MPI
@@ -13,7 +13,7 @@ import argparse
 import math
 import pandas as pd
 import os
-
+import matplotlib.pyplot as plt
 
 def grid_dims(nx, ny, size):
     if nx * ny != size:
@@ -84,7 +84,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        return 2.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
+        return 8.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
 
     # Inicializar f_local
     for i in range(1, local_nx + 1):
@@ -166,7 +166,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
                     else:
                         Unew[i, j] = 0.25 * (
                             U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                            - (dx*dx) * f_local[i, j]
+                            + (dx*dx) * f_local[i, j]
                         )
                         error = abs(Unew[i, j] - U[i, j])
                         max_err_loc = max(max_err_loc, error)
@@ -196,16 +196,65 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         start_x=start_x, end_x=end_x,
         start_y=start_y, end_y=end_y,
         local_nx=local_nx, local_ny=local_ny,
-        iterations=global_iteration,  # CORRIGIDO: era 'iteration'
+        iterations=global_iteration,  
         exec_time=exec_time,
         comm_time=comm_time_total,
         overhead=overhead,
         final_error=final_error,
-        U_data = U_local_data,
-        data_length=len(U_local_data)
+        U_data = u_local_data,
+        data_length=len(u_local_data)
     )
     
     return meta, comm_log, U
+
+
+
+def analytical(X, Y):
+    return np.sin(2*np.pi * X) * np.sin(2*np.pi * Y)
+
+
+def plot_3d_comparison(global_solution, N, nx, ny, analytical, output_file=None):
+    """
+    Plot 1: Comparação 3D entre solução numérica e analítica
+    """
+    x = np.linspace(0, 1, N)
+    y = np.linspace(0, 1, N)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    
+    
+    fig = plt.figure(figsize=(15, 6))
+    
+    # Solução numérica
+    ax1 = fig.add_subplot(121, projection='3d')
+    surf1 = ax1.plot_surface(X, Y, global_solution, cmap='viridis', 
+                            alpha=0.9, antialiased=True, rstride=1, cstride=1)
+    ax1.set_xlabel('X')
+    ax1.set_ylabel('Y')
+    ax1.set_zlabel('U(x,y)')
+    ax1.set_title('Solução Numérica 3D')
+    fig.colorbar(surf1, ax=ax1, shrink=0.6, aspect=20)
+    
+    # Solução analítica
+    ax2 = fig.add_subplot(122, projection='3d')
+    surf2 = ax2.plot_surface(X, Y, analytical, cmap='plasma', 
+                            alpha=0.9, antialiased=True, rstride=1, cstride=1)
+    ax2.set_xlabel('X')
+    ax2.set_ylabel('Y')
+    ax2.set_zlabel('U(x,y)')
+    ax2.set_title('Solução Analítica 3D')
+    fig.colorbar(surf2, ax=ax2, shrink=0.6, aspect=20)
+    
+    plt.suptitle(f'Comparação 3D - Malha {N}×{N}, Processos {nx}×{ny}', 
+                fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Plot 3D salvo como: {output_file}")
+    
+    plt.show()
+    return fig
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -221,13 +270,14 @@ def main():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
-    # CORRIGIDO: local_iters -> block_size
+    
     meta, comm_log, U = jacobi_mpi_cart(
         args.N, args.nx, args.ny, 
         max_iter=args.max_iter, 
         tol=args.tol, 
         block_size=args.local_iters
     )
+    plot = plot_3d_comparison(U, args.N, args.nx, args.ny, analytical)
 
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
