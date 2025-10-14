@@ -1,0 +1,17 @@
+#PBS -N testpoisson
+#PBS -l select=2:ncpus=56:nodetype=n56:mpiprocs=56
+#PBS -l walltime=00:40:00
+#PBS -j oe
+#PBS -o testpoisson.out
+#PBS -m abe
+#PBS -M gbispo@usp.br
+module load openmpi
+module load openmpi/1.8.5
+module load mpich
+module load python
+module load python/3.13.3
+
+cd hcp_for_edp/assignment03/python
+
+mpiexec -np 40 python3 rb_cart_create.py --nx 20 --npy 20 --N 1024 --omega 1.8
+

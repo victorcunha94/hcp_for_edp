@@ -1,0 +1,23 @@
+#PBS -N weak_scaling
+#PBS -l select=2:ncpus=40:nodetype=n40:mpiprocs=40
+#PBS -l walltime=00:35:00
+#PBS -j oe
+#PBS -o weak_scaling3.out
+#PBS -m abe
+#PBS -M gbispo@usp.br
+module load gcc
+module load gcc/13.2.0
+module load openmpi
+module load openmpi/1.8.5
+module load mpich
+
+#cd $PBS_O_WORKDIR
+
+BASE_SIZE=50000000
+
+for p in 1 2 4 8 16 32; do
+    VECTOR_SIZE=$((BASE_SIZE * p))
+    echo "Rodando com $p processos, vetor = $VECTOR_SIZE"
+    mpiexec -np $p ./vectors $VECTOR_SIZE
+    echo "---"
+done
