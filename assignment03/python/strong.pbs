@@ -1,0 +1,21 @@
+#PBS -N strong_scaling
+#PBS -l select=2:ncpus=40:nodetype=n40:mpiprocs=40
+#PBS -l walltime=00:35:00
+#PBS -j oe
+#PBS -o strong_scaling4.out
+#PBS -m abe
+#PBS -M gbispo@usp.br
+module load openmpi
+module load openmpi/1.8.5
+module load mpich
+
+#cd $PBS_O_WORKDIR
+
+VECTOR_SIZE=10000000000
+
+# Loop variando número de processos
+for p in 1 2 4 8 16 32; do
+    echo "Rodando com $p processos..."
+    mpiexec -np $p ./vectors $VECTOR_SIZE
+    echo "---"
+done

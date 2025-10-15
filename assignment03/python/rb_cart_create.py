@@ -17,36 +17,68 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 def exchange_halos(cart, U, local_nx, local_ny, left, right, down, up):
-    # send/recv left-right
+    reqs = []
+    recv_temps = []  
+
+    # Helper to schedule Isend/Irecv using contiguous buffers
+    def post_send(dest, send_slice):
+        # ensure contiguous send buffer (zero-copy when already contiguous)
+        sendbuf = np.ascontiguousarray(send_slice)
+        reqs.append(cart.Isend(sendbuf, dest=dest))
+
+    def post_recv(source, recv_shape, target_setter):
+        # recv into a contiguous temporary buffer, then copy into target with target_setter(buf)
+        recvbuf = np.empty(recv_shape, dtype=U.dtype)
+        reqs.append(cart.Irecv(recvbuf, source=source))
+        recv_temps.append((recvbuf, target_setter))
+
+    # RIGHT neighbor: send rightmost interior column, recv into right halo column
     if right != MPI.PROC_NULL:
-        sendbuf = U[local_nx, 1:-1].copy()
-        recvbuf = np.empty(local_ny, dtype=np.float64)
-        cart.Sendrecv(sendbuf, dest=right, recvbuf=recvbuf, source=right)
-        U[local_nx+1, 1:-1] = recvbuf
+        send_slice = U[local_nx, 1:local_ny+1]           # this is a row -> contiguous
+        # row is contiguous; can send directly (ascontiguous ensures contiguity)
+        post_send(right, send_slice)
+        # receive into temp then copy into U[local_nx+1, 1:local_ny+1]
+        post_recv(right, (local_ny,), lambda buf: U.__setitem__((local_nx+1, slice(1, local_ny+1)), buf))
     else:
-        U[local_nx+1, 1:-1] = 0.0
+        U[local_nx+1, 1:local_ny+1] = 0.0
+
+    # LEFT neighbor: send leftmost interior column, recv into left halo
     if left != MPI.PROC_NULL:
-        sendbuf = U[1, 1:-1].copy()
-        recvbuf = np.empty(local_ny, dtype=np.float64)
-        cart.Sendrecv(sendbuf, dest=left, recvbuf=recvbuf, source=left)
-        U[0, 1:-1] = recvbuf
+        send_slice = U[1, 1:local_ny+1]                  # row -> contiguous
+        post_send(left, send_slice)
+        post_recv(left, (local_ny,), lambda buf: U.__setitem__((0, slice(1, local_ny+1)), buf))
     else:
-        U[0, 1:-1] = 0.0
-    # send/recv up-down
+        U[0, 1:local_ny+1] = 0.0
+
+    # UP neighbor: send top interior row (vertical slice) -> this is a column slice (strided)
     if up != MPI.PROC_NULL:
-        sendbuf = U[1:-1, local_ny].copy()
-        recvbuf = np.empty(local_nx, dtype=np.float64)
-        cart.Sendrecv(sendbuf, dest=up, recvbuf=recvbuf, source=up)
-        U[1:-1, local_ny+1] = recvbuf
+        # send U[1:local_nx+1, local_ny] is strided -> make contiguous sendbuf
+        sendbuf_up = np.ascontiguousarray(U[1:local_nx+1, local_ny])
+        reqs.append(cart.Isend(sendbuf_up, dest=up))
+        # receive into temp then copy into U[1:local_nx+1, local_ny+1]
+        recvbuf_up = np.empty((local_nx,), dtype=U.dtype)
+        reqs.append(cart.Irecv(recvbuf_up, source=up))
+        recv_temps.append((recvbuf_up, lambda buf: U.__setitem__((slice(1, local_nx+1), local_ny+1), buf)))
     else:
-        U[1:-1, local_ny+1] = 0.0
+        U[1:local_nx+1, local_ny+1] = 0.0
+
+    # DOWN neighbor: send bottom interior row (vertical slice) -> strided
     if down != MPI.PROC_NULL:
-        sendbuf = U[1:-1, 1].copy()
-        recvbuf = np.empty(local_nx, dtype=np.float64)
-        cart.Sendrecv(sendbuf, dest=down, recvbuf=recvbuf, source=down)
-        U[1:-1, 0] = recvbuf
+        sendbuf_down = np.ascontiguousarray(U[1:local_nx+1, 1])
+        reqs.append(cart.Isend(sendbuf_down, dest=down))
+        recvbuf_down = np.empty((local_nx,), dtype=U.dtype)
+        reqs.append(cart.Irecv(recvbuf_down, source=down))
+        recv_temps.append((recvbuf_down, lambda buf: U.__setitem__((slice(1, local_nx+1), 0), buf)))
     else:
-        U[1:-1, 0] = 0.0
+        U[1:local_nx+1, 0] = 0.0
+
+    # Wait for all non-blocking ops to finish
+    if reqs:
+        MPI.Request.Waitall(reqs)
+
+    # Copy received temp buffers into the U halo locations
+    for buf, setter in recv_temps:
+        setter(buf)
 
 def grid_dims(nx, ny, size):
     if nx * ny != size:
@@ -124,8 +156,8 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
     def f_global(i, j):
         x = i * dx
         y = j * dx
-        return 20.0 * np.pi**2 * np.sin(4*np.pi * x) * np.sin(4*np.pi * y)
-
+        return 5 * np.pi**2 * np.sin(np.pi * x) * np.sin(2*np.pi * y)
+        #return 1.0
     # Inicializar f_local
     for i in range(1, local_nx + 1):
         i_global = start_x + (i - 1)
@@ -140,86 +172,58 @@ def jacobi_mpi_cart(omega, N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_siz
 
     global_iteration = 0
     parity_offset = (start_x + start_y) % 2
-    red_idx   = [(i,j) for i in range(1,local_nx+1)
-        for j in range(1,local_ny+1)
-            if (i + j + parity_offset) % 2 == 0]
-    black_idx = [(i,j) for i in range(1,local_nx+1)
-        for j in range(1,local_ny+1)
-            if (i + j + parity_offset) % 2 == 1]
+    # build red/black masks once
+    i_idx, j_idx = np.indices((local_nx + 2, local_ny + 2))
+    color_mask = (i_idx + j_idx + parity_offset) % 2
+
+    mask_red = (color_mask == 0)
+    mask_black = (color_mask == 1)
     
     while global_iteration < max_iter:
         global_iteration += 1
-        max_err_loc = 0.0
-        max_eabs_loc = 0.0
-        max_erel_loc = 0.0
+        max_err_loc = 10.0
+        max_eabs_loc = 10.0
+        max_erel_loc = 10.0
         Uold[:,:] = U[:,:]
         
         # === FASE 1: COMUNICAÇÃO (ANTES do cálculo) ===
         exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
 
-        # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
+        # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS (VETORIZADO) ===
+        # Build color masks once per process
+        i_idx, j_idx = np.indices(U.shape)
+        color_mask = (i_idx + j_idx + parity_offset) % 2
+        mask_red = (color_mask == 0)
+        mask_black = (color_mask == 1)
+
         for local_iter in range(block_size):
-            # Vermelho
-            for i,j in red_idx:
-                i_global = start_x + (i - 1)
-                j_global = start_y + (j - 1)
-                if not (i_global in (0, N - 1) or j_global in (0, N - 1)):
-                    val = 0.25 * (
-                        U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                        - (dx*dx) * f_local[i, j]
-                    )
-                    U[i,j] = (omega * val) + (1 - omega) * U[i, j]
-
-                    err1, err2 = errors(U[i,j], Uold[i,j])
-                    max_eabs_loc = max(err1,max_eabs_loc)
-                    max_erel_loc = max(err2,max_erel_loc)
-            """for i in range(1, local_nx + 1):
-                i_global = start_x + (i - 1)
-                for j in range(1, local_ny + 1):
-                    j_global = start_y + (j - 1)
-                    if (i_global + j_global) % 2 == 0 and not (i_global in (0, N - 1) or j_global in (0, N - 1)):
-                        val = 0.25 * (
-                            U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                            - (dx*dx) * f_local[i, j]
-                        )
-                        U[i,j] = (omega * val) + (1 - omega) * U[i, j]
-
-                        err1, err2 = errors(U[i,j], Uold[i,j])
-                        max_eabs_loc = max(err1,max_eabs_loc)
-                        max_erel_loc = max(err2,max_erel_loc"""
-                    
+            # --- RED phase ---
             exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
-            
-            # Preto
-            for i,j in black_idx:
-                i_global = start_x + (i - 1)
-                j_global = start_y + (j - 1)
-                if not (i_global in (0, N - 1) or j_global in (0, N - 1)):
-                    val = 0.25 * (
-                        U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                        - (dx*dx) * f_local[i, j]
-                    )
-                    U[i,j] = (omega * val) + (1 - omega) * U[i, j]
 
-                    err1, err2 = errors(U[i,j], Uold[i,j])
-                    max_eabs_loc = max(err1,max_eabs_loc)
-                    max_erel_loc = max(err2,max_erel_loc)
-            """
-            for i in range(1, local_nx + 1):
-                i_global = start_x + (i - 1)
-                for j in range(1, local_ny + 1):
-                    j_global = start_y + (j - 1)
-                    if (i_global + j_global) % 2 == 1 and not (i_global in (0, N - 1) or j_global in (0, N - 1)):
-                        val = 0.25 * (
-                            U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                            - (dx*dx) * f_local[i, j]
-                        )
-                        U[i,j] = (omega * val) + (1 - omega) * U[i, j]
+            val = np.zeros_like(U)
+            val[1:-1, 1:-1] = 0.25 * (
+                U[:-2, 1:-1] + U[2:, 1:-1] +
+                U[1:-1, :-2] + U[1:-1, 2:] +
+                (dx * dx) * f_local[1:-1, 1:-1]
+            )
 
-                        err1, err2 = errors(U[i,j], Uold[i,j])
-                        max_eabs_loc = max(err1,max_eabs_loc)
-                        max_erel_loc = max(err2,max_erel_loc)"""
+            U[mask_red] = omega * val[mask_red] + (1 - omega) * U[mask_red]
 
+            # --- exchange between color phases ---
+            exchange_halos(cart, U, local_nx, local_ny, left, right, down, up)
+
+            # --- BLACK phase ---
+            val[1:-1, 1:-1] = 0.25 * (
+                U[:-2, 1:-1] + U[2:, 1:-1] +
+                U[1:-1, :-2] + U[1:-1, 2:] +
+                (dx * dx) * f_local[1:-1, 1:-1]
+            )
+
+            U[mask_black] = omega * val[mask_black] + (1 - omega) * U[mask_black]
+
+            diff = np.abs(U - Uold)
+            max_eabs_loc = np.max(diff)
+            max_erel_loc = np.max(diff / (np.abs(U) + 1e-10))
         # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
         max_eabs_glob = comm.allreduce(max_eabs_loc, op=MPI.MAX)
         max_erel_glob = comm.allreduce(max_erel_loc, op=MPI.MAX)
@@ -277,6 +281,10 @@ def main():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
+    nx = args.nx
+    ny = args.ny
+    N = args.N
+
     # CORRIGIDO: local_iters -> block_size
     meta, comm_log, sol_local = jacobi_mpi_cart(args.omega,
         args.N, args.nx, args.ny, 
@@ -306,13 +314,13 @@ def main():
         caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}_{args.N}.csv')
         df.to_csv(caminho_csv, index=False)
         print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
-        #
+        
         # solução global
         U_global = np.zeros((args.N, args.N))
         for (start_x, end_x, start_y, end_y, U_local) in all_solutions:
             U_global[start_x:end_x, start_y:end_y] = U_local
 
         # Salva em formato NumPy
-        np.save("solution.npy", U_global)
+        np.save(f"solution_{nx}x{ny}_{N}.npy", U_global)
 if __name__ == "__main__":
     main()

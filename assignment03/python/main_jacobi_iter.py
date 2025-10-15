@@ -223,7 +223,7 @@ def main():
     parser.add_argument("--N", type=int, default=50)
     parser.add_argument("--nx", type=int, required=True, help="Número de processos na dimensão X")
     parser.add_argument("--ny", type=int, required=True, help="Número de processos na dimensão Y")
-    parser.add_argument("--max_iter", type=int, default=200000)
+    parser.add_argument("--max_iter", type=int, default=1000000)
     parser.add_argument("--tol", type=float, default=1e-8)
     parser.add_argument("--local_iters", type=int, default=1, 
                        help="Número de iterações locais entre comunicações")
