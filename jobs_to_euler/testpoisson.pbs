@@ -1,6 +1,6 @@
 #PBS -N testpoisson
 #PBS -l select=2:ncpus=56:nodetype=n56:mpiprocs=56
-#PBS -l walltime=00:40:00
+#PBS -l walltime=08:00:00
 #PBS -j oe
 #PBS -o testpoisson.out
 #PBS -m abe
