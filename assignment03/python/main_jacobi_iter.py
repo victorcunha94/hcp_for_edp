@@ -18,8 +18,6 @@ import matplotlib.pyplot as plt
 
 
 
-
-
 def grid_dims(nx, ny, size):
     if nx * ny != size:
         raise ValueError(f"Erro: nx * ny = {nx} * {ny} = {nx * ny} != {size} (total de processos)")
@@ -239,8 +237,7 @@ def main():
         tol=args.tol, 
         block_size=args.local_iters
     )
-    #plot = plot_3d_comparison(U, args.N, args.nx, args.ny, analytical)
-
+    
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
     all_logs = comm.gather(comm_log, root=0)
