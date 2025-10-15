@@ -6,6 +6,8 @@
 *.nbi
 *.nbc
 *.pyc
+*.csv
+*.png
 # Pastas de output
 #output/
 build/
