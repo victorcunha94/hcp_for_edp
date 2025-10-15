@@ -1,0 +1,38 @@
+#PBS -N strong_scaling_jacobi
+#PBS -l select=2:ncpus=56:nodetype=n56:mpiprocs=56 
+#PBS -l walltime=08:00:00
+#PBS -j oe
+#PBS -M victorcunha@usp.br
+#PBS -m abe
+
+# Configuração do ambiente
+echo "Loading ambiente Python..."
+module load gcc/12.4.0
+module load python/3.9.17
+module load mpich
+
+cd $PBS_O_WORKDIR
+
+#PBS -N strong_scaling_jacobi
+#PBS -l select=2:ncpus=56:nodetype=n56:mpiprocs=56 
+#PBS -l walltime=08:00:00
+#PBS -j oe
+#PBS -M victorcunha@usp.br
+#PBS -m abe
+
+# Configuração do ambiente
+echo "Loading ambiente Python..."
+module load gcc/12.4.0
+module load python/3.9.17
+module load mpich
+
+cd $PBS_O_WORKDIR
+
+
+
+mpirun -np 1 python3 main_jacobi_iter.py --N 100 --nx 1 --ny 1 --max_iter 1000000 --tol 1e-10 >> strong_time_1x1.txt
+mpirun -np 4 python3 main_jacobi_iter.py --N 100 --nx 2 --ny 2 --max_iter 1000000 --tol 1e-10 >> strong_time_2x2.txt
+mpirun -np 9 python3 main_jacobi_iter.py --N 100 --nx 3 --ny 3 --max_iter 1000000 --tol 1e-10 >> strong_time_3x3.txt
+mpirun -np 16 python3 main_jacobi_iter.py --N 100 --nx 4 --ny 4 --max_iter 1000000 --tol 1e-10 >> strong_time_4x4.txt
+mpirun -np 25 python3 main_jacobi_iter.py --N 100 --nx 5 --ny 5 --max_iter 1000000 --tol 1e-10 >> strong_time_5x5.txt
+mpirun -np 36 python3 main_jacobi_iter.py --N 100 --nx 6 --ny 6 --max_iter 1000000 --tol 1e-10 >> strong_time_6x6.txt

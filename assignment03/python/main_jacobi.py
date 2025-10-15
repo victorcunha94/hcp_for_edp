@@ -3,7 +3,7 @@
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
 
 Exemplo para rodar:
-mpirun -np 4 python3 main_jacobi_iter.py --N 50 --nx 2 --ny 2 
+mpirun -np 4 python3 main_jacobi_iter.py --N 512 --nx 2 --ny 2 --local_iters 100
 """
 
 
@@ -24,7 +24,7 @@ def grid_dims(nx, ny, size):
     return [nx, ny]
 
 def _compute_grid_dims(size):
-    for px in range(int(math.sqrt(size)), 0, -1): #
+    for px in range(int(math.sqrt(size)), 0, -1):
         if size % px == 0:
             return [px, size // px]
     return [1, size]
@@ -58,7 +58,6 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         error_flag = None
         dims = None
         
-    # Broadcast do status de erro
     error_flag = comm.bcast(error_flag, root=0)
     if error_flag:
         comm.Abort(1)
@@ -80,7 +79,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         meta = dict(rank=rank, error="Empty subdomain")
         return meta, []
 
-    U = np.zeros((local_nx + 2, local_ny + 2))
+    U = np.zeros((local_nx + 2, local_ny + 2), dtype=np.float64)
     Unew = np.zeros_like(U)
     f_local = np.zeros_like(U)
 
@@ -89,98 +88,113 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         y = j * dx
         return 8.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
 
-    # Inicializar f_local
     for i in range(1, local_nx + 1):
         i_global = start_x + (i - 1)
         for j in range(1, local_ny + 1):
             j_global = start_y + (j - 1)
             f_local[i, j] = f_global(i_global, j_global)
+    
+    # Buffers de recebimento
+    recv_buf_up     = np.empty(local_nx, dtype=np.float64)
+    recv_buf_down   = np.empty(local_nx, dtype=np.float64)
+    recv_buf_right  = np.empty(local_ny, dtype=np.float64)
+    recv_buf_left   = np.empty(local_ny, dtype=np.float64)
 
+    exec_time = 0.0
     comm.Barrier()
-    t0 = time.perf_counter()
     final_error = None
     comm_log = []
 
     global_iteration = 0
     
     while global_iteration < max_iter:
-        global_iteration += 1
-        max_err_loc = 0.0
         
-        # === FASE 1: COMUNICAÇÃO (ANTES do cálculo) ===
-        # comunicação topo
+        # === FASE 1: COMUNICAÇÃO (Isend/Irecv) ===
+        requests = []
+        t1_comm = time.perf_counter()
+
+        # Buffers de Envio (necessários para slices não contíguos)
+        send_buf_up = U[1:-1, local_ny].copy()
+        send_buf_down = U[1:-1, 1].copy()
+        # Buffers Direita/Esquerda são contíguos no default C-Order (em numpy), mas o slice vertical (y) é não-contíguo.
+        # Por segurança, vamos manter a cópia em todos os buffers que não são linhas completas.
+        # A otimização real aqui seria usar tipos derivados MPI ou reordenar o array para F-Order.
+
+        # 1. Comunicação TOPO (Y - Cima) - Não contígua
         if up != MPI.PROC_NULL:
-            buf = U[1:-1, local_ny].copy()
-            recv_buf = np.empty(local_nx, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=up, recvbuf=recv_buf, source=up)
-            dt = time.perf_counter() - t1
-            U[1:-1, local_ny + 1] = recv_buf
-            comm_log.append([global_iteration, rank, up, "up", buf.size, dt])
-        else:
-            U[1:-1, local_ny + 1] = 0.0
+            requests.append(cart.Isend(send_buf_up, dest=up, tag=0))
+            requests.append(cart.Irecv(recv_buf_up, source=up, tag=1))
 
-        # comunicação baixo
+        # 2. Comunicação BAIXO (Y - Baixo) - Não contígua
         if down != MPI.PROC_NULL:
-            buf = U[1:-1, 1].copy()
-            recv_buf = np.empty(local_nx, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=down, recvbuf=recv_buf, source=down)
-            dt = time.perf_counter() - t1
-            U[1:-1, 0] = recv_buf
-            comm_log.append([global_iteration, rank, down, "down", buf.size, dt])
-        else:
-            U[1:-1, 0] = 0.0
+            requests.append(cart.Isend(send_buf_down, dest=down, tag=1))
+            requests.append(cart.Irecv(recv_buf_down, source=down, tag=0))
 
-        # comunicação direita
+        # 3. Comunicação DIREITA (X - Direita) - Contígua
         if right != MPI.PROC_NULL:
-            buf = U[local_nx, 1:-1].copy()
-            recv_buf = np.empty(local_ny, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=right, recvbuf=recv_buf, source=right)
-            dt = time.perf_counter() - t1
-            U[local_nx + 1, 1:-1] = recv_buf
-            comm_log.append([global_iteration, rank, right, "right", buf.size, dt])
-        else:
-            U[local_nx + 1, 1:-1] = 0.0
+            requests.append(cart.Isend(U[local_nx, 1:-1], dest=right, tag=2))
+            requests.append(cart.Irecv(recv_buf_right, source=right, tag=3))
 
-        # comunicação esquerda
+        # 4. Comunicação ESQUERDA (X - Esquerda) - Contígua
         if left != MPI.PROC_NULL:
-            buf = U[1, 1:-1].copy()
-            recv_buf = np.empty(local_ny, dtype=np.float64)
-            t1 = time.perf_counter()
-            cart.Sendrecv(buf, dest=left, recvbuf=recv_buf, source=left)
-            dt = time.perf_counter() - t1
-            U[0, 1:-1] = recv_buf
-            comm_log.append([global_iteration, rank, left, "left", buf.size, dt])
-        else:
-            U[0, 1:-1] = 0.0
+            requests.append(cart.Isend(U[1, 1:-1], dest=left, tag=3))
+            requests.append(cart.Irecv(recv_buf_left, source=left, tag=2))
 
-        # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
+
+        # === FASE 2: CÁLCULO INTERNO (Sobreposição) ===
+        # Não fazemos cálculo aqui para Jacobi com block_size > 1 para garantir correção numérica.
+
+
+        # === FASE 3: SINCRONIZAÇÃO E APLICAÇÃO DOS DADOS RECEBIDOS ===
+        MPI.Request.Waitall(requests)
+        
+        dt = time.perf_counter() - t1_comm
+        
+        # Aplica dados
+        if up != MPI.PROC_NULL:
+            U[1:-1, local_ny + 1] = recv_buf_up
+            comm_log.append([global_iteration, rank, up, "up", recv_buf_up.size, dt])
+
+        if down != MPI.PROC_NULL:
+            U[1:-1, 0] = recv_buf_down
+            comm_log.append([global_iteration, rank, down, "down", recv_buf_down.size, dt])
+
+        if right != MPI.PROC_NULL:
+            U[local_nx + 1, 1:-1] = recv_buf_right
+            comm_log.append([global_iteration, rank, right, "right", recv_buf_right.size, dt])
+
+        if left != MPI.PROC_NULL:
+            U[0, 1:-1] = recv_buf_left
+            comm_log.append([global_iteration, rank, left, "left", recv_buf_left.size, dt])
+
+        # === FASE 4: BLOCO DE ITERAÇÕES LOCAIS (APÓS ATUALIZAÇÃO DOS HALOS) ===
+        t0 = time.perf_counter()
+        max_err_loc = 0.0
+
         for local_iter in range(block_size):
-            # === ATUALIZAÇÃO JACOBI VETORIZADA ===
-            # Aplicar a fórmula de Jacobi apenas nos pontos internos (excluindo bordas/halos)
+            global_iteration += 1
+
+            # ATUALIZAÇÃO JACOBI VETORIZADA
             Unew[1:local_nx+1, 1:local_ny+1] = 0.25 * (
-                U[0:local_nx, 1:local_ny+1] +     # esquerda
-                U[2:local_nx+2, 1:local_ny+1] +   # direita  
-                U[1:local_nx+1, 0:local_ny] +     # baixo
-                U[1:local_nx+1, 2:local_ny+2] +   # cima
+                U[0:local_nx, 1:local_ny+1] + 
+                U[2:local_nx+2, 1:local_ny+1] + 
+                U[1:local_nx+1, 0:local_ny] + 
+                U[1:local_nx+1, 2:local_ny+2] + 
                 (dx*dx) * f_local[1:local_nx+1, 1:local_ny+1]
             )
             
-            # === CÁLCULO DO ERRO VETORIZADO ===
-            # Calcular erro apenas nos pontos internos
+            # CÁLCULO DO ERRO VETORIZADO
             error_matrix = np.abs(Unew[1:local_nx+1, 1:local_ny+1] - U[1:local_nx+1, 1:local_ny+1])
             max_err_loc = np.max(error_matrix)
             
             # Trocar arrays para próxima iteração
             U, Unew = Unew, U
+        
+        exec_time += time.perf_counter() - t0
 
-        # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
+        # === FASE 5: VERIFICAÇÃO DE CONVERGÊNCIA (APÓS BLOCO) ===
         max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
-        if rank == 0:  # Opcional: print apenas no rank 0 para evitar poluição
-            print(f"Iteração {global_iteration}: Erro máximo = {max_err_glob}")
-
+        
         if max_err_glob < tol:
             final_error = max_err_glob
             break
@@ -188,7 +202,9 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
     if final_error is None:
         final_error = comm.allreduce(max_err_loc, op=MPI.MAX)
 
-    exec_time = time.perf_counter() - t0
+    # Note: O loop de 'block_size' incrementa global_iteration.
+    # O número total de iterações pode exceder max_iter.
+    
     comm_time_total = sum([c[-1] for c in comm_log])
     overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
 
@@ -207,9 +223,9 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         U_data = u_local_data,
         data_length=len(u_local_data)
     )
-    
+    if rank == 0:
+        print(f"Tempo de execução = {exec_time}|Overhead = {overhead}|")
     return meta, comm_log, U
-
 
 
 def analytical(X, Y):
@@ -222,14 +238,13 @@ def main():
     parser.add_argument("--nx", type=int, required=True, help="Número de processos na dimensão X")
     parser.add_argument("--ny", type=int, required=True, help="Número de processos na dimensão Y")
     parser.add_argument("--max_iter", type=int, default=1000000)
-    parser.add_argument("--tol", type=float, default=1e-8)
-    parser.add_argument("--local_iters", type=int, default=1, 
-                       help="Número de iterações locais entre comunicações")
+    parser.add_argument("--tol", type=float, default=1e-10)
+    parser.add_argument("--local_iters", type=int, default=1,
+                        help="Número de iterações locais entre comunicações")
     args = parser.parse_args()
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
-
     
     meta, comm_log, U = jacobi_mpi_cart(
         args.N, args.nx, args.ny, 
@@ -238,7 +253,6 @@ def main():
         block_size=args.local_iters
     )
     
-    # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
     all_logs = comm.gather(comm_log, root=0)
 
@@ -256,9 +270,13 @@ def main():
                     comm_time=entry[5]
                 ))
         df = pd.DataFrame(rows)
+        if not os.path.exists('output'):
+            os.makedirs('output')
         caminho_csv = os.path.join(f'output/results_{args.nx}x{args.ny}.csv')
         df.to_csv(caminho_csv, index=False)
-        print(f"[rank 0] Arquivo results_{args.nx}x{args.ny}.csv salvo.")
+        print(f"[rank 0] Arquivo {caminho_csv} salvo.")
+
+        
 
 if __name__ == "__main__":
     main()

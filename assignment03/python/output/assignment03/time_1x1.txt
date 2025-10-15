@@ -1,0 +1,5 @@
+Tempo de execução = 1.8673685370013118|Overhead = 0.0|
+Tempo de execução = 1.9196225991472602|Overhead = 0.0|
+Tempo de execução = 1.864750387147069|Overhead = 0.0|
+Tempo de execução = 1.8594055669382215|Overhead = 0.0|
+Tempo de execução = 1.8811841616407037|Overhead = 0.0|

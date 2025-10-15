@@ -1,0 +1,10 @@
+# Strong-scaling: problema FIXO, aumentando processos
+PROBLEM_SIZE=200
+echo "Strong-Scaling: Problema fixo ${PROBLEM_SIZE}x${PROBLEM_SIZE}"
+
+for PROC in 1 4 9 16 25 36; do
+    NY=$(echo "sqrt($PROC)" | bc | cut -d. -f1)
+    NX=$((PROC / NY))
+    echo "Processos: $PROC, Grid: ${NX}x${NY}"
+    mpirun -np $PROC python3 main_jacobi_iter.py --N $PROBLEM_SIZE --nx $NX --ny $NY --max_iter 1000000 --tol 1e-10
+done

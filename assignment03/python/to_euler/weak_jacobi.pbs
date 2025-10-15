@@ -1,0 +1,40 @@
+#PBS -N weak_scaling_jacobi
+#PBS -l select=2:ncpus=56:nodetype=n56:mpiprocs=56 
+#PBS -l walltime=08:00:00
+#PBS -j oe
+#PBS -M victorcunha@usp.br
+#PBS -m abe
+
+# Configuração do ambiente
+echo "Loading ambiente Python..."
+module load gcc/12.4.0
+module load python/3.9.17
+module load mpich
+
+cd $PBS_O_WORKDIR
+
+echo "Weak-Scaling Test - Jacobi MPI"
+
+# Weak-scaling: problema cresce proporcionalmente ao número de processos
+# Configurações: (processos, N, nx, ny)
+# Mantendo ~ mesmo trabalho por processo
+
+# 1 processo: 100x100
+mpirun -np 1 python3 main_jacobi_iter.py --N 100 --nx 1 --ny 1 --max_iter 1000000 --tol 1e-10 >> andamento_1x1.txt
+
+# 4 processos: 200x200 (2x maior em cada dimensão = 4x mais pontos)
+mpirun -np 4 python3 main_jacobi_iter.py --N 200 --nx 2 --ny 2 --max_iter 1000000 --tol 1e-10 >> andamento_2x2.txt
+
+# 9 processos: 300x300 (3x maior em cada dimensão = 9x mais pontos)  
+mpirun -np 9 python3 main_jacobi_iter.py --N 300 --nx 3 --ny 3 --max_iter 1000000 --tol 1e-10 >> andamento_3x3.txt
+
+# 16 processos: 400x400 (4x maior em cada dimensão = 16x mais pontos)
+mpirun -np 16 python3 main_jacobi_iter.py --N 400 --nx 4 --ny 4 --max_iter 1000000 --tol 1e-10 >> andamento_4x4.txt
+
+# 25 processos: 500x500 (5x maior em cada dimensão = 25x mais pontos)
+mpirun -np 25 python3 main_jacobi_iter.py --N 500 --nx 5 --ny 5 --max_iter 1000000 --tol 1e-10 >> andamento_5x5.txt
+
+# 36 processos: 600x600 (6x maior em cada dimensão = 36x mais pontos)
+mpirun -np 36 python3 main_jacobi_iter.py --N 600 --nx 6 --ny 6 --max_iter 1000000 --tol 1e-10 >> andamento_6x6.txt
+
+echo "Teste concluído!"
