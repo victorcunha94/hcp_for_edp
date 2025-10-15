@@ -6,23 +6,21 @@ import matplotlib.pyplot as plt
 
 ################# Geração da malha ####################
 xl, xr, yb, yt = 0, 1, 0, 1
-N = 100  # Aumentado para ver melhor as diferenças
+N = 128  # Aumentado para ver melhor as diferenças
 X = np.linspace(xl, xr, N, endpoint=True)
 Y = np.linspace(yb, yt, N, endpoint=True)
 x, y = np.meshgrid(X, Y, indexing='ij')
 dx = (xr - xl) / (N - 1)
 dy = (yt - yb) / (N - 1)
+omega = 1.0
+tol_basic, tol_omega = 1e-10, 1e-10
 #######################################################
 
-
-# Solução analítica
-def f(x, y):
-    return np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
 
 
 # Função fonte
 def f(x, y):
-    return -2 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
+    return -8 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
 
 
 # Solução analítica para comparação
@@ -31,10 +29,11 @@ def exact_solution(x, y):
 
 
 ######### MÉTODO: Jacobi Básico ##########
-def jacobi_basic(N, dx, dy, max_iter=10000, tol=1e-8):
+def jacobi_basic(N, dx, dy, max_iter=10000, tol=1e-10):
     """Método de Jacobi básico"""
     U = np.zeros((N, N))
     Unew = np.zeros((N, N))
+    tf = np.zeros((N, N))
     
     # Aplicar condições de contorno de Dirichlet
     U[0, :]  = exact_solution(X[0], Y)
@@ -43,22 +42,33 @@ def jacobi_basic(N, dx, dy, max_iter=10000, tol=1e-8):
     U[:, -1] = exact_solution(X, Y[-1])
     
     Unew = U.copy()
-    
+    for i in range(1, N-1):
+        for j in range(1, N-1):
+            tf[i,j] = f(X[i], Y[j])
+
+#    print(tf)    
     start_time = time.time()
     for k in range(max_iter):
         max_error = 0
         
         # Atualizar pontos internos
-        for i in range(1, N - 1):
-            for j in range(1, N - 1):
-                Unew[i, j] = 0.25 * (U[i-1, j] + U[i+1, j] + 
-                                    U[i, j-1] + U[i, j+1] - 
-                                    dx*dy * f(X[i], Y[j]))
+#        for i in range(1, N-1):
+#            for j in range(1, N-1):
+#                Unew[i, j] = 0.25 * (U[i-1, j] + U[i+1, j] + 
+#                                    U[i, j-1] + U[i, j+1] - 
+#                                    dx*dy * f(X[i], Y[j]))
                 
-                error = abs(Unew[i, j] - U[i, j])
-                if error > max_error:
-                    max_error = error
-        
+#                error = abs(Unew[i, j] - U[i, j])
+#                if error > max_error:
+#                    max_error = error
+         # Atualizar pontos internos
+
+        Unew[1:N-1, 1: N-1] = 0.25 * (U[0:N-2, 1:N-1] + U[2:N, 1:N-1] + U[1:N-1, 0:N-2] + U[1:N-1, 2:N] - dx*dy * tf[1:N-1,1:N-1])
+                
+        error = np.max(abs(Unew - U))
+        if error > max_error:
+            max_error = error 
+      
         # Verificar convergência
         if max_error < tol:
             break
@@ -72,7 +82,7 @@ def jacobi_basic(N, dx, dy, max_iter=10000, tol=1e-8):
 
 
 ######### MÉTODO: Jacobi com Relaxamento (Omega) ##########
-def jacobi_omega(N, dx, dy, omega=1.8, max_iter=10000, tol=1e-8):
+def jacobi_omega(N, dx, dy, omega=0.8, max_iter=10000, tol=1e-10):
     """Método de Jacobi com fator de relaxamento omega"""
     U = np.zeros((N, N))
     Unew = np.zeros((N, N))
@@ -89,8 +99,8 @@ def jacobi_omega(N, dx, dy, omega=1.8, max_iter=10000, tol=1e-8):
     for k in range(max_iter):
         max_error = 0
         
-        for i in range(1, N - 1):
-            for j in range(1, N - 1):
+        for i in range(1, N-1):
+            for j in range(1, N-1):
                 # Cálculo do novo valor
                 new_val = 0.25 * (U[i-1, j] + U[i+1, j] + 
                                  U[i, j-1] + U[i, j+1] - 
@@ -115,10 +125,10 @@ def jacobi_omega(N, dx, dy, omega=1.8, max_iter=10000, tol=1e-8):
 
 # Executar os métodos
 print("Executando Jacobi Básico...")
-U_basic, iter_basic, time_basic, error_basic = jacobi_basic(N, dx, dy)
+U_basic, iter_basic, time_basic, error_basic = jacobi_basic(N, dx, dy, tol=tol_basic)
 
 print("Executando Jacobi com Relaxamento...")
-U_omega, iter_omega, time_omega, error_omega = jacobi_omega(N, dx, dy, omega=1.8)
+U_omega, iter_omega, time_omega, error_omega = jacobi_omega(N, dx, dy, omega, tol=tol_omega)
 
 # Calcular solução analítica
 U_exact = exact_solution(x, y)
@@ -130,21 +140,22 @@ error_analytical_omega = np.abs(U_omega - U_exact)
 # Estatísticas dos erros
 max_error_basic = np.max(error_analytical_basic)
 max_error_omega = np.max(error_analytical_omega)
-rmse_basic = np.sqrt(np.mean(error_analytical_basic**2))
-rmse_omega = np.sqrt(np.mean(error_analytical_omega**2))
 
 print("\n=== COMPARAÇÃO DOS MÉTODOS ===")
 print(f"Jacobi Básico:")
 print(f"  Iterações: {iter_basic}")
+print(f"  Tolerância: {tol_basic:.2e}")
 print(f"  Tempo: {time_basic:.6f}s")
 print(f"  Erro máximo (analítico): {max_error_basic:.2e}")
-print(f"  RMSE (analítico): {rmse_basic:.2e}")
 
-print(f"\nJacobi com Relaxamento (ω=1.8):")
+
+print(f"\nJacobi com Relaxamento (omega={omega}):")
 print(f"  Iterações: {iter_omega}")
 print(f"  Tempo: {time_omega:.6f}s")
+print(f"  Tolerância: {tol_omega:.2e}")
 print(f"  Erro máximo (analítico): {max_error_omega:.2e}")
-print(f"  RMSE (analítico): {rmse_omega:.2e}")
+
+
 
 # Visualização comparativa
 fig, axes = plt.subplots(2, 3, figsize=(15, 10))

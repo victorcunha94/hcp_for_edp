@@ -6,6 +6,7 @@ Exemplo para rodar:
 mpirun -np 4 python3 main_jacobi_iter.py --N 50 --nx 2 --ny 2 
 """
 
+
 from mpi4py import MPI
 import numpy as np
 import time
@@ -14,6 +15,10 @@ import math
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+
+
+
+
 
 def grid_dims(nx, ny, size):
     if nx * ny != size:
@@ -155,29 +160,29 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
 
         # === FASE 2: BLOCO DE ITERAÇÕES LOCAIS ===
         for local_iter in range(block_size):
-            # atualização Jacobi
-            for i in range(1, local_nx + 1):
-                i_global = start_x + (i - 1)
-                for j in range(1, local_ny + 1):
-                    j_global = start_y + (j - 1)
-                    
-                    if i_global in (0, N - 1) or j_global in (0, N - 1):
-                        Unew[i, j] = U[i, j]  # Mantém contorno
-                    else:
-                        Unew[i, j] = 0.25 * (
-                            U[i-1, j] + U[i+1, j] + U[i, j-1] + U[i, j+1]
-                            + (dx*dx) * f_local[i, j]
-                        )
-                        error = abs(Unew[i, j] - U[i, j])
-                        max_err_loc = max(max_err_loc, error)
+            # === ATUALIZAÇÃO JACOBI VETORIZADA ===
+            # Aplicar a fórmula de Jacobi apenas nos pontos internos (excluindo bordas/halos)
+            Unew[1:local_nx+1, 1:local_ny+1] = 0.25 * (
+                U[0:local_nx, 1:local_ny+1] +     # esquerda
+                U[2:local_nx+2, 1:local_ny+1] +   # direita  
+                U[1:local_nx+1, 0:local_ny] +     # baixo
+                U[1:local_nx+1, 2:local_ny+2] +   # cima
+                (dx*dx) * f_local[1:local_nx+1, 1:local_ny+1]
+            )
+            
+            # === CÁLCULO DO ERRO VETORIZADO ===
+            # Calcular erro apenas nos pontos internos
+            error_matrix = np.abs(Unew[1:local_nx+1, 1:local_ny+1] - U[1:local_nx+1, 1:local_ny+1])
+            max_err_loc = np.max(error_matrix)
             
             # Trocar arrays para próxima iteração
             U, Unew = Unew, U
 
         # === FASE 3: VERIFICAÇÃO DE CONVERGÊNCIA ===
         max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX)
-        print(f"{max_err_glob}")
-        print(U)
+        if rank == 0:  # Opcional: print apenas no rank 0 para evitar poluição
+            print(f"Iteração {global_iteration}: Erro máximo = {max_err_glob}")
+
         if max_err_glob < tol:
             final_error = max_err_glob
             break
@@ -213,55 +218,12 @@ def analytical(X, Y):
     return np.sin(2*np.pi * X) * np.sin(2*np.pi * Y)
 
 
-def plot_3d_comparison(global_solution, N, nx, ny, analytical, output_file=None):
-    """
-    Plot 1: Comparação 3D entre solução numérica e analítica
-    """
-    x = np.linspace(0, 1, N)
-    y = np.linspace(0, 1, N)
-    X, Y = np.meshgrid(x, y, indexing='ij')
-    
-    
-    fig = plt.figure(figsize=(15, 6))
-    
-    # Solução numérica
-    ax1 = fig.add_subplot(121, projection='3d')
-    surf1 = ax1.plot_surface(X, Y, global_solution, cmap='viridis', 
-                            alpha=0.9, antialiased=True, rstride=1, cstride=1)
-    ax1.set_xlabel('X')
-    ax1.set_ylabel('Y')
-    ax1.set_zlabel('U(x,y)')
-    ax1.set_title('Solução Numérica 3D')
-    fig.colorbar(surf1, ax=ax1, shrink=0.6, aspect=20)
-    
-    # Solução analítica
-    ax2 = fig.add_subplot(122, projection='3d')
-    surf2 = ax2.plot_surface(X, Y, analytical, cmap='plasma', 
-                            alpha=0.9, antialiased=True, rstride=1, cstride=1)
-    ax2.set_xlabel('X')
-    ax2.set_ylabel('Y')
-    ax2.set_zlabel('U(x,y)')
-    ax2.set_title('Solução Analítica 3D')
-    fig.colorbar(surf2, ax=ax2, shrink=0.6, aspect=20)
-    
-    plt.suptitle(f'Comparação 3D - Malha {N}×{N}, Processos {nx}×{ny}', 
-                fontsize=14, fontweight='bold')
-    plt.tight_layout()
-    
-    if output_file:
-        plt.savefig(output_file, dpi=300, bbox_inches='tight')
-        print(f"Plot 3D salvo como: {output_file}")
-    
-    plt.show()
-    return fig
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--N", type=int, default=50)
     parser.add_argument("--nx", type=int, required=True, help="Número de processos na dimensão X")
     parser.add_argument("--ny", type=int, required=True, help="Número de processos na dimensão Y")
-    parser.add_argument("--max_iter", type=int, default=20000)
+    parser.add_argument("--max_iter", type=int, default=200000)
     parser.add_argument("--tol", type=float, default=1e-8)
     parser.add_argument("--local_iters", type=int, default=1, 
                        help="Número de iterações locais entre comunicações")
@@ -277,7 +239,7 @@ def main():
         tol=args.tol, 
         block_size=args.local_iters
     )
-    plot = plot_3d_comparison(U, args.N, args.nx, args.ny, analytical)
+    #plot = plot_3d_comparison(U, args.N, args.nx, args.ny, analytical)
 
     # junta metadados e logs em rank 0
     all_meta = comm.gather(meta, root=0)
