@@ -1,0 +1,21 @@
+Loading ambiente Python...
+Weak-Scaling Test - Jacobi MPI
+Código executado com Nº de processos igual a 1
+Tempo de execução = 1.3209352493286133|Overhead = 0.0|Tempo de comunicação = 0
+[rank 0] Arquivo output/results_1x1.csv salvo.
+Código executado com Nº de processos igual a 4
+Tempo de execução = 5.098740816116333|Overhead = 0.06815938280911389|Tempo de comunicação = 0.34752702713012695
+[rank 0] Arquivo output/results_2x2.csv salvo.
+Código executado com Nº de processos igual a 9
+Tempo de execução = 11.989043951034546|Overhead = 0.13776542215435225|Tempo de comunicação = 1.6516757011413574
+[rank 0] Arquivo output/results_3x3.csv salvo.
+Código executado com Nº de processos igual a 16
+Tempo de execução = 21.835719108581543|Overhead = 0.08792668423011799|Tempo de comunicação = 1.9199423789978027
+[rank 0] Arquivo output/results_4x4.csv salvo.
+Código executado com Nº de processos igual a 25
+Tempo de execução = 32.54707956314087|Overhead = 0.19502684394567507|Tempo de comunicação = 6.3475542068481445
+[rank 0] Arquivo output/results_5x5.csv salvo.
+Código executado com Nº de processos igual a 36
+Tempo de execução = 43.90433073043823|Overhead = 1.7291512142046965|Tempo de comunicação = 75.91722679138184
+[rank 0] Arquivo output/results_6x6.csv salvo.
+Teste concluído!

@@ -1,0 +1,6 @@
+Tempo de execução = 20.005122265778482|Overhead = 0.2274730441302313|
+[rank 0] Arquivo output/results_4x4.csv salvo.
+Tempo de execução = 21.645860958844423|Overhead = 0.2150586436234468|
+[rank 0] Arquivo output/results_4x4.csv salvo.
+Tempo de execução = 21.220466664992273|Overhead = 0.22254000391389053|
+[rank 0] Arquivo output/results_4x4.csv salvo.

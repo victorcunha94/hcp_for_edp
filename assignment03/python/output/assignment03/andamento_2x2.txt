@@ -1,0 +1,8 @@
+Tempo de execução = 5.320144378580153|Overhead = 0.2268372930691469|
+[rank 0] Arquivo output/results_2x2.csv salvo.
+Tempo de execução = 5.5292869452387094|Overhead = 0.22676025986846463|
+[rank 0] Arquivo output/results_2x2.csv salvo.
+Tempo de execução = 5.44916932657361|Overhead = 0.21960510985466225|
+[rank 0] Arquivo output/results_2x2.csv salvo.
+Tempo de execução = 5.514012363739312|Overhead = 0.2140245395850935|
+[rank 0] Arquivo output/results_2x2.csv salvo.
