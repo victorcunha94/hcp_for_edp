@@ -1,6 +1,0 @@
-Tempo de execução = 30.29795838985592|Overhead = 0.2317674384202727|
-[rank 0] Arquivo output/results_5x5.csv salvo.
-Tempo de execução = 31.70965916570276|Overhead = 0.25695761245340254|
-[rank 0] Arquivo output/results_5x5.csv salvo.
-Tempo de execução = 30.805069010704756|Overhead = 0.2305300418583697|
-[rank 0] Arquivo output/results_5x5.csv salvo.

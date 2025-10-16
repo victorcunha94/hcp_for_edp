@@ -1,8 +1,0 @@
-Tempo de execução = 1.4047589590772986|Overhead = 0.0|
-[rank 0] Arquivo output/results_1x1.csv salvo.
-Tempo de execução = 1.3716219486668706|Overhead = 0.0|
-[rank 0] Arquivo output/results_1x1.csv salvo.
-Tempo de execução = 1.4282363643869758|Overhead = 0.0|
-[rank 0] Arquivo output/results_1x1.csv salvo.
-Tempo de execução = 1.3350860513746738|Overhead = 0.0|
-[rank 0] Arquivo output/results_1x1.csv salvo.

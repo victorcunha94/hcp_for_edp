@@ -1,6 +1,0 @@
-Tempo de execução = 79.47933720983565|Overhead = 0.21993470735314413|
-[rank 0] Arquivo output/results_6x6.csv salvo.
-Tempo de execução = 45.751101130619645|Overhead = 0.23044177250171452|
-[rank 0] Arquivo output/results_6x6.csv salvo.
-Tempo de execução = 44.15944493282586|Overhead = 0.43097345062450215|
-[rank 0] Arquivo output/results_6x6.csv salvo.
