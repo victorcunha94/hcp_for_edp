@@ -3,7 +3,7 @@
 Jacobi paralelo (MPI cartesiano) com logging detalhado em CSV
 
 Exemplo para rodar:
-mpirun -np 4 python3 main_jacobi.py --N 512 --nx 2 --ny 2 --local_iters 100
+mpirun -np 4 python3 main_jacobi_iter.py --N 512 --nx 2 --ny 2 --local_iters 100
 """
 
 
@@ -111,7 +111,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         
         # === FASE 1: COMUNICAÇÃO (Isend/Irecv) ===
         requests = []
-        t1_comm = MPI_Wtime()
+        t1_comm = time.perf_counter()
 
         # Buffers de Envio (necessários para slices não contíguos)
         send_buf_up = U[1:-1, local_ny].copy()
@@ -148,7 +148,7 @@ def jacobi_mpi_cart(N, nx, ny, max_iter=10000, tol=1e-8, L=1.0, block_size=1):
         # === FASE 3: SINCRONIZAÇÃO E APLICAÇÃO DOS DADOS RECEBIDOS ===
         MPI.Request.Waitall(requests)
         
-        dt =MPI_Wtime() - t1_comm
+        dt = time.perf_counter() - t1_comm
         
         # Aplica dados
         if up != MPI.PROC_NULL:
