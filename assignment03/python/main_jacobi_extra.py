@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-mpirun -np 4 python3 main_jacobi.py --N 100 --nx 2 --ny 2 
+mpirun -np 4 python3 main_jacobi_extra.py --N 100 --nx 2 --ny 2 
 """
 
 from mpi4py import MPI
@@ -89,7 +89,7 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
     x = i_global * dx
     y = j_global * dx
     # f(x, y) = 8 * pi^2 * sin(2*pi*x) * sin(2*pi*y)
-    f_local[1:local_nx+1, 1:local_ny+1] = 8.0 * np.pi**2 * np.sin(2*np.pi * x) * np.sin(2*np.pi * y)
+    f_local[1:local_nx+1, 1:local_ny+1] = np.sin(4*np.pi * x) * np.sin(4*np.pi * y)
 
     # Buffers de comunicação (tamanho local_nx para vertical, local_ny para horizontal)
     send_buf_up     = np.empty(local_nx, dtype=np.float64)
@@ -182,8 +182,9 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
             )
 
             # Calcular erro a cada iteração do bloco
-            error_matrix = np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])
-            current_err = float(np.max(error_matrix))
+            #error_matrix = np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])
+            #current_err = float(np.max(error_matrix) / np.max(np.abs(Unew[1:-1, 1:-1])),
+            current_err = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])) / np.max(np.abs(Unew[1:-1, 1:-1]))
             max_err_loc = max(max_err_loc, current_err)
 
             U, Unew = Unew, U
@@ -208,7 +209,7 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
     # Após o loop, garantir que o erro final seja o erro global máximo
     if not global_converged:
         # Garante que o erro reportado é o erro máximo global na última iteração
-        max_err_loc = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1]))
+        max_err_loc = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])) / np.max(np.abs(Unew[1:-1, 1:-1]))
         final_error = comm.allreduce(max_err_loc, op=MPI.MAX)
     
     # Caso o problema seja trivial e não tenha entrado no loop
@@ -216,6 +217,7 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
         final_error = 0.0
 
     overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
+    u_local_data = U[1:-1, 1:-1].flatten().tolist()
 
     meta = dict(
         rank=rank,
@@ -226,14 +228,15 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
         exec_time=exec_time,
         comm_time=comm_time_total,
         overhead=overhead,
-        final_error=final_error
+        final_error=final_error,
+        U_data = u_local_data
     )
 
     if rank == 0:
         print(f"--------------------------------------------------------")
         print(f"Método de Jacobi Paralelo Concluído (MPI {nx}x{ny})")
         print(f"Iterações = {global_iteration}")
-        print(f"Erro Final = {final_error:.2e}")
+        print(f"Erro Final = {final_error:.8e}")
         print(f"Tempo de Execução (Computação) = {exec_time:.4f}s")
         print(f"Tempo Total de Comunicação = {comm_time_total:.4f}s")
         print(f"Overhead de Comunicação = {overhead:.4f}")
@@ -247,8 +250,8 @@ def main():
     parser.add_argument("--nx", type=int, required=True, help="Número de processos na direção X")
     parser.add_argument("--ny", type=int, required=True, help="Número de processos na direção Y")
     parser.add_argument("--max_iter", type=int, default=1000000)
-    parser.add_argument("--tol", type=float, default=1e-10)
-    parser.add_argument("--block_size", type=int, default=50)
+    parser.add_argument("--tol", type=float, default=1e-9)
+    parser.add_argument("--block_size", type=int, default=1)
     args = parser.parse_args()
 
     comm = MPI.COMM_WORLD
@@ -260,18 +263,49 @@ def main():
         tol=args.tol,
         block_size=args.block_size
     )
+
+    all_meta = comm.gather(meta, root=0)
+    all_logs = comm.gather(comm_log, root=0)  
     
     # O código Abort(1) é chamado dentro da função se houver erro de dims,
     # então o código abaixo só é executado se não houver erro.
 
     if rank == 0:
-        if 'error' not in meta:
-            if not os.path.exists('output'):
-                os.makedirs('output')
-            caminho_csv = f'output/results_{args.nx}x{args.ny}_N{args.N}.csv'
-            #df = pd.DataFrame([meta])
-            #df.to_csv(caminho_csv, index=False)
-            # print(f"[rank 0] Arquivo {caminho_csv} salvo.")
+        if not os.path.exists('output'):
+            os.makedirs('output')
+        
+        caminho_csv = f'output/results_{args.nx}x{args.ny}.csv'
+        
+        # Filtrar processos válidos
+        valid_metas = []
+        for m in all_meta:
+            if (m is not None and 
+                'start_x' in m and 'U_data' in m and
+                m.get('local_nx', 0) > 0 and m.get('local_ny', 0) > 0):
+                valid_metas.append(m)
+        
+        if valid_metas:
+            df = pd.DataFrame(valid_metas)
+            df.to_csv(caminho_csv, index=False)
+            print(f"Arquivo {caminho_csv} salvo com {len(df)} processos")
+            
+            # Debug seguro
+            print("Colunas salvas:", df.columns.tolist())
+            total_points = 0
+            for i, row in df.iterrows():
+                expected_points = row['local_nx'] * row['local_ny']
+                actual_points = len(row['U_data']) if isinstance(row['U_data'], list) else 0
+                total_points += actual_points
+                
+                status = "" if actual_points == expected_points else ""
+                print(f"   {status} Processo {row['rank']}: {row['local_nx']}x{row['local_ny']} "
+                      f"= {expected_points} pontos | U_data: {actual_points} pontos")
+           
+            print(f"Total de pontos no domínio: {total_points}")
+            print(f"Domínio esperado: {args.N-2}x{args.N-2} = {(args.N-2)**2} pontos")
+            
+        else:
+            print("ERRO: Nenhum processo com dados válidos!")
 
 if __name__ == "__main__":
     main()

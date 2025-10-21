@@ -135,7 +135,6 @@ def load_solution_with_communication_data(csv_file, N):
 
 
 
-
     print(f"Carregando arquivo: {csv_file}")
     df = pd.read_csv(csv_file)
 
@@ -180,7 +179,7 @@ def load_solution_with_communication_data(csv_file, N):
         # Copia para o domínio global
         global_solution[start_x:end_x, start_y:end_y] = U_local
 
-        print(f"✅ Rank {rank}: domínio ({start_x}:{end_x}, {start_y}:{end_y}) carregado.")
+        print(f"Rank {rank}: domínio ({start_x}:{end_x}, {start_y}:{end_y}) carregado.")
 
     return global_solution, domain_data
 
@@ -192,7 +191,7 @@ def plot_3d_comparison(global_solution, N, nx, ny, output_file=None):
     x = np.linspace(0, 1, N)
     y = np.linspace(0, 1, N)
     X, Y = np.meshgrid(x, y, indexing='ij')
-    analytical = np.sin(2*np.pi * X) * np.sin(2*np.pi * Y)
+    analytical = (1/(32*np.pi**2)) * np.sin(4*np.pi * X) * np.sin(4*np.pi * Y)
     
     fig = plt.figure(figsize=(15, 6))
     
@@ -234,7 +233,7 @@ def plot_2d_comparison(global_solution, N, nx, ny, output_file=None):
     x = np.linspace(0, 1, N)
     y = np.linspace(0, 1, N)
     X, Y = np.meshgrid(x, y, indexing='ij')
-    analytical = np.sin(2*np.pi * X) * np.sin(2*np.pi * Y)
+    analytical = (1/(32*np.pi**2)) * np.sin(4*np.pi * X) * np.sin(4*np.pi * Y)
     
     fig, axes = plt.subplots(2, 2, figsize=(12, 10))
     
