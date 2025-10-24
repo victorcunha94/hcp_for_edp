@@ -285,30 +285,36 @@ def plot_2d_comparison(global_solution, N, nx, ny, output_file=None):
 def plot_convergence_study(csv_files, N_values, output_file=None):
     """
     Plot 3: Estudo de convergência para diferentes tamanhos de malha
+    Calcula a norma do infinito do módulo da diferença entre solução numérica e analítica
     """
     errors_L2 = []
     errors_Linf = []
     
     for csv_file, N in zip(csv_files, N_values):
         try:
-            # Carrega solução numérica (ajuste conforme sua implementação)
+            # Carrega solução numérica
             global_solution, _ = load_solution_with_communication_data(csv_file, N)
             
             # Calcula solução analítica
             x = np.linspace(0, 1, N)
             y = np.linspace(0, 1, N)
             X, Y = np.meshgrid(x, y, indexing='ij')
-            analytical = np.sin(2*np.pi * X) * np.sin(2*np.pi * Y)
+            analytical = (1/(32*np.pi**2)) * np.sin(4*np.pi * X) * np.sin(4*np.pi * Y)
             
-            # Calcula erros
-            error = np.abs(global_solution - analytical)
-            error_L2 = np.sqrt(np.mean(error**2))
-            error_Linf = np.max(error)
+            # Calcula o módulo da diferença ponto a ponto
+            diff_module = np.abs(global_solution - analytical)
+            
+            # Calcula normas de erro
+            error_L2 = np.sqrt(np.mean(diff_module**2))  # Norma L2
+            error_Linf = np.max(diff_module)  # Norma do infinito (máximo do módulo)
             
             errors_L2.append(error_L2)
             errors_Linf.append(error_Linf)
             
-            print(f"N={N}: L2={error_L2:.2e}, Linf={error_Linf:.2e}")
+            print(f"N={N}:")
+            print(f"  Norma L2 = {error_L2:.2e}")
+            print(f"  Norma L∞ = ||U_num - U_anal||∞ = {error_Linf:.2e}")
+            print(f"  Máximo do módulo da diferença: {error_Linf:.2e}")
             
         except Exception as e:
             print(f"Erro ao processar {csv_file}: {e}")
@@ -316,7 +322,7 @@ def plot_convergence_study(csv_files, N_values, output_file=None):
     
     if len(errors_L2) < 2:
         print("Não há dados suficientes para estudo de convergência")
-        return
+        return None
     
     # Tamanhos da malha
     h_values = [1.0/(N-1) for N in N_values[:len(errors_L2)]]
@@ -362,12 +368,13 @@ def plot_convergence_study(csv_files, N_values, output_file=None):
         # Adiciona texto com taxas
         conv_text = f"Taxas de convergência estimadas:\n\n"
         conv_text += f"Erro L²: {np.mean(rates_L2):.3f} (esperado: ~2.0)\n"
-        conv_text += f"Erro L∞: {np.mean(rates_Linf):.3f} (esperado: ~2.0)"
+        conv_text += f"Erro L∞: {np.mean(rates_Linf):.3f} (esperado: ~2.0)\n\n"
+        conv_text += f"Norma L∞ = max|U_num - U_anal|"
         
         ax2.text(0.05, 0.95, conv_text, transform=ax2.transAxes, fontsize=10,
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
-    plt.suptitle('Estudo de Convergência - Solução Numérica vs Analítica', 
+    plt.suptitle('Estudo de Convergência - Norma L∞ do Módulo da Diferença', 
                 fontsize=14, fontweight='bold')
     plt.tight_layout()
     
@@ -376,7 +383,16 @@ def plot_convergence_study(csv_files, N_values, output_file=None):
         print(f"Plot de convergência salvo como: {output_file}")
     
     plt.show()
-    return fig
+    
+    # Retorna os erros calculados
+    return {
+        'N_values': N_values[:len(errors_L2)],
+        'h_values': h_values,
+        'errors_L2': errors_L2,
+        'errors_Linf': errors_Linf,
+        'convergence_rates_L2': rates_L2 if len(errors_L2) >= 2 else [],
+        'convergence_rates_Linf': rates_Linf if len(errors_Linf) >= 2 else []
+    }
 
 
 def plot_decomposition(meta_df, N, output_file=None):
@@ -435,6 +451,27 @@ def plot_decomposition(meta_df, N, output_file=None):
     plt.show()
 
 
+def calculate_single_error(csv_file, N):
+    """Calcula o erro para um único arquivo"""
+    global_solution, _ = load_solution_with_communication_data(csv_file, N)
+    
+    # Calcula solução analítica
+    x = np.linspace(0, 1, N)
+    y = np.linspace(0, 1, N)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    analytical = (1/(32*np.pi**2)) * np.sin(4*np.pi * X) * np.sin(4*np.pi * Y)
+    
+    # Calcula normas de erro
+    diff_module = np.abs(global_solution - analytical)
+    error_L2 = np.sqrt(np.mean(diff_module**2))
+    error_Linf = np.max(diff_module)
+    
+    print(f"\nERRO PARA {csv_file} (N={N}):")
+    print(f"  Norma L2 = {error_L2:.6e}")
+    print(f"  Norma L∞ = {error_Linf:.6e}")
+    
+    return error_L2, error_Linf
+
 def main():
     parser = argparse.ArgumentParser(description="Plot 3D da solução do Jacobi MPI")
     parser.add_argument("--csv", type=str, help="Arquivo CSV específico (ex: results_2x2.csv)")
@@ -479,6 +516,8 @@ def main():
 
             # Gera os três plots separados
             plot_decomposition(meta_df, args.N, output_file=None)
+            #plot_convergence_study(csv_files, args.N, output_file=None)
+            calculate_single_error(csv_file, args.N)
             
             # Plota solução 3D
             #output_3d = f"solucao_numerica_{nx}x{ny}_N{args.N}.png"

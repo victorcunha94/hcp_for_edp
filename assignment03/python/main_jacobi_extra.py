@@ -31,7 +31,7 @@ def _partition_1d(n_interior, n_procs_dim, coord):
     end = start + local
     return start, end, local
 
-def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, block_size=50):
+def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-9, L=1.0, block_size=1):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
@@ -104,16 +104,27 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
 
     exec_time = 0.0
     comm_time_total = 0.0
-    comm.Barrier()
+    #comm.Barrier()
     final_error = None
 
     global_iteration = 0
     check_interval = min(100, block_size * 5)
     global_converged = False
 
+    comm.Barrier()
+    t_total_start = time.perf_counter()
+
     while global_iteration < max_iter and not global_converged:
         # COMUNICAÇÃO ASSÍNCRONA OTIMIZADA
         t_comm_start = time.perf_counter()
+
+        if size > 1:
+
+            requests = []
+            # [código de comunicação...]
+            MPI.Request.Waitall(requests)
+
+
         requests = []
 
         # Preparar buffers de envio
@@ -216,6 +227,10 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
     if final_error is None:
         final_error = 0.0
 
+
+    t_total_end = time.perf_counter()
+    total_time_local = t_total_end - t_total_start
+    
     overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
     u_local_data = U[1:-1, 1:-1].flatten().tolist()
 
@@ -227,19 +242,34 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-10, L=1.0, blo
         iterations=global_iteration,
         exec_time=exec_time,
         comm_time=comm_time_total,
+        total_time=total_time_local,
         overhead=overhead,
         final_error=final_error,
         U_data = u_local_data
     )
 
     if rank == 0:
+        print("DEBUG: Antes das reduções")
+        
+    # As reduções devem ser chamadas por TODOS os processos
+    total_exec = comm.reduce(exec_time, op=MPI.SUM, root=0)
+    total_comm = comm.reduce(comm_time_total, op=MPI.SUM, root=0)
+    max_total_time = comm.reduce(total_time_local, op=MPI.MAX, root=0)
+
+    if rank == 0:
+        print("DEBUG: Depois das reduções")
+
+    if rank == 0:
         print(f"--------------------------------------------------------")
         print(f"Método de Jacobi Paralelo Concluído (MPI {nx}x{ny})")
         print(f"Iterações = {global_iteration}")
         print(f"Erro Final = {final_error:.8e}")
-        print(f"Tempo de Execução (Computação) = {exec_time:.4f}s")
-        print(f"Tempo Total de Comunicação = {comm_time_total:.4f}s")
-        print(f"Overhead de Comunicação = {overhead:.4f}")
+        print(f"Tempo Total de Computação = {total_exec:.4f}s")  # Soma de todos processos
+        print(f"Tempo Total de Comunicação = {total_comm:.4f}s") # Soma de todos processos
+        print(f"Tempo Wall-Clock Máximo = {max_total_time:.4f}s") # Máximo entre processos
+        if total_exec > 0:
+            overall_overhead = total_comm / total_exec
+            print(f"Overhead de Comunicação = {overall_overhead:.4f}")
         print(f"--------------------------------------------------------")
 
     return meta, [], U
