@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1761671798 source:/home/victorcunha/Documentos/repository/hcp_for_edp/mpi_codes/C/Learning_C/main.c
+	<stdio.h>
+	<stdlib.h>
+

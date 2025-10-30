@@ -120,7 +120,6 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-9, L=1.0, bloc
     final_error = None
 
     global_iteration = 0
-    #check_interval = min(100, block_size * 5)
     check_interval = 1
     global_converged = False
 
@@ -129,6 +128,7 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-9, L=1.0, bloc
 
     while global_iteration < max_iter:
         
+        global_iteration += 1
         # --- 4. Comunicação de Bordas (Somente se size > 1) ---
         if size > 1:
             t_comm_start = time.perf_counter()
@@ -178,45 +178,35 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-9, L=1.0, bloc
         # --- 5. Bloco de Iterações Locais ---
         t_comp_start = time.perf_counter()
         max_err_loc = 0.0
-
-        for local_iter in range(block_size):
-            if global_iteration >= max_iter:
-                break
+        local_iteration = 0
 
             # Kernel de Jacobi (vectorizado)
-            Unew[1:-1, 1:-1] = 0.25 * (
+        Unew[1:-1, 1:-1] = 0.25 * (
                 U[:-2, 1:-1] + U[2:, 1:-1] +
                 U[1:-1, :-2] + U[1:-1, 2:] +
                 dx2 * f_local[1:-1, 1:-1]
-            )
+        )
 
-            # Calcular erro a cada iteração do bloco
-            current_err = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])) / np.max(np.abs(Unew[1:-1, 1:-1]))
-            max_err_loc = max(max_err_loc, current_err)
+        # Calcular erro a cada iteração do bloco
+        current_err_numerador = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1]))
+        current_err_denominador = np.max(np.abs(Unew[1:-1, 1:-1]))
 
-            U, Unew = Unew, U
-            global_iteration += 1
+        U = Unew.copy() 
+        local_iteration += 1
 
         exec_time += time.perf_counter() - t_comp_start
 
 
-        # Verificação de convergência simplificada
-        if global_iteration % check_interval == 0:
-            max_err_glob = comm.allreduce(max_err_loc, op=MPI.MAX) if size > 1 else max_err_loc
-            if max_err_glob < tol:
-                break
-            
-            global_iteration += 1
-
-    # Cálculo FINAL do erro (sempre executado)
-    max_err_loc = np.max(np.abs(Unew[1:-1, 1:-1] - U[1:-1, 1:-1])) / np.max(np.abs(Unew[1:-1, 1:-1]))
-    final_error = comm.allreduce(max_err_loc, op=MPI.MAX) if size > 1 else max_err_loc
-
+        # Verificação de convergência
+        max_err_glob_num = comm.allreduce(current_err_numerador  , op=MPI.MAX) if size > 1 else current_err_numerador
+        max_err_glob_den = comm.allreduce(current_err_denominador, op=MPI.MAX) if size > 1 else current_err_denominador
+        max_err_glob  = max_err_glob_num / max_err_glob_den
+        if max_err_glob < tol:
+            break
 
     t_total_end = time.perf_counter()
     total_time_local = t_total_end - t_total_start
     
-    #overhead = comm_time_total / exec_time if exec_time > 0 else 0.0
     overhead = comm_time_total / total_time_local if total_time_local > 0 else 0.0
 
     u_local_data = U[1:-1, 1:-1].flatten().tolist()
@@ -231,27 +221,20 @@ def jacobi_mpi_cart_optimized(N, nx, ny, max_iter=1000000, tol=1e-9, L=1.0, bloc
         comm_time=comm_time_total,
         total_time=total_time_local,
         overhead=overhead,
-        final_error=final_error,
+        final_error=max_err_glob,
         U_data = u_local_data
     )
 
-    # As reduções devem ser chamadas por TODOS os processos (com tratamento para size=1)
-    if size == 1:
-        # No modo sequencial, o maximo e a soma são o valor local
-        max_total_time = total_time_local
-        max_exec_time = exec_time
-        total_comm_time = comm_time_total
-    else:
-        max_total_time = comm.reduce(total_time_local, op=MPI.MAX, root=0)
-        max_exec_time = comm.reduce(exec_time, op=MPI.MAX, root=0) 
-        total_comm_time = comm.reduce(comm_time_total, op=MPI.SUM, root=0)
+    max_total_time = total_time_local
+    max_exec_time  = exec_time
+    total_comm_time = comm_time_total
 
     if rank == 0:
         print("DEBUG: Depois das reduções")
         print(f"--------------------------------------------------------")
         print(f"Método de Jacobi Paralelo Concluído (MPI {nx}x{ny})")
         print(f"Iterações = {global_iteration}")
-        print(f"Erro Final = {final_error:.8e}")
+        print(f"Erro Final = {max_err_glob:.8e}")
         print(f"Tempo Wall-Clock = {max_total_time:.4f}s")
         print(f"Tempo Máximo Computação = {max_exec_time:.4f}s") 
         print(f"Tempo Total Comunicação = {total_comm_time:.4f}s")
@@ -275,19 +258,23 @@ def main():
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
-
+    
+    
+    comm.Barrier()
+    time_total_start = time.perf_counter() 
     meta, comm_log, U = jacobi_mpi_cart_optimized(
         args.N, args.nx, args.ny,
         max_iter=args.max_iter,
         tol=args.tol,
         block_size=args.block_size
     )
+    
+    comm.Barrier()
+    time_total_end  = time.perf_counter() 
+    comp_time = time_total_end - time_total_start
 
     all_meta = comm.gather(meta, root=0)
     all_logs = comm.gather(comm_log, root=0)  
-    
-    # O código Abort(1) é chamado dentro da função se houver erro de dims,
-    # então o código abaixo só é executado se não houver erro.
 
     if rank == 0:
         if not os.path.exists('output'):
@@ -295,6 +282,9 @@ def main():
         
         caminho_csv = f'output/results_{args.nx}x{args.ny}.csv'
         
+        #tempo computacional total
+        print(f'tempo total - teste : {comp_time} s')
+
         # Filtrar processos válidos
         valid_metas = []
         for m in all_meta:
