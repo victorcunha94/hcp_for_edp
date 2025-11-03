@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 
 void func1(void)
 {
@@ -19,7 +19,7 @@ void f(void)
 
     char s[80]; /* isto é criado apenas na entrada deste bloco */
     printf("entre com o nome:");
-    gets(s);
+    fgets(s, 80, NULL);
     /* faz alguma coisa ...*/
   }
 
