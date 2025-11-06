@@ -35,7 +35,6 @@ def solve_heat_2d_finite_difference():
         for j in range(N):
             U[i, j] = initial_condition(X[i], Y[j])
     
-    # Condições de contorno de Dirichlet (T = 0 nas bordas)
     def apply_boundary_conditions(U):
         U[0, :] = 0.0   # Left
         U[-1, :] = 0.0  # Right  
@@ -45,15 +44,12 @@ def solve_heat_2d_finite_difference():
     
     U = apply_boundary_conditions(U)
     
-    ##### Método implícito (BTCS) #####
     
     def kron(A, B):
-        """Produto de Kronecker"""
-        return np.kron(A, B)  # Usando a função do numpy
+        return np.kron(A, B)
     
     def create_system_matrix(N, dx, dy, dt, alpha):
         """Cria a matriz do sistema para o método implícito"""
-        # Matriz T (operador 1D na direção x)
         main_diag = (1 + 2*alpha*dt/dx**2 + 2*alpha*dt/dy**2) * np.ones(N)
         off_diag = (-alpha*dt/dx**2) * np.ones(N-1)
         
@@ -67,7 +63,6 @@ def solve_heat_2d_finite_difference():
         off_diag_y = (-alpha*dt/dy**2) * np.ones(N-1)
         S = np.diag(main_diag_y) + np.diag(off_diag_y, 1) + np.diag(off_diag_y, -1)
         
-        # Matriz do sistema: A = I ⊗ T + S ⊗ I
         A = kron(I, T) + kron(S, I)
         
         # Ajustar condições de contorno na matriz
@@ -81,7 +76,6 @@ def solve_heat_2d_finite_difference():
         
         return A
     
-    # Criar matriz do sistema uma vez (é a mesma para todos os passos temporais)
     print("Montando matriz do sistema...")
     start_time = time.time()
     A = create_system_matrix(N, dx, dy, dt, alpha)

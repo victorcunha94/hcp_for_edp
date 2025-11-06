@@ -27,11 +27,9 @@ def solve_with_petsc():
         print(f"Running 2D Heat Equation with {size} processes")
         print(f"Grid: {N_POINTS_X} x {N_POINTS_Y} = {N_POINTS_X * N_POINTS_Y} DOFs")
     
-    # Grid parameters
     h = 1.0 / (N_POINTS_X - 1)
     total_dof = N_POINTS_X * N_POINTS_Y
     
-    # Create PETSc matrix - NOW IN PARALLEL
     A = PETSc.Mat().create(comm)
     A.setSizes([total_dof, total_dof])
     A.setType('aij')  # Sparse matrix
@@ -135,11 +133,14 @@ def solve_with_petsc():
     b.assemblyBegin()
     b.assemblyEnd()
     
-    # Setup linear solver
+    
+    
+    
+    ################## Setup linear solver  ##############################
     ksp = PETSc.KSP().create(comm)
     ksp.setOperators(A)
 
-    # CONFIGURAR SOLVER
+  
     ksp.setType('gmres')           # GMRES para matrizes não-simétricas
     ksp.setGMRESRestart(50)        # Restart a cada 50 iterações
 
@@ -149,25 +150,24 @@ def solve_with_petsc():
 
     # Configurar tolerâncias
     ksp.setTolerances(rtol=1e-8, atol=1e-9, max_it=1000)
-
-    # AINDA permite override por linha de comando
     ksp.setFromOptions()
+    #############################################################################
+    
+    
+    
+    
+    
     
     if rank == 0:
         chosen_solver = ksp.getType()
         print(f"Solving with: {chosen_solver}")
     
-    # Time stepping loop
     start_time = time.time()
     
     for time_step in range(N_TIME_STEPS):
-        # Solve linear system
         ksp.solve(b, x)
-        
-        # Update RHS for next time step
         x.copy(b)
         
-        # Apply boundary conditions to RHS
         for global_idx in range(local_start, local_end):
             i = global_idx // N_POINTS_Y
             j = global_idx % N_POINTS_Y
@@ -178,7 +178,6 @@ def solve_with_petsc():
         b.assemblyBegin()
         b.assemblyEnd()
         
-        # Gather results (only on rank 0)
         if time_step % 10 == 0 or time_step == N_TIME_STEPS - 1:
             if rank == 0:
                 solution_global = np.zeros(total_dof)
