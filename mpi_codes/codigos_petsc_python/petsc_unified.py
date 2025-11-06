@@ -12,8 +12,8 @@ from petsc4py import PETSc
 from mpi4py import MPI
 
 # Parameters
-N_POINTS_X = 501
-N_POINTS_Y = 501
+N_POINTS_X = 129
+N_POINTS_Y = 129
 TIME_STEP_LENGTH = 0.001
 N_TIME_STEPS = 50
 
@@ -132,9 +132,7 @@ def solve_with_petsc():
     
     b.assemblyBegin()
     b.assemblyEnd()
-    
-    
-    
+       
     
     ################## Setup linear solver  ##############################
     ksp = PETSc.KSP().create(comm)
@@ -143,10 +141,29 @@ def solve_with_petsc():
   
     ksp.setType('gmres')           # GMRES para matrizes não-simétricas
     ksp.setGMRESRestart(50)        # Restart a cada 50 iterações
+    # ######################## Setup linear solver##########################
+    
+    
+    ksp = PETSc.KSP().create(comm)
+    ksp.setOperators(A)
+
+    # CONFIGURAR SOLVER
+    #ksp.setType('minres')
+    #ksp.setType('symmlq')
+    #ksp.setType('pipebcgs')
+    ksp.setType('bcgs') 
+    #ksp.setType('cg')               # GC para matrizes não-simétricas
+    #ksp.setType('gmres')           # GMRES para matrizes não-simétricas
+    #ksp.setGMRESRestart(50)        # Restart a cada 50 iterações
 
     # Configurar pré-condicionador
     pc = ksp.getPC()
-    pc.setType('bjacobi')          # Block Jacobi para paralelo
+    # pc.setType('bjacobi')          # Block Jacobi para paralelo
+    # pc.setType('jacobi')            # Jacobi
+    # pc.setType('sor')               # SOR (sequencial)
+    # pc.setType('bjacobi')           # Block Jacobi (já está usando)
+    # pc.setType('asm')               # Additive Schwarz
+    # pc.setType('gasm')              # Restricted Additive Schwarz
 
     # Configurar tolerâncias
     ksp.setTolerances(rtol=1e-8, atol=1e-9, max_it=1000)
@@ -158,14 +175,37 @@ def solve_with_petsc():
     
     
     
+    ######################################################################################
+    
+    
+    
     if rank == 0:
         chosen_solver = ksp.getType()
         print(f"Solving with: {chosen_solver}")
     
     start_time = time.time()
+    total_iterations = 0
     
     for time_step in range(N_TIME_STEPS):
         ksp.solve(b, x)
+
+        # RECUPERAR INFORMAÇÕES DO SOLVER
+        iterations = ksp.getIterationNumber()
+        total_iterations += iterations
+        converged_reason = ksp.getConvergedReason()
+        
+        # Verificar se convergiu
+        if converged_reason <= 0:
+            if rank == 0:
+                print(f"AVISO: Solver não convergiu no passo {time_step}. Razão: {converged_reason}")
+        
+        if rank == 0 and time_step % 10 == 0:
+            residual_norm = ksp.getResidualNorm()
+            print(f"Time step {time_step:3d}: {iterations} iterações, resíduo = {residual_norm:.2e}")
+        
+        
+        # Update RHS for next time step
+>>>>>>> 8abc333789f8ca35c60905fcca5580f94a97abd4
         x.copy(b)
         
         for global_idx in range(local_start, local_end):
@@ -192,29 +232,33 @@ def solve_with_petsc():
                 max_temp = np.max(solution_2d)
                 min_temp = np.min(solution_2d)
                 print(f"PETSc - Time step {time_step + 1:3d}: max T = {max_temp:.6f}, min T = {min_temp:.6f}")
+                #print(f"{iterations = ksp.getIterationNumber()}"}
     
     petsc_time = time.time() - start_time
     
     if rank == 0:
         print(f"PETSc simulation completed in {petsc_time:.4f} seconds")
+        print(f"Total de iterações: {total_iterations}")
+        print(f"Média de iterações por passo de tempo: {total_iterations/N_TIME_STEPS:.1f}")
+        print(f"Malha: {N_POINTS_X}x{N_POINTS_Y}, dx={h:.6f}, dy={h:.6f}")
         return petsc_time
     else:
         return None
-
+        
+        
+        
 def run_petsc_as_subprocess():
-    """Executa PETSc como subprocess para comparação"""
     print("Executando solução PETSc como subprocess...")
     start_time = time.time()
     
     try:
         result = subprocess.run([
-            'mpirun', '-np', '4', 'python3', __file__,  # Executa este mesmo arquivo
+            'mpirun', '-np', '4', 'python3', __file__,
             '-ksp_monitor', 
             '-ksp_converged_reason',
-            '-ksp_type', 'gmres', 
-            '-pc_type', 'bjacobi',    
+            '-ksp_type', 'bcgs', 
+            '-pc_type', 'bjacobi',
             '-ksp_rtol', '1e-6',
-            '-ksp_gmres_restart', '50',
             '-ksp_max_it', '200'
         ], capture_output=True, text=True, timeout=1000)
         
@@ -222,22 +266,47 @@ def run_petsc_as_subprocess():
         
         if result.returncode == 0:
             print(f"PETSc executado com sucesso em {petsc_time:.4f} segundos")
-            # Extrair estatísticas
+            
+            # EXTRAIR INFORMAÇÕES DETALHADAS
+            total_iterations = 0
+            convergence_info = ""
+            
             for line in result.stdout.split('\n'):
-                if 'PETSc - Time step' in line or 'PETSc simulation completed' in line:
+                # Extrair iterações do monitor
+                if 'KSP preconditioned resid' in line:
+                    # Exemplo: "0 KSP preconditioned resid norm 1.000000000000e+00 true resid norm 1.000000000000e+00 ||r(i)||/||b|| 1.000000000000e+00"
+                    parts = line.split()
+                    if len(parts) > 0:
+                        iteration = int(parts[0])
+                        total_iterations = max(total_iterations, iteration + 1)  # +1 porque começa em 0
+                
+                # Extrair razão de convergência
+                elif 'Converged reason:' in line:
+                    convergence_info = line
+                
+                # Suas linhas existentes
+                elif 'PETSc - Time step' in line or 'PETSc simulation completed' in line:
                     print(f"  {line}")
-            return petsc_time
+            
+            print(f"  Iterações totais estimadas: {total_iterations}")
+            if convergence_info:
+                print(f"  {convergence_info}")
+                
+            return petsc_time, total_iterations
         else:
-            print(f" Erro no PETSc: {result.stderr}")
-            return float('inf')
+            print(f"Erro no PETSc: {result.stderr}")
+            return float('inf'), 0
             
     except subprocess.TimeoutExpired:
         print("PETSc excedeu o tempo limite")
-        return float('inf')
+        return float('inf'), 0
     except Exception as e:
         print(f"Erro ao executar PETSc: {e}")
-        return float('inf')
-
+        return float('inf'), 0
+        
+        
+        
+        
 def compare_solvers():
     """Compara PETSc vs Diferenças Finitas"""
     print("=== COMPARAÇÃO DE DESEMPENHO ===")
@@ -249,7 +318,7 @@ def compare_solvers():
     else:
         # Modo comparação
         try:
-            from heat2d import solve_heat_2d_finite_difference
+            from heat2d_v1 import solve_heat_2d_finite_difference
             
             # Executar diferenças finitas
             print("\n--- EXECUTANDO DIFERENÇAS FINITAS ---")
