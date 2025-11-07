@@ -54,7 +54,7 @@ __pycache__/
 *.eps
 *.pdf
 *.synctex.gz
-
+*.csv
 # Pacote minted
 _minted/
 
