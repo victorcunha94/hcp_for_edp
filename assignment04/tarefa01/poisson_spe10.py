@@ -8,9 +8,15 @@ from uvw import RectilinearGrid, DataArray
 
 
 # Creating coordinates
-L1, N1 = 1.0, 513
-L2, N2 = 1.0, 513
+L1, N1 = 1.0, 51
+L2, N2 = 1.0, 51
 n1, n2 = N1 - 1, N2 - 1
+
+def carregar_camada(nome_arquivo, Nx=60, Ny=220):
+    print("Carregando arquivo da camada de permeabilidade ...")
+    with open(nome_arquivo, 'r') as f:
+        valores = np.array([float(linha) for linha in f.readlines()])
+    return valores.reshape((Nx, Ny))
 
 
 def CreateMesh(L1, L2, N1, N2):
@@ -153,8 +159,8 @@ def BuildPoissonSystem(x, y, K_func, f_func):
 
 
             # Adicionar termo diagonal
-            row.append(g);
-            col.append(g);
+            row.append(g)
+            col.append(g)
             data.append(diag_coef)
 
     # Criar matriz esparsa
@@ -163,11 +169,40 @@ def BuildPoissonSystem(x, y, K_func, f_func):
 
     return A, rhs, vol, xc, yc
 
+# === Carregar campo de permeabilidade SPE10 (mD) ===
+K_spe10 = carregar_camada('permeabilidade_camada_33_componente_kx.dat')
 
-def K_func(x, y):
-    """Coeficiente de difusividade"""
-    # Exemplo: coeficiente constante
-    return 1.0
+# Converter de miliDarcy para m²
+K_spe10 = K_spe10 * 9.869233e-16
+
+# Interpolar para o tamanho da malha numérica
+K_interp = zoom(K_spe10, (n2 / K_spe10.shape[0], n1 / K_spe10.shape[1]))
+
+# Parâmetros físicos
+mu = 8.9e-14  # viscosidade Pa·s
+
+# Escolha qual resolver
+modo = input("Usar permeabilidade SPE10 (s/n)? ").lower()
+if modo == 's':
+    K_func = lambda x, y: K_interp[int(y/L2*(K_interp.shape[0]-1)),
+                                   int(x/L1*(K_interp.shape[1]-1))] / mu
+    caso = "SPE10"
+else:
+    K_func = lambda x, y: 1e-12 / mu
+    caso = "Homogêneo"
+
+
+# # === Função que retorna K/mu local ===
+# def K_func(x, y):
+#     i = int(x / L1 * (K_interp.shape[1] - 1))
+#     j = int(y / L2 * (K_interp.shape[0] - 1))
+#     return K_interp[j, i] / mu
+
+
+# def K_func(x, y):
+#     """Coeficiente de difusividade"""
+#     # Exemplo: coeficiente constante
+#     return 1.0
 
     # Exemplo: coeficiente variável
     #return 1.0 + 0.5 * np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
@@ -238,25 +273,25 @@ axes[0, 0].set_ylabel('y')
 plt.colorbar(im1, ax=axes[0, 0])
 
 # Solução analítica
-P_ana_plot = P_analytic.reshape(n1, n2)
-im2 = axes[0, 1].imshow(P_ana_plot.T, extent=[0, L1, 0, L2], origin='lower', cmap='jet')
-axes[0, 1].set_title('Solução Analítica')
-axes[0, 1].set_xlabel('x')
-axes[0, 1].set_ylabel('y')
-plt.colorbar(im2, ax=axes[0, 1])
+# P_ana_plot = P_analytic.reshape(n1, n2)
+# im2 = axes[0, 1].imshow(P_ana_plot.T, extent=[0, L1, 0, L2], origin='lower', cmap='jet')
+# axes[0, 1].set_title('Solução Analítica')
+# axes[0, 1].set_xlabel('x')
+# axes[0, 1].set_ylabel('y')
+# plt.colorbar(im2, ax=axes[0, 1])
 
 # Erro
-error_plot = error.reshape(n1, n2)
-im3 = axes[1, 0].imshow(error_plot.T, extent=[0, L1, 0, L2], origin='lower', cmap='hot')
-axes[1, 0].set_title('Erro Absoluto')
-axes[1, 0].set_xlabel('x')
-axes[1, 0].set_ylabel('y')
-plt.colorbar(im3, ax=axes[1, 0])
+# error_plot = error.reshape(n1, n2)
+# im3 = axes[1, 0].imshow(error_plot.T, extent=[0, L1, 0, L2], origin='lower', cmap='hot')
+# axes[1, 0].set_title('Erro Absoluto')
+# axes[1, 0].set_xlabel('x')
+# axes[1, 0].set_ylabel('y')
+# plt.colorbar(im3, ax=axes[1, 0])
 
 # Perfil no centro
 j_center = n2 // 2
 axes[1, 1].plot(xc, P_plot[:, j_center], 'b-', label='Numérica', linewidth=2)
-axes[1, 1].plot(xc, P_ana_plot[:, j_center], 'r--', label='Analítica', linewidth=2)
+#axes[1, 1].plot(xc, P_ana_plot[:, j_center], 'r--', label='Analítica', linewidth=2)
 axes[1, 1].set_xlabel('x')
 axes[1, 1].set_ylabel('p')
 axes[1, 1].set_title(f'Perfil em y = {yc[j_center]:.2f}')
@@ -268,3 +303,77 @@ plt.savefig('poisson_solution.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 print("Simulação concluída!")
+
+# ===============================================================
+# 🔹 Resolver duas simulações: homogênea e SPE10
+# ===============================================================
+
+def solve_case(K_func, caso_nome):
+    """Resolve o sistema e retorna a solução e o tempo de execução"""
+    print(f"\n=== Resolvendo caso: {caso_nome} ===")
+    A, rhs, vol, xc, yc = BuildPoissonSystem(x, y, K_func, f_func)
+    print(f"Matriz: {A.shape[0]} x {A.shape[1]}, {A.nnz} elementos não-nulos")
+    t0 = time.time()
+    P = scipy.sparse.linalg.spsolve(A, rhs)
+    solve_time = time.time() - t0
+    print(f"Tempo de solução ({caso_nome}): {solve_time:.3f} s")
+    return P, A, rhs, xc, yc, vol
+
+
+# --- Caso 1: homogêneo
+K_func_homog = lambda x, y: 1e-12 / mu
+P_homog, A_homog, rhs_homog, xc, yc, vol = solve_case(K_func_homog, "Homogêneo")
+
+# --- Caso 2: SPE10 (camada 33)
+K_func_spe10 = lambda x, y: K_interp[int(y / L2 * (K_interp.shape[0] - 1)),
+                                     int(x / L1 * (K_interp.shape[1] - 1))] / mu
+P_spe10, A_spe10, rhs_spe10, _, _, _ = solve_case(K_func_spe10, "SPE10")
+
+# ===============================================================
+# 🔹 Pós-processamento e visualização
+# ===============================================================
+
+# Converter para formato 2D
+P_homog_2D = P_homog.reshape((n1, n2)).T
+P_spe10_2D = P_spe10.reshape((n1, n2)).T
+
+# Plot comparativo lado a lado
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.imshow(P_homog_2D, extent=[0, L1, 0, L2], origin='lower', cmap='viridis')
+plt.title("Distribuição de pressão - K constante")
+plt.xlabel('x')
+plt.ylabel('y')
+plt.colorbar(label="p [Pa]")
+
+plt.subplot(1, 2, 2)
+plt.imshow(P_spe10_2D, extent=[0, L1, 0, L2], origin='lower', cmap='viridis')
+plt.title("Distribuição de pressão - SPE10 camada 33")
+plt.xlabel('x')
+plt.ylabel('y')
+plt.colorbar(label="p [Pa]")
+
+plt.tight_layout()
+plt.savefig("comparacao_homog_spe10.png", dpi=300)
+plt.show()
+
+# ===============================================================
+# 🔹 Perfis de pressão ao longo do centro
+# ===============================================================
+j_center = n2 // 2
+
+plt.figure(figsize=(8, 5))
+plt.plot(xc, P_homog_2D[j_center, :], 'b-', lw=2, label='Homogêneo')
+plt.plot(xc, P_spe10_2D[j_center, :], 'r--', lw=2, label='SPE10 camada 33')
+plt.xlabel('x')
+plt.ylabel('p [Pa]')
+plt.title(f'Perfil de pressão em y = {yc[j_center]:.2f}')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("perfil_central_comparacao.png", dpi=300)
+plt.show()
+
+print("\n✅ Simulação e comparação concluídas!")
+
+
