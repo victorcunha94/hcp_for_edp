@@ -55,7 +55,7 @@ __pycache__/
 *.pdf
 *.synctex.gz
 *.csv
-*.vtr
+
 # Pacote minted
 _minted/
 
@@ -69,4 +69,10 @@ _minted/
 *.jpeg
 *.gif
 *.svg
+
+# Ficheiros Paraview
+*.vtr
+*.vts
+*.dat
+*.vtk
 
