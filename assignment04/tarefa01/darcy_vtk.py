@@ -7,13 +7,13 @@ import time
 # =============================================================================
 # PARÂMETROS CORRETOS SPE10
 # =============================================================================
-Lx, Nx = 220, 1220  # 220 células na direção X
-Ly, Ny = 60, 260  # 60 células na direção Y
+Lx, Nx = 670.56, 60  # 220 células na direção X# ####
+Ly, Ny = 365.76, 220  # 60 células na direção Y####
 nx, ny = Nx - 1, Ny - 1
-mu = 8.9e-4
+mu = 1
 
 # Dimensões originais do SPE10 (60 x 220 x 85)
-Nx_spe, Ny_spe, Nz_spe = 60, 220, 85
+Nx_spe, Ny_spe, Nz_spe = 60, 220, 85 ###
 
 
 def carregar_dados_spe10(arquivo='spe_perm.dat'):
@@ -31,7 +31,7 @@ def carregar_dados_spe10(arquivo='spe_perm.dat'):
         for j in range(Ny_spe):
             for i in range(Nx_spe):
                 kx[i, j, k] = all_values[index]
-                ky[i, j, k] = all_values[index + Nx_spe * Ny_spe * Nz_spe]
+                ky[i, j, k] = all_values[index + Nx_spe * Ny_spe * Nz_spe]   #########
                 kz[i, j, k] = all_values[index + 2 * Nx_spe * Ny_spe * Nz_spe]
                 index += 1
 
@@ -70,7 +70,7 @@ def BuildDarcySystem(x, y, K_func, bc_left=1e6, bc_right=0.0):
             if i < n1 - 1:
                 K1, K2 = K_func(xc[i], yc[j]), K_func(xc[i + 1], yc[j])
                 K_e = 2 * K1 * K2 / (K1 + K2 + 1e-30)
-                Tx_e = K_e * dy[j] / (0.5 * dx[i] + 0.5 * dx[i + 1]) / mu
+                Tx_e = K_e * dy[j] / (0.5 * dx[i] + 0.5 * dx[i + 1]) / mu ########
                 g_e = jglob(i + 1, j, n1)
                 row.append(g);
                 col.append(g_e);
@@ -108,7 +108,7 @@ def BuildDarcySystem(x, y, K_func, bc_left=1e6, bc_right=0.0):
                 data.append(-Ty_s)
                 diag_coef += Ty_s
 
-            # Condições de contorno
+            # Condições de contorno ########################
             if i == 0:
                 K_face = K_func(xc[i], yc[j])
                 T_bc = K_face * dy[j] / (0.5 * dx[i]) / mu
@@ -207,7 +207,7 @@ kx, ky, kz = carregar_dados_spe10('spe_perm.dat')
 kx_mD = kx.copy()
 
 # Converter para m² para cálculos
-kx = np.maximum(kx * 9.869233e-16, 1e-20)
+kx = np.maximum(kx * 9.869233e-16, 1e-20) ######################################
 
 # Selecionar camadas
 K33_orig = kx[:, :, 32]  # Camada 33 - forma (60, 220)
@@ -286,4 +286,4 @@ print(f"Camada 33 - Permeabilidade média: {np.mean(K33_interp_mD):.1f} mD")
 print(f"Camada 35 - Permeabilidade média: {np.mean(K35_interp_mD):.1f} mD")
 print(f"Razão K33/K35: {np.mean(K33_interp_mD) / np.mean(K35_interp_mD):.2f}")
 print(f"Arquivos gerados: camada_33.vts, camada_35.vts")
-print("✅ Simulação concluída!")
+print("Simulação concluída!")
