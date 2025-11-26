@@ -7,63 +7,101 @@ from rk_methods import*
 from adams_bashforth_moulton_methods import*
 
 
-def preditor_corrector_AB_AM(Un1, Un, z, preditor_order=2, corretor_order=2, n_correcoes=1):
+
+def preditor_corrector_AB_AM(Un, Un1, Un2=None, Un3=None, z=None,
+                             preditor_order=2, corretor_order=2, n_correcoes=1):
     """
-    Método Preditor-Corretor com Adams-Bashforth como preditor e Adams-Moulton como corretor
-    Formato compatível com BDF2: recebe Un1, Un e retorna Un2
-
-    Parameters:
-    Un1: estado U^{n+1} [real, imag]
-    Un: estado U^n [real, imag]
-    z: parâmetro complexo [real, imag]
-    preditor_order: ordem do método Adams-Bashforth (2, 3, 4)
-    corretor_order: ordem do método Adams-Moulton (1, 2, 3, 4)
-    n_correcoes: número de iterações do corretor
-
-    Returns:
-    Un2: próximo estado U^{n+2} [real, imag]
+    Preditor-Corretor seguindo P - E - (C - E)^n
+    - Un, Un1, Un2, Un3: históricos como [real, imag], onde Un é o mais antigo e Un3 o mais recente
+    - z: [real, imag] (h * lambda)
+    - preditor_order: 1..4 (usa suas funções AB1..AB4)
+    - corretor_order: 1..4 (aplica corretores na forma iterativa, como no C)
+    - n_correcoes: número de iterações (nCE)
+    Retorna: u_est final como [real, imag]
     """
-    # Criar histórico com os dois estados disponíveis
-    history = [Un.copy(), Un1.copy()]
+    if z is None:
+        raise ValueError("z não pode ser None (passe z = [real, imag]).")
 
-    # PREDITOR: Adams-Bashforth
+    # montar histórico (apenas entradas não-None)
+    history = [Un, Un1, Un2, Un3]
+    hist = [h for h in history if h is not None]
+    if len(hist) < 2:
+        raise ValueError("É necessário pelo menos dois valores históricos (Un, Un1).")
+
+    # helpers elementares
+    def add(a,b): return [a[0]+b[0], a[1]+b[1]]
+    def sub(a,b): return [a[0]-b[0], a[1]-b[1]]
+    def scale(a, alpha): return [alpha*a[0], alpha*a[1]]
+
+    # --- PREDITOR: escolhe a função AB adequada usando os últimos elementos (mais recente é hist[-1]) ---
     if preditor_order == 1:
-        Un_pred = AB1(history[-1], z)
-    if preditor_order == 2:
-        Un_pred = AB2(history[-1], history[-2], z)
+        u_pred = AB1(hist[-1], z)
+    elif preditor_order == 2:
+        if len(hist) < 2: raise ValueError("AB2 requer 2 estados históricos.")
+        u_pred = AB2(hist[-1], hist[-2], z)
     elif preditor_order == 3:
-        # Para ordem 3, precisamos de mais um estado anterior
-        # Usar Euler implícito para estimar U^{n-1}
-        Un_prev = euler_implict(history[-2], z)
-        history.insert(0, Un_prev)
-        Un_pred = AB3(history[-1], history[-2], history[-3], z)
+        if len(hist) < 3: raise ValueError("AB3 requer 3 estados históricos.")
+        u_pred = AB3(hist[-1], hist[-2], hist[-3], z)
     elif preditor_order == 4:
-        # Para ordem 4, precisamos de mais dois estados anteriores
-        Un_prev1 = euler_implict(history[-2], z)
-        Un_prev2 = euler_implict(Un_prev1, z)
-        history.insert(0, Un_prev2)
-        history.insert(0, Un_prev1)
-        Un_pred = AB4(history[-1], history[-2], history[-3], history[-4], z)
+        if len(hist) < 4: raise ValueError("AB4 requer 4 estados históricos.")
+        u_pred = AB4(hist[-1], hist[-2], hist[-3], hist[-4], z)
     else:
-        raise ValueError("Ordem do preditor deve ser 2, 3 ou 4")
+        raise NotImplementedError("preditor_order deve ser 1..4")
 
-    # CORRETOR: Adams-Moulton (aplicado iterativamente)
-    Un_corr = Un_pred
+    # --- ESTIMATIVA inicial (E): f_pred = z * u_pred ---
+    f_arr = prod(z, u_pred)       # retorna array-like [re,im]
+    f_est = [float(f_arr[0]), float(f_arr[1])]
 
+    # quem é "u_n" (o passo mais recente antes do preditor)? -> hist[-1]
+    u_n = hist[-1]
+    u_nm1 = hist[-2] if len(hist) >= 2 else None
+    u_nm2 = hist[-3] if len(hist) >= 3 else None
+
+    # --- LOOP CORRETOR: (C then E) repeated n_correcoes times ---
+    u_est = u_pred
     for _ in range(n_correcoes):
-        # Preparar histórico para o corretor
-        corr_history = history.copy()
-        corr_history.append(Un_corr)
-
         if corretor_order == 1:
-            Un_corr = AM1(corr_history[-1], z)
-        elif corretor_order == 2:
-            Un_corr = AM2(corr_history[-1], corr_history[-2], z)
-        elif corretor_order == 3:
-            Un_corr = AM3(corr_history[-1], corr_history[-2], corr_history[-3], z)
-        elif corretor_order == 4:
-            Un_corr = AM4(corr_history[-1], corr_history[-2], corr_history[-3], corr_history[-4], z)
-        else:
-            raise ValueError("Ordem do corretor deve ser entre 1 e 4")
+            # implicit Euler fixed-point (como no C)
+            # u_est = u_n + f_est
+            u_est = add(u_n, f_est)
 
-    return Un_corr
+        elif corretor_order == 2:
+            # trapezoid (AM2) iterativo: u_est = u_n + 0.5*(z*u_n + f_est)
+            z_un_arr = prod(z, u_n)
+            z_un = [float(z_un_arr[0]), float(z_un_arr[1])]
+            avg = [0.5 * (z_un[0] + f_est[0]), 0.5 * (z_un[1] + f_est[1])]
+            u_est = add(u_n, avg)
+
+        elif corretor_order == 3:
+            # AM3 iterative as in C:
+            # u_est = u_n + (5/12) f_est + (2/3) z*u_n - (1/12) z*u_{n-1}
+            if u_nm1 is None:
+                raise ValueError("AM3 requer u_{n-1} disponível (Un2).")
+            z_un_arr = prod(z, u_n); z_un = [float(z_un_arr[0]), float(z_un_arr[1])]
+            z_um1_arr = prod(z, u_nm1); z_um1 = [float(z_um1_arr[0]), float(z_um1_arr[1])]
+            term = add(scale(f_est, 5.0/12.0), scale(z_un, 2.0/3.0))
+            term = sub(term, scale(z_um1, 1.0/12.0))
+            u_est = add(u_n, term)
+
+        elif corretor_order == 4:
+            # AM4 iterative as in C:
+            # u_est = u_n + (9/24) f_est + (19/24) z*u_n - (5/24) z*u_{n-1} + (1/24) z*u_{n-2}
+            if u_nm1 is None or u_nm2 is None:
+                raise ValueError("AM4 requer u_{n-1} e u_{n-2} disponíveis (Un2, Un1).")
+            z_un_arr = prod(z, u_n); z_un = [float(z_un_arr[0]), float(z_un_arr[1])]
+            z_um1_arr = prod(z, u_nm1); z_um1 = [float(z_um1_arr[0]), float(z_um1_arr[1])]
+            z_um2_arr = prod(z, u_nm2); z_um2 = [float(z_um2_arr[0]), float(z_um2_arr[1])]
+            term = add(scale(f_est, 9.0/24.0), scale(z_un, 19.0/24.0))
+            term = sub(term, scale(z_um1, 5.0/24.0))
+            term = add(term, scale(z_um2, 1.0/24.0))
+            u_est = add(u_n, term)
+
+        else:
+            raise NotImplementedError("corretor_order deve ser 1..4")
+
+        # --- E (re-avaliação) após a correção ---
+        f_arr = prod(z, u_est)
+        f_est = [float(f_arr[0]), float(f_arr[1])]
+
+    # u_est já é o U^{próximo} (e f_est é f(U^{próximo}))
+    return u_est

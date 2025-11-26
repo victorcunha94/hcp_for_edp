@@ -1,0 +1,34 @@
+- No contexto de escoamento de fluidos em meios porosos, o coeficiente $K(x)$ da equação elíptica
+$$
+-\nabla \cdot(K \nabla p)=f
+$$
+representa o campo de permeabilidade do meio, isto é, a capacidade local do material de permitir o escoamento de fluido. Regiões com valores elevados de $K$ são mais permeáveis, enquanto valores baixos indicam zonas de baixa condutividade.
+- Resolva o problema elíptico 2D no domínio
+$$
+\Omega=[0,670.56] \times[0,365.76](m),
+$$
+assumindo termo fonte nulo.
+- Considere o coeficiente de permeabilidade dado por
+$$
+\frac{K}{\mu}, \quad \mu=8.9 \times 10^{-14} \mathrm{~Pa} \cdot \mathrm{~s}
+$$
+onde $K$ é obtido a partir das camadas 33 e 35 do modelo SPE10.
+
+
+
+- Resolva o problema com condições de contorno do tipo slab, considerando que o contorno é dividido em:
+$$
+\partial \Omega=\partial \Omega_{\text {in }} \cup \partial \Omega_{\text {no }} \cup \partial \Omega_{\text {out }},
+$$
+onde:
+$$
+\begin{aligned}
+\partial \Omega_{\mathrm{in}} & =\left\{(0, y): y \in\left[0, L_y\right]\right\} \\
+\partial \Omega_{\mathrm{no}} & =\left\{(x, 0),\left(x, L_y\right): x \in\left[0, L_x\right]\right\} \\
+\partial \Omega_{\mathrm{out}} & =\left\{\left(L_x, y\right): y \in\left[0, L_y\right]\right\}
+\end{aligned}
+$$
+- As condições de contorno são:
+$$
+\begin{cases}\boldsymbol{u} \cdot \boldsymbol{n}=u_b=0.036 \mathrm{~m} / \mathrm{h}, & \text { em } \partial \Omega_{\text {in }} \\ \boldsymbol{u} \cdot \boldsymbol{n}=0, & \text { em } \partial \Omega_{\text {no }} \\ p=p_b=6 \mathrm{MPa}, & \text { em } \partial \Omega_{\text {out }}\end{cases}
+$$

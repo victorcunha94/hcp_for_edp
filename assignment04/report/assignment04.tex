@@ -1,0 +1,123 @@
+\documentclass[]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+% Title Page
+\title{}
+\author{}
+
+
+\begin{document}
+\maketitle
+
+
+\section{Formulação do Problema}
+
+Considera-se a equação de Poisson bidimensional com coeficiente variável:
+
+\begin{equation}
+	-\nabla \cdot (K \nabla p) = f \quad \text{em} \quad \Omega
+\end{equation}
+
+onde:
+\begin{itemize}
+	\item $p = p(x,y)$ é a variável primária (pressão, temperatura, etc.)
+	\item $K = K(x,y)$ é o coeficiente de difusividade
+	\item $f = f(x,y)$ é o termo fonte
+	\item $\Omega \subset \mathbb{R}^2$ é o domínio de estudo
+\end{itemize}
+
+\section{Discretização por Volumes Finitos}
+
+\subsection{Malha Computacional}
+
+Define-se uma malha estruturada com células $\Omega_{ij}$:
+
+\begin{equation}
+	\Omega_{ij} = [x_{i-\frac{1}{2}}, x_{i+\frac{1}{2}}] \times [y_{j-\frac{1}{2}}, y_{j+\frac{1}{2}}]
+\end{equation}
+
+com centro da célula em $(x_i, y_j)$.
+
+\subsection{Integração sobre o Volume de Controle}
+
+Integrando a equação~(1) sobre a célula $\Omega_{ij}$:
+
+\begin{equation}
+	-\iint_{\Omega_{ij}} \nabla \cdot (K \nabla p) \, dA = \iint_{\Omega_{ij}} f \, dA
+\end{equation}
+
+Aplicando o teorema da divergência:
+
+\begin{equation}
+	-\oint_{\partial \Omega_{ij}} (K \nabla p) \cdot \mathbf{n} \, ds = \iint_{\Omega_{ij}} f \, dA
+\end{equation}
+
+\subsection{Fluxos nas Interfaces}
+
+O balanço de fluxos nas quatro faces da célula é dado por:
+
+\begin{align}
+	&F_{i+\frac{1}{2},j}^x + F_{i-\frac{1}{2},j}^x + F_{i,j+\frac{1}{2}}^y + F_{i,j-\frac{1}{2}}^y = f_{i,j} \Delta x_i \Delta y_j
+\end{align}
+
+onde os fluxos são aproximados por:
+
+\begin{align}
+	F_{i+\frac{1}{2},j}^x &\approx -K_{i+\frac{1}{2},j} \frac{p_{i+1,j} - p_{i,j}}{\Delta x_{i+\frac{1}{2}}} \Delta y_j \\
+	F_{i-\frac{1}{2},j}^x &\approx +K_{i-\frac{1}{2},j} \frac{p_{i,j} - p_{i-1,j}}{\Delta x_{i-\frac{1}{2}}} \Delta y_j \\
+	F_{i,j+\frac{1}{2}}^y &\approx -K_{i,j+\frac{1}{2}} \frac{p_{i,j+1} - p_{i,j}}{\Delta y_{j+\frac{1}{2}}} \Delta x_i \\
+	F_{i,j-\frac{1}{2}}^y &\approx +K_{i,j-\frac{1}{2}} \frac{p_{i,j} - p_{i,j-1}}{\Delta y_{j-\frac{1}{2}}} \Delta x_i
+\end{align}
+
+\subsection{Equação Discretizada Final}
+
+Substituindo as aproximações dos fluxos, obtém-se:
+
+\begin{align}
+	&-K_{i+\frac{1}{2},j} \frac{p_{i+1,j} - p_{i,j}}{\Delta x_{i+\frac{1}{2}}} \Delta y_j
+	+ K_{i-\frac{1}{2},j} \frac{p_{i,j} - p_{i-1,j}}{\Delta x_{i-\frac{1}{2}}} \Delta y_j \nonumber \\
+	&-K_{i,j+\frac{1}{2}} \frac{p_{i,j+1} - p_{i,j}}{\Delta y_{j+\frac{1}{2}}} \Delta x_i
+	+ K_{i,j-\frac{1}{2}} \frac{p_{i,j} - p_{i,j-1}}{\Delta y_{j-\frac{1}{2}}} \Delta x_i
+	= f_{i,j} \Delta x_i \Delta y_j
+\end{align}
+
+\subsection{Forma Matricial}
+
+A equação discretizada pode ser escrita na forma matricial:
+
+\begin{equation}
+	\mathbf{A} \mathbf{p} = \mathbf{f}
+\end{equation}
+
+onde:
+\begin{itemize}
+	\item $\mathbf{A}$ é a matriz de coeficientes (esparsa)
+	\item $\mathbf{p}$ é o vetor das incógnitas $p_{i,j}$
+	\item $\mathbf{f}$ é o vetor do termo fonte
+\end{itemize}
+
+\section{Esquema Numérico}
+
+O esquema utiliza:
+\begin{itemize}
+	\item \textbf{Diferenças centradas} para os gradientes
+	\item \textbf{Avaliação harmônica} para $K_{i+\frac{1}{2},j}$ em meios heterogêneos
+	\item \textbf{Malha não-uniforme} permitindo $\Delta x_i \neq \text{constante}$
+\end{itemize}
+
+\section{Conclusão}
+
+O método de volumes finitos apresentado conserva localmente os fluxos e é adequado para problemas com coeficientes descontínuos e geometrias complexas.
+
+\begin{abstract}
+\end{abstract}
+
+\end{document}          

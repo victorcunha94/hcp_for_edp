@@ -2,9 +2,12 @@
 *.exe
 *.o
 *.out
-
+*.png
+*.nbi
+*.nbc
+*.pyc
 # Pastas de output
-output/
+#output/
 build/
 
 
@@ -29,7 +32,47 @@ Thumbs.db
 clone_/
 # Pasta 
 pyomp/
+__pycache__/
 
-/assignment03/gbispo/balanced.c
+# Ficheiros de compilação do LaTeX
+*.aux
+*.log
+*.toc
+*.lot
+*.lof
+*.out
+*.nav
+*.snm
+*.vrb
+*.upa
+*.fls
+*.fdb_latexmk
 
+# Ficheiros temporários e de impressão
+*.dvi
+*.ps
+*.eps
+*.pdf
+*.synctex.gz
+*.csv
+
+# Pacote minted
+_minted/
+
+# Ficheiros de backup e de configuração
+*.bak
+*.swp
+
+# Ficheiros de imagem
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+
+# Ficheiros Paraview
+*.vtr
+*.vts
+*.dat
+*.vtk
 

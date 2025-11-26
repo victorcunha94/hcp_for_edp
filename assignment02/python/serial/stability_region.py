@@ -12,7 +12,7 @@ T = 1000
 
 #tipo= 'RK3'
 
-tipo = "AM5"
+tipo = "euler_implict"
 
 
 def TR_BDF2 (Un,z):
@@ -25,7 +25,7 @@ def TR_BDF2 (Un,z):
   return Un1
 
 
-incle = 200
+incle = 500
 xl = -8
 xr = 3
 yb = -5
@@ -203,37 +203,6 @@ if tipo =='AM4':
           Un1 = Un2
           Un2 = Un3
           Un3 = Un4
-
-
-        # print(Un)
-          if linalg.norm(Un4, 2) < tol :
-            plt.plot(real_z, img_z, 'bo', markersize=0.5)
-            break
-          elif linalg.norm(Un4, 2) > 1/tol:
-            #plt.plot(real_z, img_z, 'ko', markersize=2)
-            break
-
-
-if tipo =='AM5':
-    for h in range(incle + 1):
-      print(f"h = {h}")
-      for k in range(incle + 1):
-        real_z = xl + (h*(np.abs(xr - xl)/incle))
-        img_z  = yb + (k*(np.abs(yb - yt)/incle))
-        z      = np.array([real_z, img_z])
-        Un     = np.array([1, 0])
-        Un1    = AM1(Un, z)
-        Un2    = AM2(Un1, Un, z)
-        Un3    = AM3(Un2, Un1, Un, z)
-        Un4    = AM4(Un3, Un2, Un1, Un, z)
-
-        for n in range(T):
-          Un5 = AM5(Un4, Un3, Un2, Un1, Un, z)
-          Un  = Un1
-          Un1 = Un2
-          Un2 = Un3
-          Un3 = Un4
-          Un4 = Un5
 
 
         # print(Un)

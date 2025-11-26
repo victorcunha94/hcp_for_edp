@@ -1,0 +1,906 @@
+
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 1x1)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 213.1499s
+Tempo Máximo Computação = 213.0783s
+Tempo Total Comunicação = 0.0000s
+Overhead = 0.0000
+--------------------------------------------------------
+tempo total - teste : 213.16246141213924 s
+Arquivo output/results_1x1.csv salvo com 1 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 512x512 = 262144 pontos | U_data: 262144 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 2x2)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 50.1685s
+Tempo Máximo Computação = 41.9122s
+Tempo Total Comunicação = 1.2947s
+Overhead = 0.0309
+--------------------------------------------------------
+tempo total - teste : 50.17254318110645 s
+Arquivo output/results_2x2.csv salvo com 4 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 1: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 2: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 3: 256x256 = 65536 pontos | U_data: 65536 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 3x3)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 33.1393s
+Tempo Máximo Computação = 21.2307s
+Tempo Total Comunicação = 1.2892s
+Overhead = 0.0607
+--------------------------------------------------------
+tempo total - teste : 33.14286856073886 s
+Arquivo output/results_3x3.csv salvo com 9 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 1: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 2: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 3: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 4: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 5: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 6: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 7: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 8: 170x170 = 28900 pontos | U_data: 28900 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 4x4)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 25.4278s
+Tempo Máximo Computação = 13.0231s
+Tempo Total Comunicação = 1.1956s
+Overhead = 0.0918
+--------------------------------------------------------
+tempo total - teste : 25.431810771115124 s
+Arquivo output/results_4x4.csv salvo com 16 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 1: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 2: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 3: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 4: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 5: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 6: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 7: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 8: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 9: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 10: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 11: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 12: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 13: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 14: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 15: 128x128 = 16384 pontos | U_data: 16384 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 5x5)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 22.9345s
+Tempo Máximo Computação = 9.4239s
+Tempo Total Comunicação = 1.2261s
+Overhead = 0.1301
+--------------------------------------------------------
+tempo total - teste : 22.950356806628406 s
+Arquivo output/results_5x5.csv salvo com 25 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 1: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 2: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 3: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 4: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 5: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 6: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 7: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 8: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 9: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 10: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 11: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 12: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 13: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 14: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 15: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 16: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 17: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 18: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 19: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 20: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 21: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 22: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 23: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 24: 102x102 = 10404 pontos | U_data: 10404 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 6x6)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 34.8943s
+Tempo Máximo Computação = 7.6616s
+Tempo Total Comunicação = 5.6510s
+Overhead = 0.7376
+--------------------------------------------------------
+tempo total - teste : 34.89661025535315 s
+Arquivo output/results_6x6.csv salvo com 36 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 1: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 2: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 3: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 4: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 5: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 6: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 7: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 8: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 9: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 10: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 11: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 12: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 13: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 14: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 15: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 16: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 17: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 18: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 19: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 20: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 21: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 22: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 23: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 24: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 25: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 26: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 27: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 28: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 29: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 30: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 31: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 32: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 33: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 34: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 35: 85x85 = 7225 pontos | U_data: 7225 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 1x1)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 209.5324s
+Tempo Máximo Computação = 209.4636s
+Tempo Total Comunicação = 0.0000s
+Overhead = 0.0000
+--------------------------------------------------------
+tempo total - teste : 209.54433056805283 s
+Arquivo output/results_1x1.csv salvo com 1 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 512x512 = 262144 pontos | U_data: 262144 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 2x2)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 49.2613s
+Tempo Máximo Computação = 41.3372s
+Tempo Total Comunicação = 1.3084s
+Overhead = 0.0317
+--------------------------------------------------------
+tempo total - teste : 49.26541713718325 s
+Arquivo output/results_2x2.csv salvo com 4 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 1: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 2: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 3: 256x256 = 65536 pontos | U_data: 65536 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 3x3)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 32.9308s
+Tempo Máximo Computação = 22.0209s
+Tempo Total Comunicação = 1.5120s
+Overhead = 0.0687
+--------------------------------------------------------
+tempo total - teste : 32.933391181752086 s
+Arquivo output/results_3x3.csv salvo com 9 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 1: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 2: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 3: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 4: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 5: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 6: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 7: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 8: 170x170 = 28900 pontos | U_data: 28900 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 4x4)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 25.2079s
+Tempo Máximo Computação = 13.3029s
+Tempo Total Comunicação = 1.1626s
+Overhead = 0.0874
+--------------------------------------------------------
+tempo total - teste : 25.218437313102186 s
+Arquivo output/results_4x4.csv salvo com 16 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 1: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 2: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 3: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 4: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 5: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 6: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 7: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 8: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 9: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 10: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 11: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 12: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 13: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 14: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 15: 128x128 = 16384 pontos | U_data: 16384 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 5x5)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 22.3693s
+Tempo Máximo Computação = 9.5386s
+Tempo Total Comunicação = 1.3989s
+Overhead = 0.1467
+--------------------------------------------------------
+tempo total - teste : 22.376455584540963 s
+Arquivo output/results_5x5.csv salvo com 25 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 1: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 2: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 3: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 4: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 5: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 6: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 7: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 8: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 9: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 10: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 11: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 12: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 13: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 14: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 15: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 16: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 17: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 18: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 19: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 20: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 21: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 22: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 23: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 24: 102x102 = 10404 pontos | U_data: 10404 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 6x6)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 34.4491s
+Tempo Máximo Computação = 7.4226s
+Tempo Total Comunicação = 6.9399s
+Overhead = 0.9350
+--------------------------------------------------------
+tempo total - teste : 34.45151268783957 s
+Arquivo output/results_6x6.csv salvo com 36 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 1: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 2: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 3: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 4: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 5: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 6: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 7: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 8: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 9: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 10: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 11: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 12: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 13: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 14: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 15: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 16: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 17: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 18: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 19: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 20: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 21: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 22: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 23: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 24: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 25: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 26: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 27: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 28: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 29: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 30: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 31: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 32: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 33: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 34: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 35: 85x85 = 7225 pontos | U_data: 7225 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 1x1)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 213.3195s
+Tempo Máximo Computação = 213.2473s
+Tempo Total Comunicação = 0.0000s
+Overhead = 0.0000
+--------------------------------------------------------
+tempo total - teste : 213.33168367948383 s
+Arquivo output/results_1x1.csv salvo com 1 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 512x512 = 262144 pontos | U_data: 262144 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 2x2)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 49.3819s
+Tempo Máximo Computação = 37.6562s
+Tempo Total Comunicação = 1.2813s
+Overhead = 0.0340
+--------------------------------------------------------
+tempo total - teste : 49.38585040718317 s
+Arquivo output/results_2x2.csv salvo com 4 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 1: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 2: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 3: 256x256 = 65536 pontos | U_data: 65536 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 3x3)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 32.6013s
+Tempo Máximo Computação = 21.5224s
+Tempo Total Comunicação = 1.3228s
+Overhead = 0.0615
+--------------------------------------------------------
+tempo total - teste : 32.60839642584324 s
+Arquivo output/results_3x3.csv salvo com 9 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 1: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 2: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 3: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 4: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 5: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 6: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 7: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 8: 170x170 = 28900 pontos | U_data: 28900 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 4x4)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 25.1819s
+Tempo Máximo Computação = 12.9823s
+Tempo Total Comunicação = 1.2063s
+Overhead = 0.0929
+--------------------------------------------------------
+tempo total - teste : 25.186105673201382 s
+Arquivo output/results_4x4.csv salvo com 16 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 1: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 2: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 3: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 4: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 5: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 6: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 7: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 8: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 9: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 10: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 11: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 12: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 13: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 14: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 15: 128x128 = 16384 pontos | U_data: 16384 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 5x5)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 22.5732s
+Tempo Máximo Computação = 9.4370s
+Tempo Total Comunicação = 1.2814s
+Overhead = 0.1358
+--------------------------------------------------------
+tempo total - teste : 22.581027920357883 s
+Arquivo output/results_5x5.csv salvo com 25 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 1: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 2: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 3: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 4: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 5: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 6: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 7: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 8: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 9: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 10: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 11: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 12: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 13: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 14: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 15: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 16: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 17: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 18: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 19: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 20: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 21: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 22: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 23: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 24: 102x102 = 10404 pontos | U_data: 10404 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 6x6)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 35.0516s
+Tempo Máximo Computação = 7.9317s
+Tempo Total Comunicação = 6.5036s
+Overhead = 0.8200
+--------------------------------------------------------
+tempo total - teste : 35.05403223913163 s
+Arquivo output/results_6x6.csv salvo com 36 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 1: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 2: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 3: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 4: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 5: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 6: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 7: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 8: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 9: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 10: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 11: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 12: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 13: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 14: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 15: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 16: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 17: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 18: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 19: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 20: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 21: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 22: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 23: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 24: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 25: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 26: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 27: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 28: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 29: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 30: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 31: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 32: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 33: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 34: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 35: 85x85 = 7225 pontos | U_data: 7225 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 1x1)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 211.8760s
+Tempo Máximo Computação = 211.8117s
+Tempo Total Comunicação = 0.0000s
+Overhead = 0.0000
+--------------------------------------------------------
+tempo total - teste : 211.88817026652396 s
+Arquivo output/results_1x1.csv salvo com 1 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 512x512 = 262144 pontos | U_data: 262144 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 2x2)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 50.5105s
+Tempo Máximo Computação = 40.7903s
+Tempo Total Comunicação = 1.2911s
+Overhead = 0.0317
+--------------------------------------------------------
+tempo total - teste : 50.514787706546485 s
+Arquivo output/results_2x2.csv salvo com 4 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 1: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 2: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 3: 256x256 = 65536 pontos | U_data: 65536 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 3x3)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 33.0597s
+Tempo Máximo Computação = 21.4229s
+Tempo Total Comunicação = 1.2497s
+Overhead = 0.0583
+--------------------------------------------------------
+tempo total - teste : 33.062085224315524 s
+Arquivo output/results_3x3.csv salvo com 9 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 1: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 2: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 3: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 4: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 5: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 6: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 7: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 8: 170x170 = 28900 pontos | U_data: 28900 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 4x4)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 25.4874s
+Tempo Máximo Computação = 13.2936s
+Tempo Total Comunicação = 1.2128s
+Overhead = 0.0912
+--------------------------------------------------------
+tempo total - teste : 25.490355065092444 s
+Arquivo output/results_4x4.csv salvo com 16 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 1: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 2: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 3: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 4: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 5: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 6: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 7: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 8: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 9: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 10: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 11: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 12: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 13: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 14: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 15: 128x128 = 16384 pontos | U_data: 16384 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 5x5)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 22.9550s
+Tempo Máximo Computação = 9.6555s
+Tempo Total Comunicação = 1.2134s
+Overhead = 0.1257
+--------------------------------------------------------
+tempo total - teste : 22.95774078555405 s
+Arquivo output/results_5x5.csv salvo com 25 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 1: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 2: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 3: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 4: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 5: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 6: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 7: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 8: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 9: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 10: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 11: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 12: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 13: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 14: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 15: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 16: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 17: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 18: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 19: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 20: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 21: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 22: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 23: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 24: 102x102 = 10404 pontos | U_data: 10404 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 6x6)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 35.5313s
+Tempo Máximo Computação = 8.4134s
+Tempo Total Comunicação = 6.4844s
+Overhead = 0.7707
+--------------------------------------------------------
+tempo total - teste : 35.533320971764624 s
+Arquivo output/results_6x6.csv salvo com 36 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 1: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 2: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 3: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 4: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 5: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 6: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 7: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 8: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 9: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 10: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 11: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 12: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 13: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 14: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 15: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 16: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 17: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 18: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 19: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 20: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 21: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 22: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 23: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 24: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 25: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 26: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 27: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 28: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 29: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 30: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 31: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 32: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 33: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 34: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 35: 85x85 = 7225 pontos | U_data: 7225 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 1x1)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 211.5585s
+Tempo Máximo Computação = 211.4904s
+Tempo Total Comunicação = 0.0000s
+Overhead = 0.0000
+--------------------------------------------------------
+tempo total - teste : 211.57059676665813 s
+Arquivo output/results_1x1.csv salvo com 1 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 512x512 = 262144 pontos | U_data: 262144 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 2x2)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 49.8880s
+Tempo Máximo Computação = 38.0127s
+Tempo Total Comunicação = 1.3036s
+Overhead = 0.0343
+--------------------------------------------------------
+tempo total - teste : 49.89197316393256 s
+Arquivo output/results_2x2.csv salvo com 4 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 1: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 2: 256x256 = 65536 pontos | U_data: 65536 pontos
+    Processo 3: 256x256 = 65536 pontos | U_data: 65536 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 3x3)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 32.3461s
+Tempo Máximo Computação = 21.4365s
+Tempo Total Comunicação = 1.3623s
+Overhead = 0.0636
+--------------------------------------------------------
+tempo total - teste : 32.34869846235961 s
+Arquivo output/results_3x3.csv salvo com 9 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 1: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 2: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 3: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 4: 171x171 = 29241 pontos | U_data: 29241 pontos
+    Processo 5: 171x170 = 29070 pontos | U_data: 29070 pontos
+    Processo 6: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 7: 170x171 = 29070 pontos | U_data: 29070 pontos
+    Processo 8: 170x170 = 28900 pontos | U_data: 28900 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 4x4)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 25.3346s
+Tempo Máximo Computação = 13.3880s
+Tempo Total Comunicação = 1.2329s
+Overhead = 0.0921
+--------------------------------------------------------
+tempo total - teste : 25.33850114233792 s
+Arquivo output/results_4x4.csv salvo com 16 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 1: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 2: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 3: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 4: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 5: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 6: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 7: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 8: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 9: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 10: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 11: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 12: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 13: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 14: 128x128 = 16384 pontos | U_data: 16384 pontos
+    Processo 15: 128x128 = 16384 pontos | U_data: 16384 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 5x5)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 22.3622s
+Tempo Máximo Computação = 9.8489s
+Tempo Total Comunicação = 1.3585s
+Overhead = 0.1379
+--------------------------------------------------------
+tempo total - teste : 22.365119135007262 s
+Arquivo output/results_5x5.csv salvo com 25 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 1: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 2: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 3: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 4: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 5: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 6: 103x103 = 10609 pontos | U_data: 10609 pontos
+    Processo 7: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 8: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 9: 103x102 = 10506 pontos | U_data: 10506 pontos
+    Processo 10: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 11: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 12: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 13: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 14: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 15: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 16: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 17: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 18: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 19: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 20: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 21: 102x103 = 10506 pontos | U_data: 10506 pontos
+    Processo 22: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 23: 102x102 = 10404 pontos | U_data: 10404 pontos
+    Processo 24: 102x102 = 10404 pontos | U_data: 10404 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos
+DEBUG: Depois das reduções
+--------------------------------------------------------
+Método de Jacobi Paralelo Concluído (MPI 6x6)
+Iterações = 42032
+Erro Final = 9.99727576e-10
+Tempo Wall-Clock = 35.2293s
+Tempo Máximo Computação = 7.6836s
+Tempo Total Comunicação = 6.2775s
+Overhead = 0.8170
+--------------------------------------------------------
+tempo total - teste : 35.23164446465671 s
+Arquivo output/results_6x6.csv salvo com 36 processos
+Colunas salvas: ['rank', 'start_x', 'end_x', 'start_y', 'end_y', 'local_nx', 'local_ny', 'iterations', 'exec_time', 'comm_time', 'total_time', 'overhead', 'final_error', 'U_data']
+    Processo 0: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 1: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 2: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 3: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 4: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 5: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 6: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 7: 86x86 = 7396 pontos | U_data: 7396 pontos
+    Processo 8: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 9: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 10: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 11: 86x85 = 7310 pontos | U_data: 7310 pontos
+    Processo 12: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 13: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 14: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 15: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 16: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 17: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 18: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 19: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 20: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 21: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 22: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 23: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 24: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 25: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 26: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 27: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 28: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 29: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 30: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 31: 85x86 = 7310 pontos | U_data: 7310 pontos
+    Processo 32: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 33: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 34: 85x85 = 7225 pontos | U_data: 7225 pontos
+    Processo 35: 85x85 = 7225 pontos | U_data: 7225 pontos
+Total de pontos no domínio: 262144
+Domínio esperado: 512x512 = 262144 pontos

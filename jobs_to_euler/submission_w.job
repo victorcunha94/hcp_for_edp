@@ -1,0 +1,13 @@
+#PBS -N name_job
+#PBS -l select=1:ncpus=40
+#PBS -l walltime=336:00:00
+
+module load gcc/4.9.2 mpich/3.1.4
+
+cd /lustre/welton51/Trabalho_Cluster
+
+echo '*****************************************'
+
+chmod +x all_test.sh
+rm *.dat *.txt
+./all_test.sh

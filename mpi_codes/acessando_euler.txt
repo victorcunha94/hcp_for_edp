@@ -1,0 +1,5 @@
+ssh usuario@lmacc.icmc.usp.br -p 15126
+ssh usuario@10.10.15.137
+
+Para copiar arquivo:
+scp -P 15126 usuario@lmacc.....:~/arquivo .
