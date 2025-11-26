@@ -3,13 +3,9 @@ project(hcp_for_edp LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 
-find_package(OpenMP REQUIRED)
+find_package(MPI REQUIRED)
 
 add_executable(hcp_for_edp
-    assignment02/C-gbispo/main2.c
-        assignment02/C-gbispo/metodos_numericos.c
-        assignment02/C-gbispo/metodos_numericos.h
-        assignment02/C-gbispo/plotagem.c
-        assignment02/C-gbispo/plotagem.h)
+        assignment03/gbispo/paralleljacobiellipti.c)
 
-target_link_libraries(hcp_for_edp PRIVATE m OpenMP::OpenMP_C)
+target_link_libraries(hcp_for_edp PRIVATE m MPI::MPI_C)
