@@ -8,6 +8,7 @@
 
 
 
-$$p(x, y, z) = \\cos(2 \\*pi* x)\\cos(2 \\*pi* y)\\cos(2\\*pi* z)$$
+$$p(x, y, z) = \\cos(2 \pi x)\\cos(2 \pi y)\\cos(2 \pi z)$$
+
 
 
