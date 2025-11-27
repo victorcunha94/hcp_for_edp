@@ -3,23 +3,21 @@ import scipy.sparse
 import scipy.sparse.linalg
 from scipy.ndimage import zoom
 import time
+import matplotlib.pyplot as plt
 
 # =============================================================================
-# PARÂMETROS CORRETOS SPE10 - CORRIGIDOS
+# PARÂMETROS CORRETOS SPE10 - DIMENSÕES CORRIGIDAS
 # =============================================================================
-Lx, Nx = 365.76, 60    # 60 células na direção X (365.76 ft)
-Ly, Ny = 670.56, 220   # 220 células na direção Y (670.56 ft)
-nx, ny = Nx, Ny        # Para malha de células (não pontos)
+Lx, Nx = 670.56, 220   # 220 células na direção X (largura)
+Ly, Ny = 365.76, 60    # 60 células na direção Y (altura)
+nx, ny = Nx, Ny        
 mu = 1.0               # Viscosidade [cP]
 
 # Dimensões originais do SPE10
 Nx_spe, Ny_spe, Nz_spe = 60, 220, 85
 
 def carregar_dados_spe10_corrigido(arquivo='spe_perm.dat'):
-    """
-    Carrega dados SPE10 no formato correto
-    Formato: Bloco completo de Kx, depois Ky, depois Kz
-    """
+    """Carrega dados SPE10 no formato correto"""
     total_values = Nx_spe * Ny_spe * Nz_spe
     
     try:
@@ -27,10 +25,6 @@ def carregar_dados_spe10_corrigido(arquivo='spe_perm.dat'):
             all_values = np.array(file.read().split(), dtype=float)
         
         print(f"Total de valores lidos: {len(all_values)}")
-        print(f"Esperado: {total_values * 3}")
-        
-        if len(all_values) != total_values * 3:
-            print("AVISO: Número de valores não corresponde ao esperado!")
         
         # Inicializar arrays
         kx = np.zeros((Nx_spe, Ny_spe, Nz_spe))
@@ -59,25 +53,31 @@ def carregar_dados_spe10_corrigido(arquivo='spe_perm.dat'):
                     kz[i, j, k] = all_values[idx]
                     idx += 1
         
-        print(f"Permeabilidades carregadas - Kx: {kx.shape}, Min: {np.min(kx):.2e}, Max: {np.max(kx):.2e} mD")
+        print(f"Permeabilidades carregadas - Kx: {kx.shape}")
+        
+        # TRANSPOSE para orientação correta: (60, 220) -> (220, 60)
+        kx = np.transpose(kx, (1, 0, 2))
+        ky = np.transpose(ky, (1, 0, 2))
+        kz = np.transpose(kz, (1, 0, 2))
+        
+        print(f"Após transpose - Kx: {kx.shape}")
         
         return kx, ky, kz
         
     except FileNotFoundError:
         print(f"ERRO: Arquivo {arquivo} não encontrado!")
-        print("Certifique-se de que o arquivo está na pasta correta")
         return None, None, None
 
 def CreateMesh(Lx, Ly, Nx, Ny):
-    """Cria malha com número correto de células"""
+    """Cria malha com orientação correta"""
     dx = Lx / Nx
     dy = Ly / Ny
-    xc = np.linspace(dx/2, Lx - dx/2, Nx)  # Centros das células
+    xc = np.linspace(dx/2, Lx - dx/2, Nx)
     yc = np.linspace(dy/2, Ly - dy/2, Ny)
     return xc, yc, dx, dy
 
 def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
-    """Constrói sistema usando o campo de permeabilidade diretamente"""
+    """Constrói sistema com orientação correta"""
     Nx, Ny = len(xc), len(yc)
     Nc = Nx * Ny
     
@@ -92,7 +92,7 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
             g = idx(i, j)
             diag_coef = 0.0
             
-            # Fluxo na direção x (entre células i e i+1)
+            # Fluxo na direção x
             if i < Nx - 1:
                 K1, K2 = K_field[i, j], K_field[i+1, j]
                 K_e = 2 * K1 * K2 / (K1 + K2 + 1e-30)
@@ -109,7 +109,7 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
                 row.append(g); col.append(g_w); data.append(-Tx_w)
                 diag_coef += Tx_w
             
-            # Fluxo na direção y (entre células j e j+1)
+            # Fluxo na direção y
             if j < Ny - 1:
                 K1, K2 = K_field[i, j], K_field[i, j+1]
                 K_n = 2 * K1 * K2 / (K1 + K2 + 1e-30)
@@ -127,11 +127,11 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
                 diag_coef += Ty_s
             
             # Condições de contorno
-            if i == 0:  # Contorno esquerdo
+            if i == 0:
                 T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
                 rhs[g] += T_bc * bc_left
                 diag_coef += T_bc
-            elif i == Nx - 1:  # Contorno direito
+            elif i == Nx - 1:
                 T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
                 rhs[g] += T_bc * bc_right
                 diag_coef += T_bc
@@ -142,26 +142,20 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
     return A, rhs
 
 def salvar_para_paraview_corrigido(xc, yc, P_2D, K_mD, vx, vy, prefixo="solucao"):
-    """
-    Salva resultados em formato .vts (Structured Grid) para ParaView - CORRIGIDO
-    """
+    """Salva resultados em formato .vts"""
     Nx, Ny = len(xc), len(yc)
     
     print(f"Salvando {prefixo}.vts - Dimensões: {Nx}x{Ny}")
-    print(f"Pressão: {P_2D.shape}, K: {K_mD.shape}, Vx: {vx.shape}, Vy: {vy.shape}")
     
-    # Criar coordenadas dos pontos (Nx+1, Ny+1 pontos)
     x_points = np.linspace(0, Lx, Nx + 1)
     y_points = np.linspace(0, Ly, Ny + 1)
     
     with open(f"{prefixo}.vts", 'w') as f:
-        # Cabeçalho XML
         f.write('<?xml version="1.0"?>\n')
         f.write('<VTKFile type="StructuredGrid" version="0.1" byte_order="LittleEndian">\n')
         f.write(f'  <StructuredGrid WholeExtent="0 {Nx} 0 {Ny} 0 0">\n')
         f.write(f'    <Piece Extent="0 {Nx} 0 {Ny} 0 0">\n')
         
-        # Pontos da malha (coordenadas dos vértices)
         f.write('      <Points>\n')
         f.write('        <DataArray type="Float32" NumberOfComponents="3" format="ascii">\n')
         for j in range(Ny + 1):
@@ -170,38 +164,32 @@ def salvar_para_paraview_corrigido(xc, yc, P_2D, K_mD, vx, vy, prefixo="solucao"
         f.write('\n        </DataArray>\n')
         f.write('      </Points>\n')
         
-        # Dados nos pontos (valores nas células - usar CellData)
         f.write('      <CellData>\n')
         
-        # Pressão
         f.write('        <DataArray type="Float32" Name="Pressure" format="ascii">\n')
         for j in range(Ny):
             for i in range(Nx):
                 f.write(f'{P_2D[i, j]:.6e} ')
         f.write('\n        </DataArray>\n')
         
-        # Permeabilidade (em mD)
         f.write('        <DataArray type="Float32" Name="Permeability" format="ascii">\n')
         for j in range(Ny):
             for i in range(Nx):
                 f.write(f'{K_mD[i, j]:.6e} ')
         f.write('\n        </DataArray>\n')
         
-        # Velocidade X
         f.write('        <DataArray type="Float32" Name="Velocity_X" format="ascii">\n')
         for j in range(Ny):
             for i in range(Nx):
                 f.write(f'{vx[i, j]:.6e} ')
         f.write('\n        </DataArray>\n')
         
-        # Velocidade Y
         f.write('        <DataArray type="Float32" Name="Velocity_Y" format="ascii">\n')
         for j in range(Ny):
             for i in range(Nx):
                 f.write(f'{vy[i, j]:.6e} ')
         f.write('\n        </DataArray>\n')
         
-        # Magnitude da velocidade
         velocity_magnitude = np.sqrt(vx**2 + vy**2)
         f.write('        <DataArray type="Float32" Name="Velocity_Magnitude" format="ascii">\n')
         for j in range(Ny):
@@ -216,101 +204,85 @@ def salvar_para_paraview_corrigido(xc, yc, P_2D, K_mD, vx, vy, prefixo="solucao"
     
     print(f"Arquivo {prefixo}.vts salvo com sucesso!")
 
-
-
-# ============================================================================
-# PLOTAGEM EM UM DOMÍNIO DO TIPO "a quarter of the five spot"
-# ============================================================================
-
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-
-def plot_campos_spe10(xc, yc, P, K, vx, vy, titulo="", cmap='viridis'):
-    """Plota campos de pressão e velocidade similares à Figura 4.11"""
+def plot_campo_velocidade_simples(xc, yc, K_mD, vx, vy, prefixo="campo_velocidade", 
+                                escala_quiver=1.0, amostragem=4, tamanho_figura=(12, 8)):
+    """
+    Plota campo de velocidade simples com vetores sobre permeabilidade
+    """
+    # Criar meshgrid
+    X, Y = np.meshgrid(xc, yc, indexing='ij')
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 10))
+    # Criar figura
+    plt.figure(figsize=tamanho_figura)
     
-    # (a) Campo de pressões
-    im1 = ax1.contourf(xc, yc, P.T, 50, cmap=cmap)
-    ax1.set_title(f'(a) Campo de pressões - {titulo}')
-    ax1.set_xlabel('x [ft]')
-    ax1.set_ylabel('y [ft]')
-    plt.colorbar(im1, ax=ax1, label='Pressão [Pa]')
+    # Plot da permeabilidade como fundo
+    plt.imshow(K_mD.T, extent=[0, Lx, 0, Ly], origin='lower',
+              cmap='viridis', alpha=0.7, aspect='auto')
     
-    # (b) Campo de velocidades  
-    speed = np.sqrt(vx**2 + vy**2)
-    im2 = ax2.contourf(xc, yc, speed.T, 50, 
-                      norm=colors.LogNorm(vmin=np.min(speed[speed>0]), 
-                                         vmax=np.max(speed)),
-                      cmap='plasma')
+    # Adicionar colorbar para permeabilidade
+    cbar = plt.colorbar(label='Permeabilidade [mD]')
     
-    # Adicionar vetores de velocidade (amostrados)
-    skip = 3
-    ax2.quiver(xc[::skip], yc[::skip], 
-               vx[::skip, ::skip].T, vy[::skip, ::skip].T,
-               color='blue', scale=5e-9)
+    # Plot dos vetores de velocidade (amostrados)
+    # Ajustar escala baseada na magnitude média
+    velocidade_magnitude = np.sqrt(vx**2 + vy**2)
+    escala_auto = 0.5 / np.mean(velocidade_magnitude) if np.mean(velocidade_magnitude) > 0 else 1.0
+    escala_final = escala_auto * escala_quiver
     
-    ax2.set_title(f'(b) Campo de velocidades - {titulo}')
-    ax2.set_xlabel('x [ft]')
-    ax2.set_ylabel('y [ft]')
-    plt.colorbar(im2, ax=ax2, label='Velocidade [m/s]')
+    Q = plt.quiver(X[::amostragem, ::amostragem], Y[::amostragem, ::amostragem],
+                  vx[::amostragem, ::amostragem], vy[::amostragem, ::amostragem],
+                  color='red', scale=escala_final, scale_units='inches',
+                  width=0.003, headwidth=3, headlength=4, headaxislength=3)
     
-    plt.tight_layout()
-    plt.savefig(f'figura_campos_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
-    plt.show()
-
-def plot_permeabilidade(xc, yc, K, titulo=""):
-    """Plota campo de permeabilidade em escala logarítmica"""
-    plt.figure(figsize=(6, 12))
+    # Configurações do plot
+    plt.xlabel('X [ft]')
+    plt.ylabel('Y [ft]')
+    plt.title(f'Campo de Velocidade - {prefixo}\n(Vermelho: vetores velocidade)')
+    plt.grid(True, alpha=0.3)
     
-    im = plt.contourf(xc, yc, K.T, 50, 
-                     norm=colors.LogNorm(vmin=np.min(K[K>0]), 
-                                        vmax=np.max(K)),
-                     cmap='viridis')
+    # Adicionar escala dos vetores
+    plt.quiverkey(Q, 0.95, 0.95, 0.1, '0.1 m/s', labelpos='E',
+                  coordinates='figure', color='red')
     
-    plt.title(f'Campo de Permeabilidade - {titulo}\n'
-              f'Min: {np.min(K):.2e} mD, Max: {np.max(K):.2e} mD')
-    plt.xlabel('x [ft]')
-    plt.ylabel('y [ft]')
-    plt.colorbar(im, label='Permeabilidade [mD]')
+    # Salvar figura
+    nome_arquivo = f"{prefixo}.png"
+    plt.savefig(nome_arquivo, dpi=300, bbox_inches='tight')
+    print(f"Figura salva: {nome_arquivo}")
     
-    plt.tight_layout()
-    plt.savefig(f'permeabilidade_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    # Fechar figura para liberar memória
+    plt.close()
 
 # =============================================================================
-# EXECUÇÃO PRINCIPAL CORRIGIDA
+# EXECUÇÃO PRINCIPAL
 # =============================================================================
 
 print("=" * 60)
-print("CARREGAMENTO CORRETO DOS DADOS SPE10")
+print("SPE10 - CAMPO DE VELOCIDADE SIMPLES")
 print("=" * 60)
 
 # Carregar dados
 kx_mD, ky_mD, kz_mD = carregar_dados_spe10_corrigido('spe_perm.dat')
 
 if kx_mD is None:
-    print("Não foi possível carregar os dados. Verifique o arquivo.")
+    print("Não foi possível carregar os dados.")
     exit()
 
-# Converter para m² (1 mD = 9.869233e-16 m²)
+# Converter para m²
 kx = kx_mD * 9.869233e-16
 kx = np.maximum(kx, 1e-20)
 
-# Selecionar camadas (mantendo orientação original)
-K33_mD = kx_mD[:, :, 32]  # Camada 33 - forma (60, 220)
-K35_mD = kx_mD[:, :, 34]  # Camada 35 - forma (60, 220)
+# Selecionar camadas
+K33_mD = kx_mD[:, :, 32]  # Camada 33
+K35_mD = kx_mD[:, :, 34]  # Camada 35
 
-K33 = kx[:, :, 32]  # Para cálculos em m²
+K33 = kx[:, :, 32]
 K35 = kx[:, :, 34]
 
-print(f"\nCamada 33: {K33.shape}, Permeabilidade: {np.min(K33_mD):.2e} a {np.max(K33_mD):.2e} mD")
-print(f"Camada 35: {K35.shape}, Permeabilidade: {np.min(K35_mD):.2e} a {np.max(K35_mD):.2e} mD")
+print(f"\nCamada 33: {K33.shape}")
+print(f"Camada 35: {K35.shape}")
 
 # Criar malha
 xc, yc, dx, dy = CreateMesh(Lx, Ly, Nx, Ny)
 print(f"\nMalha criada: {len(xc)} x {len(yc)} células")
-print(f"Tamanho das células: dx = {dx:.2f} ft, dy = {dy:.2f} ft")
 
 # Resolver para Camada 33
 print("\n" + "=" * 40)
@@ -321,14 +293,13 @@ A33, rhs33 = BuildDarcySystem(xc, yc, dx, dy, K33, bc_left=1e6, bc_right=0.0)
 P33 = scipy.sparse.linalg.spsolve(A33, rhs33)
 P33_2D = P33.reshape((Nx, Ny))
 
-# Calcular velocidade (componentes x e y)
+# Calcular velocidade
 gradP_x33 = np.gradient(P33_2D, dx, axis=0)
 gradP_y33 = np.gradient(P33_2D, dy, axis=1)
 vx33 = -K33 * gradP_x33 / mu
 vy33 = -K33 * gradP_y33 / mu
 
-print(f"Solução Camada 33: P {P33_2D.shape}, vx {vx33.shape}, vy {vy33.shape}")
-print(f"Pressão: min={np.min(P33_2D):.2e}, max={np.max(P33_2D):.2e} Pa")
+print(f"Solução Camada 33: {P33_2D.shape}")
 
 # Resolver para Camada 35
 print("\n" + "=" * 40)
@@ -339,67 +310,55 @@ A35, rhs35 = BuildDarcySystem(xc, yc, dx, dy, K35, bc_left=1e6, bc_right=0.0)
 P35 = scipy.sparse.linalg.spsolve(A35, rhs35)
 P35_2D = P35.reshape((Nx, Ny))
 
-# Calcular velocidade (componentes x e y)
+# Calcular velocidade
 gradP_x35 = np.gradient(P35_2D, dx, axis=0)
 gradP_y35 = np.gradient(P35_2D, dy, axis=1)
 vx35 = -K35 * gradP_x35 / mu
 vy35 = -K35 * gradP_y35 / mu
 
-print(f"Solução Camada 35: P {P35_2D.shape}, vx {vx35.shape}, vy {vy35.shape}")
-print(f"Pressão: min={np.min(P35_2D):.2e}, max={np.max(P35_2D):.2e} Pa")
+print(f"Solução Camada 35: {P35_2D.shape}")
+
+# =============================================================================
+# PLOTAGEM SIMPLES DOS CAMPOS DE VELOCIDADE
+# =============================================================================
+
+print("\n" + "=" * 40)
+print("GERANDO FIGURAS DO CAMPO DE VELOCIDADE")
+print("=" * 40)
+
+# Plot Camada 33
+plot_campo_velocidade_simples(xc, yc, K33_mD, vx33, vy33, 
+                             prefixo="camada_33_velocidade",
+                             escala_quiver=3.0, amostragem=6,
+                             tamanho_figura=(14, 8))
+
+# Plot Camada 35  
+plot_campo_velocidade_simples(xc, yc, K35_mD, vx35, vy35,
+                             prefixo="camada_35_velocidade",
+                             escala_quiver=3.0, amostragem=6,
+                             tamanho_figura=(14, 8))
 
 # Salvar resultados para ParaView
 print("\n" + "=" * 40)
 print("SALVANDO PARA PARAVIEW")
 print("=" * 40)
 
-salvar_para_paraview_corrigido(xc, yc, P33_2D, K33_mD, vx33, vy33, "camada_33")
-salvar_para_paraview_corrigido(xc, yc, P35_2D, K35_mD, vx35, vy35, "camada_35")
+salvar_para_paraview_corrigido(xc, yc, P33_2D, K33_mD, vx33, vy33, "camada_33_horizontal")
+salvar_para_paraview_corrigido(xc, yc, P35_2D, K35_mD, vx35, vy35, "camada_35_horizontal")
 
 # Resumo final
 print("\n" + "=" * 60)
-print("RESUMO FINAL - DADOS SPE10 CORRETOS")
+print("RESUMO FINAL")
 print("=" * 60)
-print(f"Domínio: {Lx} ft (X) x {Ly} ft (Y)")
-print(f"Malha: {Nx} x {Ny} células")
-print(f"Camada 33 - Permeabilidade: {np.mean(K33_mD):.1f} mD")
-print(f"Camada 35 - Permeabilidade: {np.mean(K35_mD):.1f} mD")
-print(f"Vazão total Camada 33: {np.sum(vx33 * dy):.2e} m³/s")
-print(f"Vazão total Camada 35: {np.sum(vx35 * dy):.2e} m³/s")
-print("Arquivos gerados: camada_33.vts, camada_35.vts")
+print(f"Domínio: {Lx} ft × {Ly} ft")
+print(f"Malha: {Nx} × {Ny} células")
+print(f"Camada 33 - Permeabilidade média: {np.mean(K33_mD):.1f} mD")
+print(f"Camada 35 - Permeabilidade média: {np.mean(K35_mD):.1f} mD")
+print(f"Velocidade máxima Camada 33: {np.max(np.sqrt(vx33**2 + vy33**2)):.2e} m/s")
+print(f"Velocidade máxima Camada 35: {np.max(np.sqrt(vx35**2 + vy35**2)):.2e} m/s")
+print("\nArquivos gerados:")
+print("• camada_33_velocidade.png")
+print("• camada_35_velocidade.png") 
+print("• camada_33_horizontal.vts")
+print("• camada_35_horizontal.vts")
 print("=" * 60)
-
-# Instruções para ParaView
-print("\n" + "=" * 40)
-print("INSTRUÇÕES PARA PARAVIEW")
-print("=" * 40)
-print("1. Abra o ParaView")
-print("2. File → Open → selecione 'camada_33.vts' ou 'camada_35.vts'")
-print("3. Clique em 'Apply'")
-print("4. Use os menus para visualizar:")
-print("   - Pressure: campo de pressão")
-print("   - Permeability: campo de permeabilidade") 
-print("   - Velocity_X, Velocity_Y: componentes da velocidade")
-print("   - Velocity_Magnitude: magnitude da velocidade")
-print("5. Para vetores: Filters → Alphabetical → Glyph")
-print("=" * 40)
-
-# =============================================================================
-# PLOTAGENS SIMILARES À FIGURA 4.11
-# =============================================================================
-
-print("\n" + "=" * 40)
-print("GERANDO FIGURAS")
-print("=" * 40)
-
-# Plotar Camada 33
-plot_campos_spe10(xc, yc, P33_2D, K33_mD, vx33, vy33, 
-                 "Camada 33 - SPE10", 'RdYlBu_r')
-
-# Plotar Camada 35  
-plot_campos_spe10(xc, yc, P35_2D, K35_mD, vx35, vy35,
-                 "Camada 35 - SPE10", 'RdYlBu_r')
-
-# Plotar permeabilidades
-plot_permeabilidade(xc, yc, K33_mD, "Camada 33")
-plot_permeabilidade(xc, yc, K35_mD, "Camada 35")

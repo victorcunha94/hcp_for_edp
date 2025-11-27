@@ -4,7 +4,7 @@ import scipy.sparse.linalg
 from scipy.ndimage import zoom
 import time
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
+import matplotlib.patches as patches
 
 # =============================================================================
 # PARÂMETROS CORRETOS SPE10 - DIMENSÕES CORRIGIDAS
@@ -12,8 +12,7 @@ import matplotlib.colors as colors
 Lx, Nx = 670.56, 220   # 220 células na direção X (largura) - CORRIGIDO
 Ly, Ny = 365.76, 60    # 60 células na direção Y (altura) - CORRIGIDO
 nx, ny = Nx, Ny        
-#mu = 1.0   
-mu = 8.9e-14            # Viscosidade [cP]
+mu = 1.0               # Viscosidade [cP]
 
 # Dimensões originais do SPE10 (CORRETAS)
 Nx_spe, Ny_spe, Nz_spe = 60, 220, 85  # ATENÇÃO: SPE10 tem 60x220, mas vamos transpor
@@ -135,23 +134,14 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
                 diag_coef += Ty_s
             
             # Condições de contorno (agora na direção X correta)
-            # ======== VERIFICAR CONDIÇÃO DE CONTORNO DE NEUMAN ========
-#            if i == 0:  # Contorno esquerdo
-#                T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
-#                rhs[g] += T_bc * bc_left
-#                diag_coef += T_bc
-
-            if i == 0:  # Contorno esquerdo (Neumann: u . n = u_b)
-                T_bc =  dy  # Área da face
-                rhs[g] += T_bc * bc_left # Contribuição do fluxo prescrito u_b * dy
-                diag_coef += 0 # Não há termo diagonal adicional para Neumann
-
-
+            if i == 0:  # Contorno esquerdo
+                T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
+                rhs[g] += T_bc * bc_left
+                diag_coef += T_bc
             elif i == Nx - 1:  # Contorno direito
                 T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
-                rhs[g] += T_bc * bc_right 
+                rhs[g] += T_bc * bc_right
                 diag_coef += T_bc
-            
             
             row.append(g); col.append(g); data.append(diag_coef)
     
@@ -232,65 +222,175 @@ def salvar_para_paraview_corrigido(xc, yc, P_2D, K_mD, vx, vy, prefixo="solucao"
     
     print(f"Arquivo {prefixo}.vts salvo com sucesso!")
 
-
-
-
-# ============================================================================
-# PLOTAGEM EM UM DOMÍNIO DO TIPO "a quarter of the five spot"
-# ============================================================================
-
-
-def plot_campos_spe10(xc, yc, P, K, vx, vy, titulo="", cmap='viridis'):
-    """Plota campos de pressão e velocidade similares à Figura 4.11"""
+def plotar_campo_velocidade(xc, yc, P_2D, K_mD, vx, vy, titulo="Campo de Velocidade"):
+    """
+    Plota o campo de velocidade com vetores sobrepostos à permeabilidade
+    """
+    # Criar figura com subplots
+    fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+    fig.suptitle(titulo, fontsize=16, fontweight='bold')
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 4))
+    # CORREÇÃO: Criar meshgrid corretamente
+    X, Y = np.meshgrid(xc, yc, indexing='ij')
     
-    # (a) Campo de pressões
-    im1 = ax1.contourf(xc, yc, P.T, 50, cmap=cmap)
-    ax1.set_title(f'(a) Campo de pressões - {titulo}')
-    ax1.set_xlabel('x [ft]')
-    ax1.set_ylabel('y [ft]')
-    plt.colorbar(im1, ax=ax1, label='Pressão [Pa]')
+    # Verificar se as coordenadas são estritamente crescentes
+    print(f"Verificando coordenadas: X min={np.min(X):.2f}, max={np.max(X):.2f}, crescente={np.all(np.diff(X, axis=0) > 0)}")
+    print(f"Verificando coordenadas: Y min={np.min(Y):.2f}, max={np.max(Y):.2f}, crescente={np.all(np.diff(Y, axis=1) > 0)}")
     
-    # (b) Campo de velocidades  
-    speed = np.sqrt(vx**2 + vy**2)
-    #im2 = ax2.contourf(xc, yc, speed.T, 50, 
-                      #norm=colors.LogNorm(vmin=np.min(speed[speed>0]), 
-                                         #vmax=np.max(speed)),
-                      #cmap='jet')
+    # 1. Permeabilidade com vetores de velocidade
+    im1 = axes[0, 0].imshow(K_mD.T, extent=[0, Lx, 0, Ly], origin='lower', 
+                           cmap='viridis', aspect='auto')
+    # Vetores de velocidade (amostrados)
+    skip_x, skip_y = 8, 2  # Amostrar para não ficar muito poluído
+    quiv = axes[0, 0].quiver(X[::skip_x, ::skip_y], Y[::skip_x, ::skip_y], 
+                            vx[::skip_x, ::skip_y], vy[::skip_x, ::skip_y], 
+                            color='red', scale=0.5, scale_units='inches')
+    axes[0, 0].set_title('Permeabilidade + Vetores de Velocidade')
+    axes[0, 0].set_xlabel('X [ft]')
+    axes[0, 0].set_ylabel('Y [ft]')
+    plt.colorbar(im1, ax=axes[0, 0], label='Permeabilidade [mD]')
     
-    # Adicionar vetores de velocidade (amostrados)
-    skip = 3
-    ax2.quiver(xc[::skip], yc[::skip], 
-               vx[::skip, ::skip].T, vy[::skip, ::skip].T,
-               color='blue', scale=5*np.max(speed),width=0.001, headwidth=2, headlength=4)
+    # 2. Magnitude da velocidade
+    velocity_magnitude = np.sqrt(vx**2 + vy**2)
+    im2 = axes[0, 1].imshow(velocity_magnitude.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='hot', aspect='auto')
+    axes[0, 1].set_title('Magnitude da Velocidade')
+    axes[0, 1].set_xlabel('X [ft]')
+    axes[0, 1].set_ylabel('Y [ft]')
+    plt.colorbar(im2, ax=axes[0, 1], label='Velocidade [m/s]')
     
-    ax2.set_title(f'(b) Campo de velocidades - {titulo}')
-    ax2.set_xlabel('x [ft]')
-    ax2.set_ylabel('y [ft]')
-    #plt.colorbar(im2, ax=ax2, label='Velocidade [m/s]')
+    # 3. Linhas de corrente - CORREÇÃO: usar pcolormesh em vez de imshow
+    axes[0, 2].pcolormesh(X, Y, K_mD, cmap='viridis', alpha=0.7)
+    
+    # CORREÇÃO: Criar grid regular para streamplot
+    x_stream = np.linspace(0, Lx, Nx)
+    y_stream = np.linspace(0, Ly, Ny)
+    X_stream, Y_stream = np.meshgrid(x_stream, y_stream, indexing='ij')
+    
+    # Interpolar velocidades para o grid regular
+    from scipy.interpolate import RegularGridInterpolator
+    
+    # Criar interpoladores
+    points_x = (xc, yc)
+    interpolator_vx = RegularGridInterpolator(points_x, vx, bounds_error=False, fill_value=0)
+    interpolator_vy = RegularGridInterpolator(points_x, vy, bounds_error=False, fill_value=0)
+    
+    # Criar pontos de avaliação
+    eval_points = np.array([[x, y] for x in x_stream for y in y_stream]).reshape(Nx, Ny, 2)
+    
+    # Interpolar velocidades
+    vx_interp = interpolator_vx(eval_points)
+    vy_interp = interpolator_vy(eval_points)
+    
+    # Normalizar para linhas de corrente
+    v_mag_interp = np.sqrt(vx_interp**2 + vy_interp**2)
+    vx_norm = vx_interp / (v_mag_interp + 1e-15)
+    vy_norm = vy_interp / (v_mag_interp + 1e-15)
+    
+    # Plotar linhas de corrente
+    try:
+        strm = axes[0, 2].streamplot(X_stream.T, Y_stream.T, vx_norm.T, vy_norm.T, 
+                                    color='red', linewidth=1.5, density=2)
+        axes[0, 2].set_title('Linhas de Corrente sobre Permeabilidade')
+    except Exception as e:
+        print(f"Aviso: Não foi possível plotar linhas de corrente: {e}")
+        axes[0, 2].set_title('Linhas de Corrente (não disponível)')
+    
+    axes[0, 2].set_xlabel('X [ft]')
+    axes[0, 2].set_ylabel('Y [ft]')
+    plt.colorbar(im1, ax=axes[0, 2], label='Permeabilidade [mD]')
+    
+    # 4. Pressão
+    im4 = axes[1, 0].imshow(P_2D.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='jet', aspect='auto')
+    axes[1, 0].set_title('Campo de Pressão')
+    axes[1, 0].set_xlabel('X [ft]')
+    axes[1, 0].set_ylabel('Y [ft]')
+    plt.colorbar(im4, ax=axes[1, 0], label='Pressão [Pa]')
+    
+    # 5. Componente X da velocidade
+    im5 = axes[1, 1].imshow(vx.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='coolwarm', aspect='auto')
+    axes[1, 1].set_title('Velocidade X')
+    axes[1, 1].set_xlabel('X [ft]')
+    axes[1, 1].set_ylabel('Y [ft]')
+    plt.colorbar(im5, ax=axes[1, 1], label='Velocidade X [m/s]')
+    
+    # 6. Componente Y da velocidade
+    im6 = axes[1, 2].imshow(vy.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='coolwarm', aspect='auto')
+    axes[1, 2].set_title('Velocidade Y')
+    axes[1, 2].set_xlabel('X [ft]')
+    axes[1, 2].set_ylabel('Y [ft]')
+    plt.colorbar(im6, ax=axes[1, 2], label='Velocidade Y [m/s]')
     
     plt.tight_layout()
-    plt.savefig(f'figura_campos_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
     plt.show()
-
-
-def plot_permeabilidade(xc, yc, K, titulo=""):
-    """Plota campo de permeabilidade em escala logarítmica"""
-    plt.figure(figsize=(12, 5))
     
-    im = plt.contourf(xc, yc, K.T, 50, norm=colors.LogNorm(vmin=np.min(K[K>0]),vmax=np.max(K)), cmap='jet')
+    return fig
+
+def plotar_analise_caminhos_fluxo(xc, yc, K_mD, vx, vy, titulo="Análise de Caminhos de Fluxo"):
+    """
+    Análise detalhada dos caminhos preferenciais de fluxo
+    """
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle(titulo, fontsize=16, fontweight='bold')
     
-    plt.title(f'Campo de Permeabilidade - {titulo}\n'
-              f'Min: {np.min(K):.2e} mD, Max: {np.max(K):.2e} mD')
-    plt.xlabel('x [ft]')
-    plt.ylabel('y [ft]')
-    plt.colorbar(im, label='Permeabilidade [mD]')
+    X, Y = np.meshgrid(xc, yc, indexing='ij')
+    velocity_magnitude = np.sqrt(vx**2 + vy**2)
+    
+    # 1. Caminhos preferenciais - velocidade normalizada pela permeabilidade
+    flux_potential = velocity_magnitude / (K_mD + 1e-15)
+    im1 = axes[0, 0].imshow(flux_potential.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='YlOrRd', aspect='auto')
+    axes[0, 0].set_title('Potencial de Fluxo (|v|/K)')
+    axes[0, 0].set_xlabel('X [ft]')
+    axes[0, 0].set_ylabel('Y [ft]')
+    plt.colorbar(im1, ax=axes[0, 0], label='|v|/K [1/s]')
+    
+    # 2. Divergência do campo de velocidade (fontes/sumidouros)
+    div_v = np.gradient(vx, axis=0) / (Lx/Nx) + np.gradient(vy, axis=1) / (Ly/Ny)
+    im2 = axes[0, 1].imshow(div_v.T, extent=[0, Lx, 0, Ly], origin='lower',
+                           cmap='RdBu_r', aspect='auto')
+    axes[0, 1].set_title('Divergência do Campo de Velocidade')
+    axes[0, 1].set_xlabel('X [ft]')
+    axes[0, 1].set_ylabel('Y [ft]')
+    plt.colorbar(im2, ax=axes[0, 1], label='∇·v [1/s]')
+    
+    # 3. Vetores coloridos pela magnitude
+    skip = 6
+    magnitude_at_points = velocity_magnitude[::skip, ::skip]
+    quiv = axes[1, 0].quiver(X[::skip, ::skip], Y[::skip, ::skip], 
+                            vx[::skip, ::skip], vy[::skip, ::skip], 
+                            magnitude_at_points, cmap='hot', scale=0.8)
+    axes[1, 0].set_title('Vetores Coloridos pela Magnitude')
+    axes[1, 0].set_xlabel('X [ft]')
+    axes[1, 0].set_ylabel('Y [ft]')
+    plt.colorbar(quiv, ax=axes[1, 0], label='Velocidade [m/s]')
+    
+    # 4. Histograma de direções do fluxo
+    angles = np.arctan2(vy.flatten(), vx.flatten()) * 180 / np.pi
+    magnitudes = velocity_magnitude.flatten()
+    
+    # Filtrar magnitudes significativas
+    mask = magnitudes > np.percentile(magnitudes, 10)
+    angles_filtered = angles[mask]
+    
+    axes[1, 1].hist(angles_filtered, bins=36, range=(-180, 180), 
+                   color='skyblue', edgecolor='black', alpha=0.7)
+    axes[1, 1].set_title('Distribuição de Direções do Fluxo')
+    axes[1, 1].set_xlabel('Ângulo [graus]')
+    axes[1, 1].set_ylabel('Frequência')
+    axes[1, 1].grid(True, alpha=0.3)
+    
+    # Adicionar estatísticas
+    mean_angle = np.mean(angles_filtered)
+    axes[1, 1].axvline(mean_angle, color='red', linestyle='--', 
+                      label=f'Ângulo médio: {mean_angle:.1f}°')
+    axes[1, 1].legend()
     
     plt.tight_layout()
-    plt.savefig(f'permeabilidade_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
     plt.show()
-
 
 # =============================================================================
 # EXECUÇÃO PRINCIPAL CORRIGIDA
@@ -307,15 +407,9 @@ if kx_mD is None:
     print("Não foi possível carregar os dados.")
     exit()
 
-
-"""
-Aqui nós utilizamos os mesmos valores de Kx para Ky
-visto que são idênticos para esse problema.
-"""
-
-# Converter para m² (1 mD = 9.869233e-16 m²) 
+# Converter para m² (1 mD = 9.869233e-16 m²)
 kx = kx_mD * 9.869233e-16
-#kx = np.maximum(kx, 1e-20)
+kx = np.maximum(kx, 1e-20)
 
 # Selecionar camadas (já na orientação correta 220x60)
 K33_mD = kx_mD[:, :, 32]  # Camada 33 - forma (220, 60)
@@ -326,21 +420,17 @@ K35 = kx[:, :, 34]
 
 print(f"\nCamada 33: {K33.shape} - ORIENTAÇÃO CORRETA")
 print(f"Camada 35: {K35.shape} - ORIENTAÇÃO CORRETA")
-print(f"Permeabilidade Camada 33: {np.min(K33_mD):.2e} a {np.max(K33_mD):.2e} mD")
-print(f"Permeabilidade Camada 35: {np.min(K35_mD):.2e} a {np.max(K35_mD):.2e} mD")
 
 # Criar malha com orientação correta
 xc, yc, dx, dy = CreateMesh(Lx, Ly, Nx, Ny)
 print(f"\nMalha criada: {len(xc)} x {len(yc)} células")
-print(f"Largura (X): {Lx} ft, {Nx} células, dx = {dx:.2f} ft")
-print(f"Altura (Y): {Ly} ft, {Ny} células, dy = {dy:.2f} ft")
 
 # Resolver para Camada 33
 print("\n" + "=" * 40)
 print("RESOLVENDO CAMADA 33")
 print("=" * 40)
 
-A33, rhs33 = BuildDarcySystem(xc, yc, dx, dy, K33, bc_left=0.036, bc_right=6.0e6)
+A33, rhs33 = BuildDarcySystem(xc, yc, dx, dy, K33, bc_left=1e6, bc_right=0.0)
 P33 = scipy.sparse.linalg.spsolve(A33, rhs33)
 P33_2D = P33.reshape((Nx, Ny))
 
@@ -351,14 +441,13 @@ vx33 = -K33 * gradP_x33 / mu
 vy33 = -K33 * gradP_y33 / mu
 
 print(f"Solução Camada 33: {P33_2D.shape}")
-print(f"Pressão: {np.min(P33_2D):.2e} a {np.max(P33_2D):.2e} Pa")
 
 # Resolver para Camada 35
 print("\n" + "=" * 40)
 print("RESOLVENDO CAMADA 35")
 print("=" * 40)
 
-A35, rhs35 = BuildDarcySystem(xc, yc, dx, dy, K35, bc_left=0.036, bc_right=6.0e6)
+A35, rhs35 = BuildDarcySystem(xc, yc, dx, dy, K35, bc_left=1e6, bc_right=0.0)
 P35 = scipy.sparse.linalg.spsolve(A35, rhs35)
 P35_2D = P35.reshape((Nx, Ny))
 
@@ -369,7 +458,32 @@ vx35 = -K35 * gradP_x35 / mu
 vy35 = -K35 * gradP_y35 / mu
 
 print(f"Solução Camada 35: {P35_2D.shape}")
-print(f"Pressão: {np.min(P35_2D):.2e} a {np.max(P35_2D):.2e} Pa")
+
+# =============================================================================
+# PLOTAGEM DOS CAMPOS DE VELOCIDADE
+# =============================================================================
+
+print("\n" + "=" * 40)
+print("GERANDO VISUALIZAÇÕES DOS CAMPOS DE VELOCIDADE")
+print("=" * 40)
+
+# Plotar Camada 33
+print("Plotando Camada 33...")
+plotar_campo_velocidade(xc, yc, P33_2D, K33_mD, vx33, vy33, 
+                       "SPE10 - Camada 33 - Campo de Velocidade")
+
+print("Plotando análise de caminhos de fluxo - Camada 33...")
+plotar_analise_caminhos_fluxo(xc, yc, K33_mD, vx33, vy33,
+                            "SPE10 - Camada 33 - Análise de Caminhos de Fluxo")
+
+# Plotar Camada 35
+print("Plotando Camada 35...")
+plotar_campo_velocidade(xc, yc, P35_2D, K35_mD, vx35, vy35, 
+                       "SPE10 - Camada 35 - Campo de Velocidade")
+
+print("Plotando análise de caminhos de fluxo - Camada 35...")
+plotar_analise_caminhos_fluxo(xc, yc, K35_mD, vx35, vy35,
+                            "SPE10 - Camada 35 - Análise de Caminhos de Fluxo")
 
 # Salvar resultados para ParaView
 print("\n" + "=" * 40)
@@ -387,33 +501,7 @@ print(f"Domínio: {Lx} ft (LARGURA) x {Ly} ft (ALTURA)")
 print(f"Malha: {Nx} x {Ny} células")
 print(f"Camada 33 - Permeabilidade média: {np.mean(K33_mD):.1f} mD")
 print(f"Camada 35 - Permeabilidade média: {np.mean(K35_mD):.1f} mD")
-print(f"Razão de aspecto: {Lx/Ly:.2f}:1 (LARGURA:ALTURA)")
+print(f"Velocidade máxima Camada 33: {np.max(np.sqrt(vx33**2 + vy33**2)):.2e} m/s")
+print(f"Velocidade máxima Camada 35: {np.max(np.sqrt(vx35**2 + vy35**2)):.2e} m/s")
 print("Arquivos gerados: camada_33_horizontal.vts, camada_35_horizontal.vts")
 print("=" * 60)
-
-# Verificação visual
-print("\nVERIFICAÇÃO VISUAL:")
-print("• No ParaView, o domínio deve aparecer HORIZONTAL")
-print("• Dimensões: aproximadamente 670 ft (largura) x 365 ft (altura)")
-print("• Proporção: quase 2:1 (mais largo que alto)")
-
-
-# =============================================================================
-# PLOTAGENS SIMILARES À FIGURA 4.11
-# =============================================================================
-
-print("\n" + "=" * 40)
-print("GERANDO FIGURAS")
-print("=" * 40)
-
-# Plotar Camada 33
-plot_campos_spe10(xc, yc, P33_2D, K33_mD, vx33, vy33, 
-                 "Camada 33 - SPE10", 'RdYlBu_r')
-
-# Plotar Camada 35  
-plot_campos_spe10(xc, yc, P35_2D, K35_mD, vx35, vy35,
-                 "Camada 35 - SPE10", 'RdYlBu_r')
-
-# Plotar permeabilidades
-plot_permeabilidade(xc, yc, K33_mD, "Camada 33")
-plot_permeabilidade(xc, yc, K35_mD, "Camada 35")

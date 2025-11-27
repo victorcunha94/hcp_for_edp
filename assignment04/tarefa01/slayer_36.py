@@ -1,22 +1,21 @@
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
-from scipy.ndimage import zoom
+from scipy.ndimage import zoom, rotate
 import time
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
 # =============================================================================
-# PARÂMETROS CORRETOS SPE10 - DIMENSÕES CORRIGIDAS
+# PARÂMETROS CORRETOS SPE10 
 # =============================================================================
-Lx, Nx = 670.56, 220   # 220 células na direção X (largura) - CORRIGIDO
-Ly, Ny = 365.76, 60    # 60 células na direção Y (altura) - CORRIGIDO
+Lx, Nx = 670.56, 220   # 220 células na direção X (largura)
+Ly, Ny = 365.76, 60    # 60 células na direção Y (altura)
 nx, ny = Nx, Ny        
-#mu = 1.0   
-mu = 8.9e-14            # Viscosidade [cP]
+mu = 1.0   
 
-# Dimensões originais do SPE10 (CORRETAS)
-Nx_spe, Ny_spe, Nz_spe = 60, 220, 85  # ATENÇÃO: SPE10 tem 60x220, mas vamos transpor
+# Dimensões originais do SPE10 
+Nx_spe, Ny_spe, Nz_spe = 60, 220, 85
 
 def carregar_dados_spe10_corrigido(arquivo='spe_perm.dat'):
     """
@@ -61,20 +60,44 @@ def carregar_dados_spe10_corrigido(arquivo='spe_perm.dat'):
                     kz[i, j, k] = all_values[idx]
                     idx += 1
         
-        print(f"Permeabilidades carregadas - Kx: {kx.shape}")
+        print(f"Permeabilidades carregadas - Kx: {kx.shape}, Ky: {ky.shape}")
         
         # TRANSPOSE para orientação correta: (60, 220) -> (220, 60)
         kx = np.transpose(kx, (1, 0, 2))  # Agora (220, 60, 85)
         ky = np.transpose(ky, (1, 0, 2))
         kz = np.transpose(kz, (1, 0, 2))
         
-        print(f"Após transpose - Kx: {kx.shape}")
+        print(f"Após transpose - Kx: {kx.shape}, Ky: {ky.shape}")
         
         return kx, ky, kz
         
     except FileNotFoundError:
         print(f"ERRO: Arquivo {arquivo} não encontrado!")
         return None, None, None
+
+def rotacionar_campo_180(K_field):
+    """
+    Rotaciona o campo de permeabilidade em 180 graus
+    Isso corrige o problema do campo estar espelhado
+    """
+    return np.rot90(K_field, 2)  # 2 rotações de 90° = 180°
+
+def combinar_perm_horizontal(kx, ky):
+    """
+    Combina componentes Kx e Ky para permeabilidade horizontal
+    Pode usar média geométrica, aritmética, ou selecionar um componente
+    """
+    # Método 1: Usar apenas Kx (para fluxo predominante em X)
+    # return kx
+    
+    # Método 2: Usar apenas Ky (para fluxo predominante em Y) 
+    # return ky
+    
+    # Método 3: Média geométrica (recomendado para meios anisotrópicos)
+    return np.sqrt(kx * ky)
+    
+    # Método 4: Média aritmética
+    # return (kx + ky) / 2
 
 def CreateMesh(Lx, Ly, Nx, Ny):
     """Cria malha com orientação correta"""
@@ -84,7 +107,7 @@ def CreateMesh(Lx, Ly, Nx, Ny):
     yc = np.linspace(dy/2, Ly - dy/2, Ny)  # Centros das células em Y
     return xc, yc, dx, dy
 
-def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
+def BuildDarcySystem(xc, yc, dx, dy, K_field, p_inj=1e-5, p_prod=1e-5):
     """Constrói sistema com orientação correta"""
     Nx, Ny = len(xc), len(yc)
     Nc = Nx * Ny
@@ -134,24 +157,11 @@ def BuildDarcySystem(xc, yc, dx, dy, K_field, bc_left=1e6, bc_right=0.0):
                 row.append(g); col.append(g_s); data.append(-Ty_s)
                 diag_coef += Ty_s
             
-            # Condições de contorno (agora na direção X correta)
-            # ======== VERIFICAR CONDIÇÃO DE CONTORNO DE NEUMAN ========
-#            if i == 0:  # Contorno esquerdo
-#                T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
-#                rhs[g] += T_bc * bc_left
-#                diag_coef += T_bc
-
-            if i == 0:  # Contorno esquerdo (Neumann: u . n = u_b)
-                T_bc =  dy  # Área da face
-                rhs[g] += T_bc * bc_left # Contribuição do fluxo prescrito u_b * dy
-                diag_coef += 0 # Não há termo diagonal adicional para Neumann
-
-
-            elif i == Nx - 1:  # Contorno direito
-                T_bc = K_field[i, j] * dy / (0.5 * dx) / mu
-                rhs[g] += T_bc * bc_right 
-                diag_coef += T_bc
-            
+            # Poços injetor e produtor
+            if i == 0 and j == 0:
+                rhs[g] += p_inj
+            elif i == Nx - 1 and j == Ny - 1:
+                rhs[g] -= p_prod
             
             row.append(g); col.append(g); data.append(diag_coef)
     
@@ -233,71 +243,12 @@ def salvar_para_paraview_corrigido(xc, yc, P_2D, K_mD, vx, vy, prefixo="solucao"
     print(f"Arquivo {prefixo}.vts salvo com sucesso!")
 
 
-
-
-# ============================================================================
-# PLOTAGEM EM UM DOMÍNIO DO TIPO "a quarter of the five spot"
-# ============================================================================
-
-
-def plot_campos_spe10(xc, yc, P, K, vx, vy, titulo="", cmap='viridis'):
-    """Plota campos de pressão e velocidade similares à Figura 4.11"""
-    
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 4))
-    
-    # (a) Campo de pressões
-    im1 = ax1.contourf(xc, yc, P.T, 50, cmap=cmap)
-    ax1.set_title(f'(a) Campo de pressões - {titulo}')
-    ax1.set_xlabel('x [ft]')
-    ax1.set_ylabel('y [ft]')
-    plt.colorbar(im1, ax=ax1, label='Pressão [Pa]')
-    
-    # (b) Campo de velocidades  
-    speed = np.sqrt(vx**2 + vy**2)
-    #im2 = ax2.contourf(xc, yc, speed.T, 50, 
-                      #norm=colors.LogNorm(vmin=np.min(speed[speed>0]), 
-                                         #vmax=np.max(speed)),
-                      #cmap='jet')
-    
-    # Adicionar vetores de velocidade (amostrados)
-    skip = 3
-    ax2.quiver(xc[::skip], yc[::skip], 
-               vx[::skip, ::skip].T, vy[::skip, ::skip].T,
-               color='blue', scale=5*np.max(speed),width=0.001, headwidth=2, headlength=4)
-    
-    ax2.set_title(f'(b) Campo de velocidades - {titulo}')
-    ax2.set_xlabel('x [ft]')
-    ax2.set_ylabel('y [ft]')
-    #plt.colorbar(im2, ax=ax2, label='Velocidade [m/s]')
-    
-    plt.tight_layout()
-    plt.savefig(f'figura_campos_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
-    plt.show()
-
-
-def plot_permeabilidade(xc, yc, K, titulo=""):
-    """Plota campo de permeabilidade em escala logarítmica"""
-    plt.figure(figsize=(12, 5))
-    
-    im = plt.contourf(xc, yc, K.T, 50, norm=colors.LogNorm(vmin=np.min(K[K>0]),vmax=np.max(K)), cmap='jet')
-    
-    plt.title(f'Campo de Permeabilidade - {titulo}\n'
-              f'Min: {np.min(K):.2e} mD, Max: {np.max(K):.2e} mD')
-    plt.xlabel('x [ft]')
-    plt.ylabel('y [ft]')
-    plt.colorbar(im, label='Permeabilidade [mD]')
-    
-    plt.tight_layout()
-    plt.savefig(f'permeabilidade_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
-    plt.show()
-
-
 # =============================================================================
 # EXECUÇÃO PRINCIPAL CORRIGIDA
 # =============================================================================
 
 print("=" * 60)
-print("SPE10 - ORIENTAÇÃO CORRETA: 220x60 (LARGURA x ALTURA)")
+print("SPE10 - COM ROTAÇÃO E COMPONENTE CORRETO")
 print("=" * 60)
 
 # Carregar dados
@@ -307,113 +258,112 @@ if kx_mD is None:
     print("Não foi possível carregar os dados.")
     exit()
 
-
-"""
-Aqui nós utilizamos os mesmos valores de Kx para Ky
-visto que são idênticos para esse problema.
-"""
-
 # Converter para m² (1 mD = 9.869233e-16 m²) 
 kx = kx_mD * 9.869233e-16
-#kx = np.maximum(kx, 1e-20)
+ky = ky_mD * 9.869233e-16
 
 # Selecionar camadas (já na orientação correta 220x60)
-K33_mD = kx_mD[:, :, 32]  # Camada 33 - forma (220, 60)
-K35_mD = kx_mD[:, :, 34]  # Camada 35 - forma (220, 60)
+K33_kx_mD = kx_mD[:, :, 32]  # Camada 33 Kx
+K33_ky_mD = ky_mD[:, :, 32]  # Camada 33 Ky
 
-K33 = kx[:, :, 32]  # Para cálculos em m²
-K35 = kx[:, :, 34]
+K35_kx_mD = kx_mD[:, :, 34]  # Camada 35 Kx  
+K35_ky_mD = ky_mD[:, :, 34]  # Camada 35 Ky
 
-print(f"\nCamada 33: {K33.shape} - ORIENTAÇÃO CORRETA")
-print(f"Camada 35: {K35.shape} - ORIENTAÇÃO CORRETA")
-print(f"Permeabilidade Camada 33: {np.min(K33_mD):.2e} a {np.max(K33_mD):.2e} mD")
-print(f"Permeabilidade Camada 35: {np.min(K35_mD):.2e} a {np.max(K35_mD):.2e} mD")
+K36_kx_mD = kx_mD[:, :, 35]  # Camada 36 Kx
+K36_ky_mD = ky_mD[:, :, 35]  # Camada 36 Ky
 
-# Criar malha com orientação correta
+print(f"\nCamada 33 - Kx: {K33_kx_mD.shape}, Ky: {K33_ky_mD.shape}")
+print(f"Camada 35 - Kx: {K35_kx_mD.shape}, Ky: {K35_ky_mD.shape}")  
+print(f"Camada 36 - Kx: {K36_kx_mD.shape}, Ky: {K36_ky_mD.shape}")
+
+# ROTACIONAR OS CAMPOS EM 180 GRAUS
+print("\nRotacionando campos em 180 graus...")
+K33_kx_mD_rot = rotacionar_campo_180(K33_kx_mD)
+K33_ky_mD_rot = rotacionar_campo_180(K33_ky_mD)
+K33_comb_mD = combinar_perm_horizontal(K33_kx_mD_rot, K33_ky_mD_rot)
+
+K35_kx_mD_rot = rotacionar_campo_180(K35_kx_mD)  
+K35_ky_mD_rot = rotacionar_campo_180(K35_ky_mD)
+K35_comb_mD = combinar_perm_horizontal(K35_kx_mD_rot, K35_ky_mD_rot)
+
+K36_kx_mD_rot = rotacionar_campo_180(K36_kx_mD)
+K36_ky_mD_rot = rotacionar_campo_180(K36_ky_mD) 
+K36_comb_mD = combinar_perm_horizontal(K36_kx_mD_rot, K36_ky_mD_rot)
+
+# Converter campos rotacionados para m²
+K33_comb = K33_comb_mD * 9.869233e-16
+K35_comb = K35_comb_mD * 9.869233e-16  
+K36_comb = K36_comb_mD * 9.869233e-16
+
+print(f"\nCampos rotacionados e combinados:")
+print(f"Camada 33: {K33_comb_mD.shape}")
+print(f"Camada 35: {K35_comb_mD.shape}")
+print(f"Camada 36: {K36_comb_mD.shape}")
+
+# Criar malha 
 xc, yc, dx, dy = CreateMesh(Lx, Ly, Nx, Ny)
-print(f"\nMalha criada: {len(xc)} x {len(yc)} células")
-print(f"Largura (X): {Lx} ft, {Nx} células, dx = {dx:.2f} ft")
-print(f"Altura (Y): {Ly} ft, {Ny} células, dy = {dy:.2f} ft")
 
-# Resolver para Camada 33
+# ============== Resolver para Camada 36 (com campo rotacionado)
 print("\n" + "=" * 40)
-print("RESOLVENDO CAMADA 33")
+print("RESOLVENDO CAMADA 36 (ROTACIONADA)")
 print("=" * 40)
 
-A33, rhs33 = BuildDarcySystem(xc, yc, dx, dy, K33, bc_left=0.036, bc_right=6.0e6)
-P33 = scipy.sparse.linalg.spsolve(A33, rhs33)
-P33_2D = P33.reshape((Nx, Ny))
+A36, rhs36 = BuildDarcySystem(xc, yc, dx, dy, K36_comb, p_inj=0.036, p_prod=6e6)
+P36 = scipy.sparse.linalg.spsolve(A36, rhs36)
+P36_2D = P36.reshape((Nx, Ny))
 
 # Calcular velocidade
-gradP_x33 = np.gradient(P33_2D, dx, axis=0)
-gradP_y33 = np.gradient(P33_2D, dy, axis=1)
-vx33 = -K33 * gradP_x33 / mu
-vy33 = -K33 * gradP_y33 / mu
+gradP_x36 = np.gradient(P36_2D, dx, axis=0)
+gradP_y36 = np.gradient(P36_2D, dy, axis=1)
+vx36 = -K36_comb * gradP_x36 / mu
+vy36 = -K36_comb * gradP_y36 / mu
 
-print(f"Solução Camada 33: {P33_2D.shape}")
-print(f"Pressão: {np.min(P33_2D):.2e} a {np.max(P33_2D):.2e} Pa")
+print(f"Solução Camada 36: {P36_2D.shape}")
+print(f"Pressão: {np.min(P36_2D):.2e} a {np.max(P36_2D):.2e} Pa")
 
-# Resolver para Camada 35
-print("\n" + "=" * 40)
-print("RESOLVENDO CAMADA 35")
-print("=" * 40)
+# Salvar resultados
+salvar_para_paraview_corrigido(xc, yc, P36_2D, K36_comb_mD, vx36, vy36, "camada_36_rotacionada")
 
-A35, rhs35 = BuildDarcySystem(xc, yc, dx, dy, K35, bc_left=0.036, bc_right=6.0e6)
-P35 = scipy.sparse.linalg.spsolve(A35, rhs35)
-P35_2D = P35.reshape((Nx, Ny))
+# Plotar comparação antes/depois da rotação
+def plot_comparacao_rotacao(xc, yc, K_original, K_rotacionado, titulo):
+    """Plota comparação antes e depois da rotação"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    im1 = ax1.contourf(xc, yc, K_original.T, 50, 
+                      norm=colors.LogNorm(vmin=np.min(K_original[K_original>0]), 
+                                         vmax=np.max(K_original)),
+                      cmap='jet')
+    ax1.set_title(f'{titulo} - Original')
+    ax1.set_xlabel('x [ft]')
+    ax1.set_ylabel('y [ft]')
+    plt.colorbar(im1, ax=ax1, label='Permeabilidade [mD]')
+    
+    im2 = ax2.contourf(xc, yc, K_rotacionado.T, 50,
+                      norm=colors.LogNorm(vmin=np.min(K_rotacionado[K_rotacionado>0]),
+                                         vmax=np.max(K_rotacionado)), 
+                      cmap='jet')
+    ax2.set_title(f'{titulo} - Rotacionado 180°')
+    ax2.set_xlabel('x [ft]')
+    ax2.set_ylabel('y [ft]')
+    plt.colorbar(im2, ax=ax2, label='Permeabilidade [mD]')
+    
+    plt.tight_layout()
+    plt.savefig(f'comparacao_rotacao_{titulo.replace(" ", "_")}.png', dpi=300, bbox_inches='tight')
+    plt.show()
 
-# Calcular velocidade
-gradP_x35 = np.gradient(P35_2D, dx, axis=0)
-gradP_y35 = np.gradient(P35_2D, dy, axis=1)
-vx35 = -K35 * gradP_x35 / mu
-vy35 = -K35 * gradP_y35 / mu
+# Plotar comparações
+plot_comparacao_rotacao(xc, yc, K36_kx_mD, K36_kx_mD_rot, "Camada 36 Kx")
+plot_comparacao_rotacao(xc, yc, K36_ky_mD, K36_ky_mD_rot, "Camada 36 Ky")
 
-print(f"Solução Camada 35: {P35_2D.shape}")
-print(f"Pressão: {np.min(P35_2D):.2e} a {np.max(P35_2D):.2e} Pa")
-
-# Salvar resultados para ParaView
-print("\n" + "=" * 40)
-print("SALVANDO PARA PARAVIEW")
-print("=" * 40)
-
-salvar_para_paraview_corrigido(xc, yc, P33_2D, K33_mD, vx33, vy33, "camada_33_horizontal")
-salvar_para_paraview_corrigido(xc, yc, P35_2D, K35_mD, vx35, vy35, "camada_35_horizontal")
+# Plotar campo combinado
+plot_permeabilidade(xc, yc, K36_comb_mD, "Camada 36 Combinada e Rotacionada")
 
 # Resumo final
 print("\n" + "=" * 60)
-print("RESUMO FINAL - ORIENTAÇÃO CORRIGIDA")
+print("RESUMO FINAL - COM ROTAÇÃO")
 print("=" * 60)
-print(f"Domínio: {Lx} ft (LARGURA) x {Ly} ft (ALTURA)")
-print(f"Malha: {Nx} x {Ny} células")
-print(f"Camada 33 - Permeabilidade média: {np.mean(K33_mD):.1f} mD")
-print(f"Camada 35 - Permeabilidade média: {np.mean(K35_mD):.1f} mD")
-print(f"Razão de aspecto: {Lx/Ly:.2f}:1 (LARGURA:ALTURA)")
-print("Arquivos gerados: camada_33_horizontal.vts, camada_35_horizontal.vts")
+print("✓ Campos rotacionados em 180 graus")
+print("✓ Componentes Kx e Ky carregados separadamente") 
+print("✓ Permeabilidade combinada usando média geométrica")
+print(f"✓ Arquivo gerado: camada_36_rotacionada.vts")
 print("=" * 60)
-
-# Verificação visual
-print("\nVERIFICAÇÃO VISUAL:")
-print("• No ParaView, o domínio deve aparecer HORIZONTAL")
-print("• Dimensões: aproximadamente 670 ft (largura) x 365 ft (altura)")
-print("• Proporção: quase 2:1 (mais largo que alto)")
-
-
-# =============================================================================
-# PLOTAGENS SIMILARES À FIGURA 4.11
-# =============================================================================
-
-print("\n" + "=" * 40)
-print("GERANDO FIGURAS")
-print("=" * 40)
-
-# Plotar Camada 33
-plot_campos_spe10(xc, yc, P33_2D, K33_mD, vx33, vy33, 
-                 "Camada 33 - SPE10", 'RdYlBu_r')
-
-# Plotar Camada 35  
-plot_campos_spe10(xc, yc, P35_2D, K35_mD, vx35, vy35,
-                 "Camada 35 - SPE10", 'RdYlBu_r')
-
-# Plotar permeabilidades
-plot_permeabilidade(xc, yc, K33_mD, "Camada 33")
-plot_permeabilidade(xc, yc, K35_mD, "Camada 35")
