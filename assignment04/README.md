@@ -8,5 +8,7 @@
 
 
 
-$$p(x, y, z) = \\sin(2 \\*pi* x)\\sin(2 \\*pi* y)\\sin(2\\*pi* z)$$
+$$p(x, y, z) = \\cos(2 \pi x)\\cos(2 \pi y)\\cos(2 \pi z)$$
+
+
 

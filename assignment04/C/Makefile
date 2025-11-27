@@ -21,7 +21,7 @@ release_$(OUTPUT): release_$(OUTPUT).o
 	${RM} $^
 
 run: debug_${OUTPUT}
-	mpirun --mca btl_tcp_if_include lo ./debug_Main -log_view -log_view_memory
+	mpirun --mca btl_tcp_if_include lo ./debug_Main -log_view -log_view_memory -malloc_dump
 #::ascii_flamegraph -log_view_memory | flamegraph | display caso queira fazer flamegraph bonito
 
 clean:
