@@ -1,12 +1,27 @@
 #include <petscksp.h>
 #include <petscdmda.h>
+#include <math.h>
+
+#define _USE_MATH_DEFINES
+
 static char help[] = "Grade 3d DMDA.\n";
+
+PetscReal F_exata(PetscReal x,PetscReal y,PetscReal z){
+    return(cos(2*x*M_PI)*cos(2*y*M_PI)*cos(2*z*M_PI));
+}
+
+
+
 int main(int argc, char **argv) {
-    PetscMPIInt nprocs,N_Pontos_x,N_Pontos_y,N_Pontos_z;
-    N_Pontos_x=10;N_Pontos_y=10;N_Pontos_z=10;
+    PetscMPIInt nprocs,N_Pontos;
+    N_Pontos=10;
     PetscReal   norm, tol = 1000. * PETSC_MACHINE_EPSILON; /* norm of solution error */ 
     DM dmda3d;//estrutura 3d
+    Vec b,u_aprox,u_exact;
     Mat matriz;
+
+    PC pre_condicionador;
+    KSP krilov_sp;
     // Inicializa PETSc e MPI
    
     PetscCall(PetscInitialize(&argc, &argv, NULL, help));
@@ -17,8 +32,8 @@ int main(int argc, char **argv) {
          DM_BOUNDARY_NONE, 
          DM_BOUNDARY_NONE,
          DM_BOUNDARY_NONE,
-         DMDA_STENCIL_BOX,
-         N_Pontos_x,N_Pontos_y,N_Pontos_z,//dimensões
+         DMDA_STENCIL_STAR,
+         N_Pontos,N_Pontos,N_Pontos,//dimensões
          PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,
          1,1,NULL,NULL,NULL,&dmda3d 
         ));
@@ -26,7 +41,7 @@ int main(int argc, char **argv) {
     PetscCall(DMSetUp(dmda3d));//setando o objeto
     
     PetscCall(DMCreateMatrix(dmda3d,&matriz));
-
+/*
     MatStencil linhas_dirichlet[4*N_Pontos_x*N_Pontos_z],colunas_dirichlet[4*N_Pontos_x*N_Pontos_z];
     PetscReal valores_0[4*N_Pontos_x*N_Pontos_z];
     for (int i=0;i<N_Pontos_x;i++){
@@ -43,7 +58,7 @@ int main(int argc, char **argv) {
 
     }
     PetscCall(MatSetValuesStencil(matriz,4*N_Pontos_x*N_Pontos_z,linhas_dirichlet,4*N_Pontos_x*N_Pontos_z,colunas_dirichlet,valores_0,INSERT_VALUES));
-
+*/
     PetscCall(MatDestroy(&matriz));
     PetscCall(DMDestroy(&dmda3d));
     PetscCall(PetscFinalize());
