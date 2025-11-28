@@ -2,13 +2,11 @@
 #include <petscdmda.h>
 #include <math.h>
 
-#define _USE_MATH_DEFINES
+
 
 static char help[] = "Grade 3d DMDA.\n";
 
-PetscReal F_exata(PetscReal x,PetscReal y,PetscReal z){
-    return(cos(2*x*M_PI)*cos(2*y*M_PI)*cos(2*z*M_PI));
-}
+
 
 
 
