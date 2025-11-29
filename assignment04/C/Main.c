@@ -11,8 +11,8 @@ static char help[] = "Grade 3d DMDA.\n";
 
 
 int main(int argc, char **argv) {
-    PetscMPIInt nprocs,N_Pontos;
-    N_Pontos=10;
+    PetscMPIInt nprocs,N_Pontos_x,N_Pontos_y,N_Pontos_z;
+    N_Pontos_x=N_Pontos_y=N_Pontos_z=10;
     PetscReal   norm, tol = 1000. * PETSC_MACHINE_EPSILON; /* norm of solution error */ 
     DM dmda3d;//estrutura 3d
     Vec b,u_aprox,u_exact;
@@ -31,10 +31,11 @@ int main(int argc, char **argv) {
          DM_BOUNDARY_NONE,
          DM_BOUNDARY_NONE,
          DMDA_STENCIL_STAR,
-         N_Pontos,N_Pontos,N_Pontos,//dimensões
+         N_Pontos_x,N_Pontos_y,N_Pontos_z,//dimensões
          PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,
          1,1,NULL,NULL,NULL,&dmda3d 
         ));
+    PetscCall(DMSetFromOptions(dmda3d));
     
     PetscCall(DMSetUp(dmda3d));//setando o objeto
     
